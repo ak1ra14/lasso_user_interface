@@ -1,0 +1,15 @@
+{
+  "mincount": 1,
+  "nbeds": [1, "bed_001"],
+  "alert_checking": {
+    "sit_up": 0,
+    "bed_exit": 0,
+    "sit-to-stand": 0,
+    "lie_out": 0
+  },
+  "attach_video": 0,
+  "max_dist": 3000,
+  "rtsp_recording": {
+    "on": 0
+  }
+}
