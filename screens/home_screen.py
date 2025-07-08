@@ -58,7 +58,7 @@ class MenuScreen1(Screen):
             content.add_widget(IconTextButton(
                 icon_path=f'images/{content_name}.png',  # Placeholder for icons
                 text=content_names[i],
-                on_press=lambda instance, name=content_names[i]: print(f"Pressed {name}")
+                screen_name=content_name,  # Navigate to respective screen
             ))
         content.add_widget(Widget())  # Spacer
 
@@ -94,14 +94,7 @@ class MenuScreen1(Screen):
         self.bg.size = self.size
         self.bg.pos = self.pos
 
-    def go_to_menu2(self, instance):
-        self.manager.current = 'menu2'
-    
-    def go_to_monitor(self, instance):
-        self.manager.current = 'monitor'
 
-    def go_to_language(self, instance):
-        self.manager.current = 'language'
     
 class MenuScreen2(Screen):
     def __init__(self, **kwargs):
@@ -194,15 +187,4 @@ class MenuScreen2(Screen):
         main_layout.add_widget(footer)
         self.add_widget(main_layout)    
 
-        # Let width fit content
-    def go_to_menu(self, instance):
-        self.manager.current = 'menu'
 
-    def go_to_monitor(self, instance):
-        self.manager.current = 'monitor'
-
-    def go_to_language(self, instance):
-        self.manager.current = 'language'   
-
-    def go_to(self, instance, screen_name):
-        self.manager.current = screen_name

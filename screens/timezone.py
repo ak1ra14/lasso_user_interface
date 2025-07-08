@@ -3,30 +3,15 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
 from kivy.uix.widget import Widget
 from utils.icons import IconTextButton
-from kivy.uix.image import Image
-from kivy.uix.anchorlayout import AnchorLayout
-from kivy.uix.recycleview import RecycleView
 from kivy.uix.button import Button
-from kivy.uix.recycleboxlayout import RecycleBoxLayout
-from kivy.metrics import dp
 from kivy.uix.scrollview import ScrollView
+from utils.config_loader import load_config, save_config
+from kivy.uix.gridlayout import GridLayout
+from kivy.app import App
+from kivy.uix.button import Button
+from kivy.graphics import Color, Rectangle
 
-class TimezoneListView(RecycleView):
-    def __init__(self, items = None, **kwargs):
-        super().__init__(**kwargs)
-        self.viewclass = 'Button'
-        self.data = [{'text': tz} for tz in [
-            "UTC", "US/Eastern", "US/Central", "US/Mountain", "US/Pacific",
-            "Europe/London", "Asia/Tokyo", "Asia/Bangkok"
-        ]]
-        self.layout_manager = RecycleBoxLayout(
-            default_size=(None, dp(56)),
-            default_size_hint=(1, None),
-            size_hint=(1, None),
-            orientation='vertical'
-        )
-        self.layout_manager.bind(minimum_height=self.setter('height'))
-        self.add_widget(self.layout_manager)
+import json
 
 class TimezoneScreen(Screen):
     def __init__(self, **kwargs):
@@ -35,34 +20,137 @@ class TimezoneScreen(Screen):
         This screen allows users to select a timezone.
         """
         super().__init__(**kwargs)
-        layout = BoxLayout(orientation='vertical', size=(400, 400), size_hint=(None,None))
-        layout.bind(minimum_height=layout.setter('height'))
+        self.selected_timezone = load_config('config/V3.json').get('timezone', '')
+        self.timezone_list = []
+        header= BoxLayout(orientation='horizontal', pos_hint={'top': 1},
+                           size_hint_y=0.25, padding=[50, 25, 50, 0], spacing=10)
+        header.add_widget(Label(
+            text="Time Zone",
+            font_size=60,
+            font_name='fonts/Roboto-Bold.ttf',
+            pos_hint={'left': 1, 'top': 1},
+        ))
+        header.add_widget(Widget())  # Spacer
+        header.add_widget(IconTextButton(
+            icon_path="images/home.png",
+            text="Home",
+            size_hint_y=None,
+            height=50,
+            screen_name='menu',
+        ))
 
-        for tz in ["UTC", "US/Eastern", "Asia/Tokyo"]:
-            layout.add_widget(Button(text=tz, size_hint_y=None, height=200))
-        scroll = ScrollView(size_hint=(1, None), size=(400,400), do_scroll_x=False)
+        ##main layout
+        self.selected_timezone = load_config('config/V3.json').get('timezone', '')
+        main = BoxLayout(orientation='horizontal', size_hint=(1,0.75),
+                          padding=[50, 50, 50, 0], spacing=100, 
+                          pos_hint={'center_x': 0.5, 'center_y': 0.5})
+        main.bind(minimum_height=main.setter('height'))  # Ensure height is set correctly
+        main.bind(minimum_width=main.setter('width'))  # Ensure width is set correctly
+        main.add_widget(Widget(size_hint_y=1))  # Spacer
+        list_box = GridLayout(cols=1, size=(465, 800), size_hint=(None,None), pos_hint=(None, None),)
+        for tz in ["Singapore (GMT+8)", "Japan (GMT+9)", "Los Angeles (GMT-7)",]:
+            button = SelectableButton(text=tz, font_size=40,
+                                                font_family='fonts/Roboto-Bold.ttf', size_hint_y=None, 
+                                                height=55, selection=self)
+            list_box.add_widget(button)
+            self.timezone_list.append(button)
+            
+        scroll = ScrollView(size_hint=(None, None),
+                            scroll_type=['bars', 'content'],
+                            bar_width=35, 
+                            bar_color=(0.2, 0.6, 0.8, 1),  # Active bar color (blue)
+                            bar_inactive_color=(0.7, 0.7, 0.7, 1),  # Inactive bar color (gray)
+                            size=(500,300),
+                            do_scroll_x=False)
+        with scroll.canvas.before:
+            Color(1, 1, 1, 1)  # White
+            rect = Rectangle(pos=scroll.pos, size=scroll.size)
+        scroll.bind(pos=lambda instance, value: setattr(rect, 'pos', value))
+        scroll.bind(size=lambda instance, value: setattr(rect, 'size', value))
+                
+        scroll.add_widget(list_box)
 
-        scroll.add_widget(layout)
+        main.add_widget(scroll)
+        
+        main.add_widget(TZSaveButton(text = "Save", icon_path="images/save.png", 
+                                     tz_screen=self,
+                                     screen_name='menu',
+                                     size_hint=(None, None), size=(120, 120)))
 
-        self.add_widget(scroll)
+        main.add_widget(Widget(size_hint_y=1))  # Spacer
+        self.add_widget(header)
+        self.add_widget(main)  # Optional: add a spacer below if you want space at the bottom
 
-#             font_size=60,
-#             font_name='fonts/Roboto-Bold.ttf',
-#             pos_hint={'left': 1, 'top': 1},
-#         ))
-#         header.add_widget(Widget())  # Spacer
-#         header.add_widget(IconTextButton(
-#             icon_path="images/home.png",
-#             text="Home",
-#             size_hint_y=None,
-#             height=50,
-#             screen_name='menu',  # Navigate to menu screen
-#         ))
-#         body = BoxLayout(orientation='horizontal', spacing=15, size_hint_y=0.5, pos_hint={'center_x': 0.5, 'center_y': 0.5}, padding=[50,0,50,0])
-#         time_zone_lst = ["Singapore (GMT+8)", "Japan (GMT+9)", "Los Angeles (GMT-7)"]
-#         body.add_widget(TimezoneListView(time_zone_lst))
-#         self.add_widget(header)
-#         self.add_widget(body)
-#         # super().__init__(**kwargs)
-#         # timezones = [
+    def select_timezone(self, btn):
+        for b in self.timezone_list:
+            if b == btn:
+                continue
+            b.selected = False
+            b.update_color()
+        btn.selected = True
+        btn.update_color()
+        self.selected_timezone = btn.text
+
+class SelectableButton(Button):
+    """
+    A button that can be selected or deselected.
+    """
+    def __init__(self, text,selection, **kwargs):
+        super().__init__(**kwargs)
+        self.text = text
+        self.selection = selection  # Reference to the selection manage
+        self.selected = (selection.selected_timezone == text)  # Check if this button's timezone is the selected one
+        self.background_normal = ''
+        self.background_down = ''
+        self.background_color = (1, 1, 1, 1)
+        with self.canvas.before:
+            Color(1, 1, 1, 1)
+            self.rect = Rectangle(pos=self.pos, size=self.size)
+        self.bind(pos=self._update_rect, size=self._update_rect)
+        self.update_color()
+        self.bind(on_relase=self.on_press)
+    
+    def _update_rect(self, *args):
+        """
+        Update the rectangle size and position when the button is resized or moved.
+        """
+        self.rect.pos = self.pos
+        self.rect.size = self.size
+
+    def update_color(self):
+        print(self.text, "selected:", self.selected)
+        if self.selected:
+            self.color = (1, 1, 1, 1)
+            self.background_color = (0.2, 0.6, 0.8, 1)
+        else:
+            self.color = (0, 0, 0, 1)
+            self.background_color = (1, 1, 1, 1)
+
+    def on_press(self):
+        """
+        Override the on_press method to handle button press.
+        """
+        super().on_press()
+        self.selection.selected_timezone = self.text
+        print(f"Selected timezone: {self.text}")
+        self.selection.select_timezone(self)
+
+class TZSaveButton(IconTextButton):
+    def __init__(self,tz_screen = None,screen_name=None,**kwargs):
+        """
+        Button to save the selected timezone.
+        """
+        super().__init__(**kwargs)
+        self.tz_screen = tz_screen
+        self.screen_name = screen_name
+    
+    def on_press(self):
+        super().on_press()
+        print(f"Saving timezone: {self.tz_screen.selected_timezone}")
+        config = load_config('config/V3.json')
+        config['timezone'] = self.tz_screen.selected_timezone
+        save_config('config/V3.json', config)
+        
+
+        
 
