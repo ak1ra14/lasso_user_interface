@@ -14,28 +14,14 @@ import json
 import os
 
 from utils.config_loader import load_config, save_config
+from utils.layout import HeaderBar
 
 class ScreenSaverScreen(Screen):
     def __init__(self, **kwargs):
         
         super().__init__(**kwargs)
         self.screensaver_time = load_config('config/V3.json').get('screensaver', 60)
-        header= BoxLayout(orientation='horizontal', pos_hint={'top': 1}, size_hint_y=0.25, padding=[50, 40, 50, 0], spacing=10)
-        header.add_widget(Label(
-            text="Screensaver",
-            font_size=60,
-            font_name='fonts/Roboto-Bold.ttf',
-            pos_hint={'left': 1, 'top': 1},
-        ))
-        header.add_widget(Widget())  # Spacer
-        header.add_widget(HomeButtonScreensaver(
-            icon_path="images/home.png",
-            text="Home",
-            size_hint_y=None,
-            height=50,
-            screen_name='menu',
-            screensaver_screen=self  # Navigate to menu screen
-        ))
+        header = HeaderBar(title="Screensaver", icon_path="images/home.png", button_text="Home", button_screen="menu")
         buttons = BoxLayout(orientation='horizontal', spacing=15, size_hint_y=0.3, pos_hint={'center_x': 0.5, 'center_y': 0.5}, padding=[50,0,50,0])  # Only left and right padding
 
         time = BoxLayout(orientation='vertical', spacing=30, size_hint_y=0.3, pos_hint={'center_x': 0.5, 'center_y': 0.5}, padding=[20,0,20,0])
@@ -57,11 +43,13 @@ class ScreenSaverScreen(Screen):
                                         screensaver_time_label=self.screensaver_time_label,
                                         change="decrease",
                                         screensaver_screen=self,
+                                        pos_hint={'center_x': 0.5, 'center_y': 0.5},
                                         by=60, height=50))
         buttons.add_widget(ChangeTime(icon_path="images/decrease.png",
                                         screensaver_time_label=self.screensaver_time_label,
                                         change="decrease",
                                         screensaver_screen=self,  # Pass the screen instance
+                                        pos_hint={'center_x': 0.5, 'center_y': 0.5},
                                         by=10, height=50))
         screensaver = BoxLayout(orientation='vertical', spacing=30, size_hint_y=0.3, pos_hint={'center_x': 0.5, 'center_y': 0.5}, padding=[20,0,20,0])
 
@@ -72,12 +60,14 @@ class ScreenSaverScreen(Screen):
                                         screensaver_time_label=self.screensaver_time_label,
                                         change="increase",  # Pass the label to update
                                         by=10,
+                                        pos_hint={'center_x': 0.5, 'center_y': 0.5},
                                         screensaver_screen=self,  # Pass the screen instance
                                         height=50))
         buttons.add_widget(ChangeTime(icon_path="images/increase_10.png",
                                         screensaver_time_label=self.screensaver_time_label,
                                         change="increase",  # Pass the label to update
                                         screensaver_screen=self,  # Pass the screen instance
+                                        pos_hint={'center_x': 0.5, 'center_y': 0.5},
                                         by=60, height=50))
         self.add_widget(header)
         self.add_widget(buttons)
@@ -99,8 +89,9 @@ class ScreenSaverScreen(Screen):
         self.add_widget(save_anchor)
 
 class ChangeTime(IconTextButton):
-    def __init__(self, by=1, screensaver_time_label=None, change="increase", screensaver_screen=None, **kwargs):
+    def __init__(self, by=1, screensaver_time_label=None, change="increase", screensaver_screen=None, size=(120, 120), **kwargs):
         super().__init__(**kwargs)
+        self.size = size
         self.by = by
         self.screensaver_time_label = screensaver_time_label
         self.change = change

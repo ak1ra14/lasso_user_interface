@@ -12,6 +12,8 @@ from screens.power import PowerScreen
 from screens.screensaver import ScreenSaverScreen, DarkScreen
 from screens.timezone import TimezoneScreen
 from screens.volume import VolumeScreen, set_system_volume
+from screens.alert_mode import AlertModeScreen
+from screens.alert_type import AlertTypeScreen
 
 class MyApp(App):
     def build(self):
@@ -26,8 +28,11 @@ class MyApp(App):
         self.sm.add_widget(ScreenSaverScreen(name='screensaver'))
         self.sm.add_widget(TimezoneScreen(name='time zone'))
         self.sm.add_widget(VolumeScreen(name='volume'))
+        self.sm.add_widget(AlertModeScreen(name='mode'))
+        self.sm.add_widget(AlertTypeScreen(name='alerts'))
         self.sm.add_widget(DarkScreen(name='dark'))  # Placeholder for dark screen
-        self.sm.current = 'time zone'  # Set the initial screen to menu
+        self.sm.current = 'alerts'
+        # Set the initial screen to menu
 
         self.screensaver_event = None
         self.reset_screensaver_timer()

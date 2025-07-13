@@ -10,7 +10,7 @@ from kivy.uix.gridlayout import GridLayout
 from kivy.app import App
 from kivy.uix.button import Button
 from kivy.graphics import Color, Rectangle
-
+from utils.layout import HeaderBar
 import json
 
 class TimezoneScreen(Screen):
@@ -22,22 +22,7 @@ class TimezoneScreen(Screen):
         super().__init__(**kwargs)
         self.selected_timezone = load_config('config/V3.json').get('timezone', '')
         self.timezone_list = []
-        header= BoxLayout(orientation='horizontal', pos_hint={'top': 1},
-                           size_hint_y=0.25, padding=[50, 25, 50, 0], spacing=10)
-        header.add_widget(Label(
-            text="Time Zone",
-            font_size=60,
-            font_name='fonts/Roboto-Bold.ttf',
-            pos_hint={'left': 1, 'top': 1},
-        ))
-        header.add_widget(Widget())  # Spacer
-        header.add_widget(IconTextButton(
-            icon_path="images/home.png",
-            text="Home",
-            size_hint_y=None,
-            height=50,
-            screen_name='menu',
-        ))
+        header = HeaderBar(title="Timezone", icon_path="images/home.png", button_text="Home", button_screen="menu")
 
         ##main layout
         self.selected_timezone = load_config('config/V3.json').get('timezone', '')

@@ -8,6 +8,8 @@ from kivy.uix.widget import Widget
 from kivy.uix.anchorlayout import AnchorLayout
 from kivy.app import App
 from kivy.core.audio import SoundLoader
+from utils.config_loader import load_config
+from kivy.properties import BooleanProperty
 
 class ColoredLabel(Label):
     def __init__(self, **kwargs):
@@ -28,13 +30,15 @@ class IconTextButton(Button):
     It includes properties for text and image source, and its layout
     is defined entirely in Python.
     """
-    def __init__(self, icon_path, text = None, size=(120, 120), radius=[20,], screen_name=None, **kwargs):
+    def __init__(self, icon_path, text = None, size=(190,190), radius=[20,], screen_name=None, config = False, pos_hint = None, **kwargs):
         super().__init__(**kwargs)
+        self.config = config  # Store the config flag
         if 'size_hint' not in kwargs:
             self.size_hint = (None, None)
         self.size = size
         self.screen_name = screen_name  # Store the screen name for navigation
-        self.pos_hint = {'center_x': 0.5, 'center_y': 0.5}  # Optional, to center
+        if pos_hint is not None:
+            self.pos_hint = pos_hint
 
         self.background_normal = ''
         self.background_down = ''
@@ -47,45 +51,70 @@ class IconTextButton(Button):
                 radius=radius  # Adjust this value for more or less curvature
             )
         self.bind(pos=self._update_rect, size=self._update_rect)
-
-        layout = BoxLayout(orientation='vertical', spacing=0, padding=5, size_hint=(1, 1))
+        layout = FloatLayout(size=self.size, size_hint=(1, 1))
         layout.size = self.size
         layout.pos = self.pos
         self.bind(pos=layout.setter('pos'), size=layout.setter('size'))
-        image = Image(
+        if text is None:
+            image = Image(
             source=icon_path,
             allow_stretch=True,
             keep_ratio=True,
-            size_hint=(0.5, 0.5),
-            pos_hint={'center_x': 0.5, 'center_y': 0.7}  # Center image vertically
-        )
+            size_hint=(0.6,0.6),
+            pos_hint={'center_x': 0.5, 'center_y': 0.50}  # Center image vertically
+            )
+        else:
+            image = Image(
+                source=icon_path,
+                allow_stretch=True,
+                keep_ratio=True,
+                size_hint=(0.45,0.45),
+                pos_hint={'center_x': 0.5, 'center_y': 0.65}  # Center image vertically
+            )
         layout.add_widget(image)
-
-        font_size = self.size[1] * 0.1 + 10  # Adjust font size based on button height
-        if text:
+        if self.config:
             label = Label(
                 text=text,
-                font_size= font_size,
+                font_size= self.size[1] * 0.1,  # Adjust font size based on button height
                 font_name='fonts/Roboto-Bold.ttf',  # Path to your bold font file
                 color=(1, 1, 1, 1),
-                size_hint=(0.7, 0.3),
-                pos_hint={'center_x': 0.5, 'center_y': 0.2},
+                size_hint=(0.7, 0.10),
+                pos_hint={'center_x': 0.5, 'center_y': 0.33},
                 halign='center',
                 valign='middle'
             )
-            #label.bind(size=lambda inst, val: setattr(inst, 'text_size', val))
+            label.bind(size=lambda inst, val: setattr(inst, 'text_size', val))
+
+            status = Label(
+                text= str(load_config('config/V3.json').get(self.config, 'N/A')),
+                font_size= self.size[1] * 0.1 -3,  # Adjust font size based on button height
+                font_name='fonts/Roboto-Regular.ttf',  # Path to your bold font file
+                color=(1, 1, 1, 1),
+                size_hint=(0.7, 0.1),
+                pos_hint={'center_x': 0.5, 'center_y': 0.15},
+                halign='center',
+                valign='middle'
+            )
+            label.bind(size=lambda inst, val: setattr(inst, 'text_size', val))
             layout.add_widget(label)
+            layout.add_widget(status)
+
+        else:
+            font_size = self.size[1] * 0.1 + 5  # Adjust font size based on button height
+            if text:
+                label = Label(
+                    text=text,
+                    font_size= font_size,
+                    font_name='fonts/Roboto-Bold.ttf',  # Path to your bold font file
+                    color=(1, 1, 1, 1),
+                    size_hint=(0.7, 0.3),
+                    pos_hint={'center_x': 0.5, 'center_y': 0.25},
+                    halign='center',
+                    valign='middle'
+                )
+                #label.bind(size=lambda inst, val: setattr(inst, 'text_size', val))
+                layout.add_widget(label)
         self.add_widget(layout)
-
-        # 🔁 Bind parent after widget is attached
-        #self.bind(parent=self.on_parent_set)
-
-    def on_parent_set(self, instance, parent):
-        if parent:
-            print("Parent set:", parent)
-            # You could now access parent.size or position and do logic based on that
-            # e.g., self.pos = (parent.width/2, parent.height/2) -- but usually unnecessary with pos_hint
-    
 
     def _update_rect(self, instance, value):
         """Callback to update the position and size of the rounded rectangle."""
@@ -155,6 +184,81 @@ class CircularImageButton(Button):
         if sound:
             sound.play()
         App.get_running_app().sm.current = self.screen_name
+
+
+
+class CustomSwitch(FloatLayout):
+    active = BooleanProperty(False)
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.size_hint = (None, None)
+        self.size = (120 * 0.75, 40 * 0.75)  # 3/4 of original size
+
+        with self.canvas:
+            self.bg_color = Color(0.15, 0.55, 0.75, 1)
+            self.bg = RoundedRectangle(pos=self.pos, size=self.size, radius=[15])  # Adjust radius
+            self.thumb_color = Color(0, 0, 0, 1)
+            self.thumb = Ellipse(pos=(self.x + 2, self.y + 2), size=(36 * 0.75, 36 * 0.75))
+
+        self.bind(pos=self.update_graphics, size=self.update_graphics)
+        self.bind(active=self.update_graphics)
+        self.bind(on_touch_down=self.toggle)
+
+    def update_graphics(self, *args):
+        self.bg.pos = self.pos
+        self.bg.size = self.size
+
+        thumb_size = 36 * 0.75
+        if self.active:
+            self.bg_color.rgba =(0.22, 0.45, 0.91, 1)
+            self.thumb.pos = (self.x + self.width - thumb_size - 2, self.y + 2)
+        else:
+            self.bg_color.rgba = (0.6, 0.6, 0.6, 1)
+            self.thumb.pos = (self.x + 2, self.y + 2)
+        self.thumb.size = (thumb_size, thumb_size)
+
+    def toggle(self, instance, touch):
+        if self.collide_point(*touch.pos):
+            self.active = not self.active
+            return True
+        return False
+
+
+class ToggleButton(BoxLayout):
+    def __init__(self, text_left="", text_right="", text_size_l_r=(75, 112), **kwargs):
+        super().__init__(orientation='horizontal', spacing=7.5, padding=7.5, **kwargs)
+        self.size_hint = (None, None)
+        self.size = (400 * 0.75, 60 * 0.75)  # 3/4 of original size
+
+        self.one_label = Label(
+            text=text_left,
+            color=(1, 1, 1, 1),
+            size_hint=(None, None),
+            size=(text_size_l_r[0], 30),
+            font_size=20,
+            font_name='fonts/Roboto-Bold.ttf',
+            halign='right',
+            valign='middle',
+        )
+        self.one_label.bind(size=lambda inst, val: setattr(inst, 'text_size', val))
+        self.switch = CustomSwitch()
+        self.two_label = Label(
+            text=text_right,
+            color=(1, 1, 1, 1),
+            size_hint=(None, None),
+            size=(text_size_l_r[1], 30),
+            font_name='fonts/Roboto-Bold.ttf',
+            font_size=20,
+            halign='left',
+            valign='middle',
+        )
+        self.two_label.bind(size=lambda inst, val: setattr(inst, 'text_size', val))
+
+        self.add_widget(self.one_label)
+        self.add_widget(self.switch)
+        self.add_widget(self.two_label)
+
 
 
 class PageIndicator(BoxLayout):

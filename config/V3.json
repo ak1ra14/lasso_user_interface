@@ -3,9 +3,9 @@
     "sensor_ID": "ABC123",
     "language": "en",
     "location": "Room 101",
-    "volume": 74,
+    "volume": 36,
     "ack_enable": "yes",
-    "screensaver": 100,
+    "screensaver": 160,
     "timezone": "Japan (GMT+9)",
     "region_address": "192.168.1.100",
     "mqtt_address": "192.168.1.101",
@@ -14,5 +14,6 @@
     "alert_lights_ip2": "192.168.1.202",
     "wifi_ssid": "MyWiFiNetwork",
     "wifi_password": "randompassword123",
-    "previous_mode": "fall.json"
+    "previous_mode": "fall.json",
+    "placeholder": "placeholder"
 }

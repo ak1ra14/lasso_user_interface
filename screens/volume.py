@@ -14,33 +14,19 @@ import json
 import os
 
 from utils.config_loader import load_config
+from utils.layout import HeaderBar
 
 
 class VolumeScreen(Screen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.volume = load_config('config/V3.json').get('volume', 50)
-        header= BoxLayout(orientation='horizontal', pos_hint={'top': 1}, size_hint_y=0.25, padding=[50, 40, 50, 0], spacing=10)
-        header.add_widget(Label(
-            text="Volume",
-            font_size=60,
-            font_name='fonts/Roboto-Bold.ttf',
-            pos_hint={'left': 1, 'top': 1},
-        ))
-        header.add_widget(Widget())  # Spacer
-        header.add_widget(HomeButtonVolume(
-            icon_path="images/home.png",
-            text="Home",
-            size_hint_y=None,
-            height=50,
-            screen_name='menu',
-            volume_screen=self  # Navigate to menu screen
-        ))
+        header = HeaderBar(title="Volume", icon_path="images/home.png", button_text="Home", button_screen="menu")
         buttons = BoxLayout(orientation='horizontal', spacing=15, size_hint_y=0.3, pos_hint={'center_x': 0.5, 'center_y': 0.5}, padding=[50,0,50,0])  # Only left and right padding
 
         self.volume_label = (Label(
             text=f"{self.volume}%",
-            font_size=80,
+            font_size=110,
             font_name='fonts/Roboto-Bold.ttf',
             size_hint_y=0.9,
         ))
@@ -49,11 +35,13 @@ class VolumeScreen(Screen):
                                         volume_label=self.volume_label,
                                         change="decrease",
                                         volume_screen=self,
+                                        pos_hint={'center_x': 0.5, 'center_y': 0.5},
                                         by=10, height=50))
         buttons.add_widget(ChangeVolume(icon_path="images/decrease.png",
                                         volume_label=self.volume_label,
                                         change="decrease",
                                         volume_screen=self,  # Pass the screen instance
+                                        pos_hint={'center_x': 0.5, 'center_y': 0.5},
                                         by=1, height=50))
         volume = BoxLayout(orientation='vertical', spacing=30, size_hint_y=0.3, pos_hint={'center_x': 0.5, 'center_y': 0.5}, padding=[20,0,20,0])
 
@@ -63,6 +51,7 @@ class VolumeScreen(Screen):
         buttons.add_widget(ChangeVolume(icon_path="images/increase.png", 
                                         volume_label=self.volume_label, 
                                          change = "increase", # Pass the label to update
+                                          pos_hint={'center_x': 0.5, 'center_y': 0.5},
                                           by=1,
                                         volume_screen=self,  # Pass the screen instance   
                                          height=50))
@@ -70,6 +59,7 @@ class VolumeScreen(Screen):
                                         volume_label=self.volume_label, 
                                          change = "increase", # Pass the label to update
                                          volume_screen=self,  # Pass the screen instance
+                                        pos_hint={'center_x': 0.5, 'center_y': 0.5},
                                           by=10, height=50))
         self.add_widget(header)
         self.add_widget(buttons)
@@ -93,6 +83,7 @@ class VolumeScreen(Screen):
 class ChangeVolume(IconTextButton):
     def __init__(self, by=1, volume_label=None, change="increase", volume_screen=None, **kwargs):
         super().__init__(**kwargs)
+        self.size = (120, 120)  # Set the size of the button
         self.by = by
         self.volume_label = volume_label
         self.change = change
