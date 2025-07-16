@@ -1,31 +1,27 @@
 {
     "mincount": 1,
     "nbeds": [
-        1,
+        2,
         [
             "bed_001"
         ]
     ],
     "alert_checking": [
         [
-            1,
+            0,
             "sit_up"
         ],
         [
-            1,
+            0,
             "bed_exit"
         ],
         [
-            1,
+            0,
             "sit-to-stand"
         ],
         [
-            1,
-            "fall_besides_bed"
-        ],
-        [
             0,
-            "alert_without_video"
+            "fall_besides_bed"
         ]
     ],
     "attach_video": 0,

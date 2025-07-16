@@ -31,7 +31,7 @@ class MyApp(App):
         self.sm.add_widget(AlertModeScreen(name='mode'))
         self.sm.add_widget(AlertTypeScreen(name='alerts'))
         self.sm.add_widget(DarkScreen(name='dark'))  # Placeholder for dark screen
-        self.sm.current = 'alerts'
+        self.sm.current = 'monitor'
         # Set the initial screen to menu
 
         self.screensaver_event = None

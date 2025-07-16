@@ -60,6 +60,7 @@ class TimezoneScreen(Screen):
         main.add_widget(TZSaveButton(text = "Save", icon_path="images/save.png", 
                                      tz_screen=self,
                                      screen_name='menu',
+                                     pos_hint={'center_x': 0.5, 'center_y': 0.4},
                                      size_hint=(None, None), size=(120, 120)))
 
         main.add_widget(Widget(size_hint_y=1))  # Spacer

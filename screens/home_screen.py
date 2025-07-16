@@ -12,6 +12,14 @@ from utils.config_loader import load_config
 class MenuScreen1(Screen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        self.location = load_config("config/V3.json").get("location", "Room 101")
+        volume = load_config("config/V3.json").get("volume", 50)
+        self.volume = f"{volume}%"
+        self.mode = self.check_mode()
+        self.alerts = self.has_any_alert()
+        self.content_buttons = {}
+        self.config_status = [self.location, self.volume, self.mode, self.alerts]
+
         main_layout = BoxLayout(orientation='vertical', padding= [30, 30, 30, 10], spacing=10)
 
         # Layer 1: Header
@@ -52,16 +60,16 @@ class MenuScreen1(Screen):
         # Layer 2: Middle content (e.g., 4 buttons)
         content = BoxLayout(orientation='horizontal', spacing=50, size_hint_y=0.35)
         content_names = ["Location", "Volume", "Mode", "Alerts"]
-        config_names = ["location", "volume", "placeholder", "placeholder"]  # Placeholder for alerts
         for i in range(4):
             content_name = content_names[i].lower()
-            content.add_widget(IconTextButton(
+            self.content_buttons[content_name] = IconTextButton(
                 icon_path=f'images/{content_name}.png',  # Placeholder for icons
                 text=content_names[i],
-                config=config_names[i],  # Pass config name
+                config=self.config_status[i],  # Pass config name
                 size=(202, 202),
                 screen_name=content_name,  # Navigate to respective screen
-            ))
+            )
+            content.add_widget(self.content_buttons[content_name])
 
         # Layer 3: Footer
         footer1 = BoxLayout(orientation='horizontal', size_hint_y=0.15, padding=0, spacing=0)
@@ -106,16 +114,89 @@ class MenuScreen1(Screen):
         self.bg.pos = self.pos
 
 
+    def check_mode(self):
+        """
+        Check the current mode and return a string representation.
+        """
+
+        mode = load_config("config/V3.json").get("previous_mode", "fall.json")
+        single_multiple = "Multiple" if load_config(f"config/{mode}").get("mincount", 99) == 99 else "Single"
+        if mode == "fall.json":
+            return f"Fall - {single_multiple}"
+        elif mode == "bed.json":
+            return f"Bed Exit - {single_multiple}"
+        else:
+            return f"Unknown Mode - {single_multiple}"
+
+    def has_any_alert(self):
+        bed_alerts = load_config("config/bed.json").get("alert_checking", [])
+        fall_alerts = load_config("config/fall.json").get("alert_checking", [])
+
+        # Check if any nested list's first element is 1
+        bed_has_alert = any(isinstance(item, list) and len(item) > 0 and item[0] == 1 for item in bed_alerts)
+        fall_has_alert = any(isinstance(item, list) and len(item) > 0 and item[0] == 1 for item in fall_alerts)
+
+        if bed_has_alert and fall_has_alert:
+            return "Bed Exit & Fall"
+        elif bed_has_alert:
+            return "Bed Exit"
+        elif fall_has_alert:
+            return "Fall"
+        else:
+            return "No Alerts"
+        
+    def on_pre_enter(self):
+        """
+        Called when the screen is entered.
+        Updates the location, volume, mode, and alerts based on the current configuration.
+        """
+        self.location = load_config("config/V3.json").get("location", "Room 101")
+        volume = load_config("config/V3.json").get("volume", 50)
+        self.volume = f"{volume}%"
+        self.mode = self.check_mode()
+        self.alerts = self.has_any_alert()
+        # Update the config status labels or other UI elements if necessary
+        # For example, you might have labels to display these values
+        self.update_config_status()
+        return [self.location, self.volume, self.mode, self.alerts]
+        
+        # Update labels or other UI elements if necessary
+        # For example, you might have labels to display these values
     
+    def update_config_status(self):
+        """
+        Update the configuration status labels or other UI elements.
+        This method can be customized based on how you want to display the config status.
+        """
+        # Example: Assuming you have labels for each config status
+        self.content_buttons['location'].status.text = self.location
+        self.content_buttons['volume'].status.text = str(self.volume)
+        self.content_buttons['mode'].status.text = self.mode
+        self.content_buttons['alerts'].status.text = self.alerts
+
+
+
+
+
+
+
+
+
 class MenuScreen2(Screen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
         # Load configuration
         config = load_config('config/V3.json')   
-        device_id = config.get('sensor_ID', 'N/A')
-        version = config.get('version', 'N/A')
-
+        self.device_id = config.get('sensor_ID', 'N/A')
+        self.version = config.get('version', 'N/A')
+        screen_saver = config.get('screensaver', 160)
+        self.screen_saver = f"{screen_saver} s"
+        self.wifi_ssid = config.get('wifi_ssid', 'N/A')
+        self.timezone = config.get('timezone', 'N/A')
+        self.mqtt_address = config.get('mqtt_address', 'N/A')
+        self.config_status = [self.screen_saver, self.wifi_ssid, self.timezone, self.mqtt_address]
+        self.content_buttons = {}
 
         main_layout = BoxLayout(orientation='vertical', padding= [30, 30, 30, 10], spacing=10)
         # Layer 1: Header
@@ -124,7 +205,7 @@ class MenuScreen2(Screen):
         left_layout = BoxLayout(orientation='horizontal', size_hint=(0.5,None),height = 100,spacing=10)
         left_layout.add_widget(Image(source='images/soundeye.png', size=(100,100), size_hint_x=None))
         left_layout.add_widget(Label(
-            text=f"Version: {version} | Device ID: {device_id}",
+            text=f"Version: {self.version} | Device ID: {self.device_id}",
             font_size=15,
             size_hint_x=None,
             width=300,  # Let label take remaining space
@@ -162,15 +243,16 @@ class MenuScreen2(Screen):
         content = BoxLayout(orientation='horizontal', spacing=50, size_hint_y=0.35)
         content_names = ["Screensaver", "Wi-fi", "Time Zone", "Servers"]
         image_path = ["screen_saver", "wifi", "timezone", "servers"]
-        config_names = ["screensaver", "wifi_ssid", "timezone", "mqtt_address"]
         for i in range(4):
-            content.add_widget(IconTextButton(
+            content_name = content_names[i].lower()
+            self.content_buttons[content_name] = IconTextButton(
                 icon_path=f'images/{image_path[i]}.png',  # Placeholder for icons
                 text=content_names[i],
-                config=config_names[i],  # Pass config name for loading status
+                config=self.config_status[i],  # Pass config name for loading status
                 size=(202, 202),
                 screen_name=content_names[i].lower(),  # Navigate to respective screen
-            ))
+            )
+            content.add_widget(self.content_buttons[content_name])
 
         # Layer 3: Footer
         footer1 = BoxLayout(orientation='horizontal', size_hint_y=0.15, padding=0, spacing=0)
@@ -209,3 +291,22 @@ class MenuScreen2(Screen):
                                 font_size=20))
         main_layout.add_widget(time_bar)
         self.add_widget(main_layout)
+
+    def on_pre_enter(self):
+        self.screen_saver = f"{load_config('config/V3.json').get('screensaver', 160)} s"
+        self.wifi_ssid = load_config('config/V3.json').get('wifi_ssid', 'N/A')
+        self.timezone = load_config('config/V3.json').get('timezone', 'N/A')
+        self.mqtt_address = load_config('config/V3.json').get('mqtt_address', 'N/A')
+        self.config_status = [self.screen_saver, self.wifi_ssid, self.timezone, self.mqtt_address]
+        self.update_config_status()
+
+    def update_config_status(self):
+        """
+        Update the configuration status labels or other UI elements.
+        This method can be customized based on how you want to display the config status.
+        """
+        # Example: Assuming you have labels for each config status
+        self.content_buttons['screensaver'].status.text = self.screen_saver
+        self.content_buttons['wi-fi'].status.text = self.wifi_ssid
+        self.content_buttons['time zone'].status.text = self.timezone
+        self.content_buttons['servers'].status.text = self.mqtt_address

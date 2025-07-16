@@ -4,6 +4,7 @@ from kivy.uix.image import Image
 from kivy.uix.button import Button
 from kivy.uix.widget import Widget
 from utils.icons import ColoredLabel
+from kivy.core.audio import SoundLoader
 import socket
 
 class MonitorScreen(Screen):
@@ -58,3 +59,7 @@ class MonitorScreen(Screen):
         
     def go_to_menu(self, instance):
         self.manager.current = 'menu'
+        sound = SoundLoader.load('sound/tap.mp3')
+        if sound:
+            sound.play()
+

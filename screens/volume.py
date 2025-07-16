@@ -80,6 +80,11 @@ class VolumeScreen(Screen):
 
         self.add_widget(save_anchor)
 
+    def on_pre_enter(self):
+        self.volume = load_config('config/V3.json').get('volume', 50)
+        self.volume_label.text = f"{self.volume}%"
+
+
 class ChangeVolume(IconTextButton):
     def __init__(self, by=1, volume_label=None, change="increase", volume_screen=None, **kwargs):
         super().__init__(**kwargs)
@@ -115,6 +120,7 @@ class ChangeVolume(IconTextButton):
         set_system_volume(new_volume)
         self.sound.play()
 
+
 class SaveButton(IconTextButton):
     def __init__(self, volume_screen=None, **kwargs):
         super().__init__(**kwargs)
@@ -140,10 +146,10 @@ class HomeButtonVolume(IconTextButton):
 
     def on_press(self):
         super().on_press()
-        sound = SoundLoader.load('sound/tap.mp3')
-        sound.play()
-        self.volume_screen.volume_label.text = f"{load_config('config/V3.json').get('volume', 50)}%"
-        self.volume_screen.volume = load_config('config/V3.json').get('volume', 50)
+        # sound = SoundLoader.load('sound/tap.mp3')
+        # sound.play()
+        # self.volume_screen.volume_label.text = f"{load_config('config/V3.json').get('volume', 50)}%"
+        # self.volume_screen.volume = load_config('config/V3.json').get('volume', 50)
           # Reset volume to saved value
 
     #raspberry pi

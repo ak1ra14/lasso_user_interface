@@ -1,8 +1,14 @@
 {
     "mincount": 1,
     "alert_checking": [
-        [1,"sit-to-stand"],
-        [1,"fall"]
+        [
+            0,
+            "sit-to-stand"
+        ],
+        [
+            0,
+            "fall"
+        ]
     ],
     "attach_video": 0,
     "max_dist": 3000,

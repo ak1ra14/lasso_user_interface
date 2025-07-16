@@ -107,4 +107,22 @@ class MyApp(App):
 
 
 if __name__ == '__main__':
-    MyApp().run()
+    #MyApp().run()
+    from utils.config_loader import load_config, save_config
+    def has_any_alert():
+        bed_alerts = load_config("config/bed.json").get("alert_checking", [])
+        fall_alerts = load_config("config/fall.json").get("alert_checking", [])
+
+        bed_has_alert = any(isinstance(item, list) and len(item) > 0 and item[0] == 1 for item in bed_alerts)
+        fall_has_alert = any(isinstance(item, list) and len(item) > 0 and item[0] == 1 for item in fall_alerts)
+
+        if bed_has_alert and fall_has_alert:
+            return "Bed Exit & Fall"
+        elif bed_has_alert:
+            return "Bed Exit"
+        elif fall_has_alert:
+            return "Fall"
+        else:
+            return "No Alerts"
+    print("Active Alerts:", has_any_alert())
+    

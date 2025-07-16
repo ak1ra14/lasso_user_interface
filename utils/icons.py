@@ -32,7 +32,7 @@ class IconTextButton(Button):
     """
     def __init__(self, icon_path, text = None, size=(190,190), radius=[20,], screen_name=None, config = False, pos_hint = None, **kwargs):
         super().__init__(**kwargs)
-        self.config = config  # Store the config flag
+        self.config = config  # Store the config status
         if 'size_hint' not in kwargs:
             self.size_hint = (None, None)
         self.size = size
@@ -85,8 +85,8 @@ class IconTextButton(Button):
             )
             label.bind(size=lambda inst, val: setattr(inst, 'text_size', val))
 
-            status = Label(
-                text= str(load_config('config/V3.json').get(self.config, 'N/A')),
+            self.status = Label(
+                text= str(self.config),
                 font_size= self.size[1] * 0.1 -3,  # Adjust font size based on button height
                 font_name='fonts/Roboto-Regular.ttf',  # Path to your bold font file
                 color=(1, 1, 1, 1),
@@ -95,9 +95,8 @@ class IconTextButton(Button):
                 halign='center',
                 valign='middle'
             )
-            label.bind(size=lambda inst, val: setattr(inst, 'text_size', val))
             layout.add_widget(label)
-            layout.add_widget(status)
+            layout.add_widget(self.status)
 
         else:
             font_size = self.size[1] * 0.1 + 5  # Adjust font size based on button height
@@ -226,10 +225,13 @@ class CustomSwitch(FloatLayout):
 
 
 class ToggleButton(BoxLayout):
-    def __init__(self, text_left="", text_right="", text_size_l_r=(75, 112), **kwargs):
+    def __init__(self, text_left="", text_right="", text_size_l_r=(75, 112), switch=None, **kwargs):
         super().__init__(orientation='horizontal', spacing=7.5, padding=7.5, **kwargs)
         self.size_hint = (None, None)
         self.size = (400 * 0.75, 60 * 0.75)  # 3/4 of original size
+        self.text_right = text_right  # Store the right text for later use
+        self.text_size_l_r = text_size_l_r
+        self.text_left = text_left
 
         self.one_label = Label(
             text=text_left,
@@ -242,7 +244,7 @@ class ToggleButton(BoxLayout):
             valign='middle',
         )
         self.one_label.bind(size=lambda inst, val: setattr(inst, 'text_size', val))
-        self.switch = CustomSwitch()
+        self.switch = switch if switch else CustomSwitch(size_hint=(None, None), size=(60 * 0.75, 30 * 0.75))
         self.two_label = Label(
             text=text_right,
             color=(1, 1, 1, 1),

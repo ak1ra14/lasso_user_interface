@@ -88,6 +88,14 @@ class ScreenSaverScreen(Screen):
 
         self.add_widget(save_anchor)
 
+    def on_pre_enter(self):
+        """
+        This method is called when the screen is about to be displayed.
+        It updates the screensaver time label with the current value.
+        """
+        self.screensaver_time = load_config('config/V3.json').get('screensaver', 60)
+        self.screensaver_time_label.text = f"{self.screensaver_time}"
+
 class ChangeTime(IconTextButton):
     def __init__(self, by=1, screensaver_time_label=None, change="increase", screensaver_screen=None, size=(120, 120), **kwargs):
         super().__init__(**kwargs)
