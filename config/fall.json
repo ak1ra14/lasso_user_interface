@@ -1,14 +1,12 @@
 {
-  "mincount": 1,
-  "alert_checking": 
-    [
-      [0, "sit_to_stand"],
-      [1, "fall"]
-    ]
-  ,
-  "attach_video": 0,
-  "max_dist": 3000,
-  "rtsp_recording": {
-    "on": 0
-  }
+    "mincount": 1,
+    "alert_checking": [
+        [1,"sit-to-stand"],
+        [1,"fall"]
+    ],
+    "attach_video": 0,
+    "max_dist": 3000,
+    "rtsp_recording": {
+        "on": 0
+    }
 }

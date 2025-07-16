@@ -1,15 +1,36 @@
 {
-  "mincount": 1,
-  "nbeds": [1, ["bed_001"]],
-  "alert_checking": [
-    [0,"sit_up"],
-    [0,"bed_exit"],
-    [0,"sit_to_stand"],
-    [1,"lie_out"]
-  ],
-  "attach_video": 0,
-  "max_dist": 3000,
-  "rtsp_recording": {
-    "on": 0
-  }
+    "mincount": 1,
+    "nbeds": [
+        1,
+        [
+            "bed_001"
+        ]
+    ],
+    "alert_checking": [
+        [
+            1,
+            "sit_up"
+        ],
+        [
+            1,
+            "bed_exit"
+        ],
+        [
+            1,
+            "sit-to-stand"
+        ],
+        [
+            1,
+            "fall_besides_bed"
+        ],
+        [
+            0,
+            "alert_without_video"
+        ]
+    ],
+    "attach_video": 0,
+    "max_dist": 3000,
+    "rtsp_recording": {
+        "on": 0
+    }
 }
