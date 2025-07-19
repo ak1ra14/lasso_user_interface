@@ -4,6 +4,7 @@ from kivy.core.window import Window
 from utils.config_loader import load_config
 from kivy.clock import Clock
 
+
 import socket
 from screens.home_screen import MenuScreen1, MenuScreen2
 from screens.language import LanguageScreen
@@ -23,14 +24,7 @@ class MyApp(App):
         self.sm.add_widget(MonitorScreen(name='monitor'))
         self.sm.add_widget(MenuScreen1(name='menu'))
         self.sm.add_widget(MenuScreen2(name='menu2'))
-        self.sm.add_widget(LanguageScreen(name='language'))
-        self.sm.add_widget(PowerScreen(name='power'))
-        self.sm.add_widget(ScreenSaverScreen(name='screensaver'))
-        self.sm.add_widget(TimezoneScreen(name='time zone'))
-        self.sm.add_widget(VolumeScreen(name='volume'))
-        self.sm.add_widget(AlertModeScreen(name='mode'))
-        self.sm.add_widget(AlertTypeScreen(name='alerts'))
-        self.sm.add_widget(DarkScreen(name='dark'))  # Placeholder for dark screen
+
         self.sm.current = 'monitor'
         # Set the initial screen to menu
 
@@ -54,8 +48,31 @@ class MyApp(App):
     def activate_screensaver(self, *args):
         if self.sm.current != 'dark':
             self.sm.current = 'dark'
+            
+    def on_icon_click(self, screen_name):
+        app = App.get_running_app()
+        if not app.sm.has_screen(screen_name):
+            # Instantiate and add the screen only when needed
+            if screen_name == 'menu2':
+                app.sm.add_widget(MenuScreen2(name='menu2'))
+            elif screen_name == 'language':
+                app.sm.add_widget(LanguageScreen(name='language'))
+            elif screen_name == 'power':
+                app.sm.add_widget(PowerScreen(name='power'))
+            elif screen_name == 'screensaver':
+                app.sm.add_widget(ScreenSaverScreen(name='screensaver'))
+            elif screen_name == 'time zone':
+                app.sm.add_widget(TimezoneScreen(name='time zone'))
+            elif screen_name == 'volume':
+                app.sm.add_widget(VolumeScreen(name='volume'))
+            elif screen_name == 'mode':
+                app.sm.add_widget(AlertModeScreen(name='mode'))
+            elif screen_name == 'alerts':
+                app.sm.add_widget(AlertTypeScreen(name='alerts'))
+            elif screen_name == 'dark':
+                app.sm.add_widget(DarkScreen(name='dark'))
+        app.sm.current = screen_name
 
-  
 
 if __name__ == '__main__':
     Window.size = (1024, 600)  # Set the window size to 1024x600 pixels
