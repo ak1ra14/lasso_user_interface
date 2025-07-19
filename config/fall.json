@@ -1,8 +1,8 @@
 {
-    "mincount": 1,
+    "mincount": 99,
     "alert_checking": [
         [
-            0,
+            1,
             "sit-to-stand"
         ],
         [
@@ -10,7 +10,7 @@
             "fall"
         ]
     ],
-    "attach_video": 0,
+    "attach_video": 1,
     "max_dist": 3000,
     "rtsp_recording": {
         "on": 0

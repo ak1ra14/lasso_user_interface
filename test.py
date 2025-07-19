@@ -5,6 +5,8 @@ from kivy.uix.label import Label
 from kivy.uix.widget import Widget
 from kivy.graphics import Color, RoundedRectangle, Ellipse
 from kivy.properties import BooleanProperty
+from utils.keyboard import QwertyKeyboard
+from kivy.core.window import Window
 
 
 # class CustomSwitch(FloatLayout):
@@ -103,26 +105,27 @@ class ToggleButton(BoxLayout):
 
 class MyApp(App):
     def build(self):
-        return ToggleButton(text_left="One bed", text_right="Two bed")
+        return QwertyKeyboard(title="Custom QWERTY Keyboard")  # Initialize the keyboard with a title
 
 
 if __name__ == '__main__':
-    #MyApp().run()
-    from utils.config_loader import load_config, save_config
-    def has_any_alert():
-        bed_alerts = load_config("config/bed.json").get("alert_checking", [])
-        fall_alerts = load_config("config/fall.json").get("alert_checking", [])
+    Window.size = (1024, 600)  # Set the window size to 1024x600 pixels
+    MyApp().run()
+    # from utils.config_loader import load_config, save_config
+    # def has_any_alert():
+    #     bed_alerts = load_config("config/bed.json").get("alert_checking", [])
+    #     fall_alerts = load_config("config/fall.json").get("alert_checking", [])
 
-        bed_has_alert = any(isinstance(item, list) and len(item) > 0 and item[0] == 1 for item in bed_alerts)
-        fall_has_alert = any(isinstance(item, list) and len(item) > 0 and item[0] == 1 for item in fall_alerts)
+    #     bed_has_alert = any(isinstance(item, list) and len(item) > 0 and item[0] == 1 for item in bed_alerts)
+    #     fall_has_alert = any(isinstance(item, list) and len(item) > 0 and item[0] == 1 for item in fall_alerts)
 
-        if bed_has_alert and fall_has_alert:
-            return "Bed Exit & Fall"
-        elif bed_has_alert:
-            return "Bed Exit"
-        elif fall_has_alert:
-            return "Fall"
-        else:
-            return "No Alerts"
-    print("Active Alerts:", has_any_alert())
+    #     if bed_has_alert and fall_has_alert:
+    #         return "Bed Exit & Fall"
+    #     elif bed_has_alert:
+    #         return "Bed Exit"
+    #     elif fall_has_alert:
+    #         return "Fall"
+    #     else:
+    #         return "No Alerts"
+    # print("Active Alerts:", has_any_alert())
     
