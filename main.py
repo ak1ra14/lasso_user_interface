@@ -24,8 +24,9 @@ class MyApp(App):
         self.sm.add_widget(MonitorScreen(name='monitor'))
         self.sm.add_widget(MenuScreen1(name='menu'))
         self.sm.add_widget(MenuScreen2(name='menu2'))
+        self.sm.add_widget(DarkScreen(name='dark'))
 
-        self.sm.current = 'menu'
+        self.sm.current = 'monitor'
         # Set the initial screen to menu
 
         self.screensaver_event = None
@@ -68,9 +69,7 @@ class MyApp(App):
             elif screen_name == 'mode':
                 app.sm.add_widget(AlertModeScreen(name='mode'))
             elif screen_name == 'alerts':
-                app.sm.add_widget(AlertTypeScreen(name='alerts'))
-            elif screen_name == 'dark':
-                app.sm.add_widget(DarkScreen(name='dark'))
+                app.sm.add_widget(AlertTypeScreen(name='alerts'))           
         app.sm.current = screen_name
 
 

@@ -58,7 +58,8 @@ class MonitorScreen(Screen):
             return f"Not connected" 
         
     def go_to_menu(self, instance):
-        self.manager.current = 'menu'
+        print("Going to menu")
+        #self.manager.current = 'menu'
         sound = SoundLoader.load('sound/tap.mp3')
         if sound:
             sound.play()
