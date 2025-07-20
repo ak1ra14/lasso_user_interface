@@ -25,7 +25,7 @@ class MyApp(App):
         self.sm.add_widget(MenuScreen1(name='menu'))
         self.sm.add_widget(MenuScreen2(name='menu2'))
 
-        self.sm.current = 'monitor'
+        self.sm.current = 'menu'
         # Set the initial screen to menu
 
         self.screensaver_event = None
