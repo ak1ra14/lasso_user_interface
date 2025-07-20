@@ -10,6 +10,11 @@ from kivy.graphics import Color, RoundedRectangle, Ellipse
 from kivy.properties import BooleanProperty
 from utils.keyboard import QwertyKeyboard
 from kivy.core.window import Window
+from kivy.uix.screenmanager import ScreenManager, Screen
+from utils.config_loader import load_config
+from kivy.clock import Clock
+from screens.volume import set_system_volume
+from screens.monitor import MonitorScreen
 
 
 # class CustomSwitch(FloatLayout):
@@ -106,10 +111,16 @@ class ToggleButton(BoxLayout):
         self.add_widget(self.switch)
         self.add_widget(self.two_label)
 
+# class MyApp(App):
+#     def build(self):
+#         return QwertyKeyboard(title="Custom QWERTY Keyboard")  # Initialize the keyboard with a title
 class MyApp(App):
     def build(self):
-        return QwertyKeyboard(title="Custom QWERTY Keyboard")  # Initialize the keyboard with a title
-
+        self.sm = ScreenManager()
+        # Set the default volume to config setting
+        set_system_volume(load_config('config/V3.json').get('volume', 50))
+        self.sm.add_widget(MonitorScreen(name='monitor'))
+        return self.sm
 
 if __name__ == '__main__':
     Window.size = (1024, 600)  # Set the window size to 1024x600 pixels
