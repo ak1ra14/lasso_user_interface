@@ -27,7 +27,7 @@ class MenuScreen1(Screen):
         # Layer 1: Header
         header = BoxLayout(orientation='horizontal', size_hint_y=0.20, padding=[0,0,0,0], spacing=10)
         # Left-aligned widget
-        header.add_widget(Image(source='atlas://data/images/defaulttheme/audio-volume-high', 
+        header.add_widget(Image(source='images/soundeye.png', 
                                 size=(110,110), size_hint_x=None,
                                 ))
         # Spacer
@@ -37,19 +37,19 @@ class MenuScreen1(Screen):
         right_buttons = BoxLayout(orientation='horizontal', padding=0, spacing=20, size_hint_x=None, width=370)
 
         right_buttons.add_widget(IconTextButton(
-            icon_path='atlas://data/images/defaulttheme/audio-volume-high',
+            icon_path='images/language.png',
             text="Language",
             size=(110, 110),
             screen_name='language'  # Navigate to language screen
         ))
         right_buttons.add_widget(IconTextButton(
-            icon_path='atlas://data/images/defaulttheme/audio-volume-high',
+            icon_path='images/monitor.png',
             text="Monitor",
             size=(110, 110),
             screen_name='monitor',  # Navigate to monitor screen
         ))
         right_buttons.add_widget(IconTextButton(
-            icon_path='atlas://data/images/defaulttheme/audio-volume-high',
+            icon_path='images/power.png',
             text="Power",
             size=(110, 110),
             screen_name='power'  # Navigate to power screen
@@ -69,7 +69,7 @@ class MenuScreen1(Screen):
                 mode = self.check_mode()
                 content_path = self.check_mode_for_image(mode)
             self.content_buttons[content_name] = IconTextButton(
-                icon_path='atlas://data/images/defaulttheme/audio-volume-high',  # Placeholder for icons
+                icon_path=f'images/{content_path}.png',  # Placeholder for icons
                 text=content_names[i],
                 config=self.config_status[i],  # Pass config name
                 size=(202, 202),
@@ -168,7 +168,7 @@ class MenuScreen1(Screen):
         self.content_buttons['mode'].status.text = self.mode
         mode_path = self.check_mode_for_image(self.mode)
         # Update the icon image directly if possible
-        self.content_buttons['mode'].image.source = 'atlas://data/images/defaulttheme/audio-volume-high'
+        self.content_buttons['mode'].image.source = f'images/{mode_path}.png'
         self.content_buttons['mode'].status.text = self.mode
         self.content_buttons['alerts'].status.text = self.alerts
 
@@ -195,7 +195,7 @@ class MenuScreen2(Screen):
         header = BoxLayout(orientation='horizontal', size_hint_y=0.20, padding=0, spacing=40)
         # Left-aligned widget
         left_layout = BoxLayout(orientation='horizontal', size_hint=(0.5,None),height = 100,spacing=10)
-        left_layout.add_widget(Image(source='atlas://data/images/defaulttheme/audio-volume-high', size=(100,100), size_hint_x=None))
+        left_layout.add_widget(Image(source='images/soundeye.png', size=(100,100), size_hint_x=None))
         left_layout.add_widget(Label(
             text=f"Version: {self.version} | Device ID: {self.device_id}",
             font_size=15,
@@ -209,19 +209,19 @@ class MenuScreen2(Screen):
         # Spacer
         right_buttons = BoxLayout(orientation='horizontal', padding=0, spacing=20, size_hint_x=None, width=370)
         right_buttons.add_widget(IconTextButton(
-            icon_path='atlas://data/images/defaulttheme/audio-volume-high',
+            icon_path='images/language.png',
             text="Language",
             size=(110,110),
             screen_name='language'  # Navigate to language screen
         ))
         right_buttons.add_widget(IconTextButton(
-            icon_path='atlas://data/images/defaulttheme/audio-volume-high',
+            icon_path='images/monitor.png',
             text="Monitor",
             size=(110, 110),
             screen_name='monitor',  # Navigate to monitor screen
         ))
         right_buttons.add_widget(IconTextButton(
-            icon_path='atlas://data/images/defaulttheme/audio-volume-high',
+            icon_path='images/power.png',
             text="Power",
             size=(110, 110),
             screen_name='power'  # Navigate to power screen
@@ -238,7 +238,7 @@ class MenuScreen2(Screen):
         for i in range(4):
             content_name = content_names[i].lower()
             self.content_buttons[content_name] = IconTextButton(
-                icon_path='atlas://data/images/defaulttheme/audio-volume-high',  # Placeholder for icons
+                icon_path=f'images/{image_path[i]}.png',  # Placeholder for icons
                 text=content_names[i],
                 config=self.config_status[i],  # Pass config name for loading status
                 size=(202, 202),

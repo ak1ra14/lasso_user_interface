@@ -15,6 +15,7 @@ from utils.config_loader import load_config
 from kivy.clock import Clock
 from screens.volume import set_system_volume
 from screens.monitor import MonitorScreen
+from screens.home_screen import MenuScreen1, MenuScreen2
 
 
 # class CustomSwitch(FloatLayout):
@@ -119,7 +120,7 @@ class MyApp(App):
         self.sm = ScreenManager()
         # Set the default volume to config setting
         set_system_volume(load_config('config/V3.json').get('volume', 50))
-        self.sm.add_widget(MonitorScreen(name='monitor'))
+        self.sm.add_widget(MenuScreen1(name='menu'))
         return self.sm
 
 if __name__ == '__main__':
