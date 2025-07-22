@@ -25,8 +25,8 @@ class MonitorScreen(Screen):
             bg_color=(1,1,1,1)  # RGBA
         )
 
-        # label.bind(size=label.setter('text_size'))  # For text wrapping
-        # header.add_widget(label)
+        label.bind(size=label.setter('text_size'))  # For text wrapping
+        header.add_widget(label)
         header.bind(minimum_height=header.setter('height'))
         header.add_widget(Widget())  # Spacer
 
