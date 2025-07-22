@@ -65,4 +65,5 @@ class MonitorScreen(Screen):
         if sound:
             sound.play()
         App.get_running_app().on_icon_click('menu')  # Change 'main' to the actual screen name for the menu
+        print("Menu screen activated")
 

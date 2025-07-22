@@ -50,7 +50,6 @@ class MyApp(App):
             self.sm.current = 'dark'
             
     def on_icon_click(self, screen_name):
-        return
         app = App.get_running_app()
         if not app.sm.has_screen(screen_name):
             # Instantiate and add the screen only when needed
@@ -72,7 +71,6 @@ class MyApp(App):
                 app.sm.add_widget(AlertModeScreen(name='mode'))
             elif screen_name == 'alerts':
                 app.sm.add_widget(AlertTypeScreen(name='alerts'))  
-
        
         app.sm.current = screen_name
 

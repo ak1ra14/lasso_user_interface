@@ -58,16 +58,12 @@ class IconTextButton(Button):
         if text is None:
             self.image = Image(
             source=icon_path,
-            allow_stretch=True,
-            keep_ratio=True,
             size_hint=(0.6,0.6),
             pos_hint={'center_x': 0.5, 'center_y': 0.50}  # Center image vertically
             )
         else:
             self.image = Image(
                 source=icon_path,
-                allow_stretch=True,
-                keep_ratio=True,
                 size_hint=(0.45,0.45),
                 pos_hint={'center_x': 0.5, 'center_y': 0.65}  # Center image vertically
             )
@@ -164,7 +160,7 @@ class CircularImageButton(Button):
         self.anchor = AnchorLayout(size=self.size, size_hint=(None, None))
         self.bind(pos=self.anchor.setter('pos'), size=self.anchor.setter('size'))
 
-        self.img = Image(source=image_path, size_hint=(0.6, 0.6), allow_stretch=True, keep_ratio=True)
+        self.img = Image(source=image_path, size_hint=(0.6, 0.6))
         self.anchor.add_widget(self.img)
         self.add_widget(self.anchor)
         # Bind anchor size to button size
@@ -185,7 +181,7 @@ class CircularImageButton(Button):
         sound = SoundLoader.load('sound/tap.mp3')
         if sound:
             sound.play()
-        App.get_running_app().sm.current = self.screen_name
+        App.get_running_app().on_icon_click(self.screen_name)  # Navigate to the screen
 
     
 

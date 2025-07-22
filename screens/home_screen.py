@@ -13,8 +13,9 @@ from utils.layout import HeaderBar, Footer1Bar, Footer2Bar
 class MenuScreen1(Screen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.location = load_config("config/V3.json").get("location", "Room 101")
-        volume = load_config("config/V3.json").get("volume", 50)
+        self.config = load_config('config/V3.json')
+        self.location = self.config.get("location", "Room 101")
+        volume = self.config.get("volume", 50)
         self.volume = f"{volume}%"
         self.mode = self.check_mode()
         self.alerts = self.has_any_alert()
@@ -28,7 +29,7 @@ class MenuScreen1(Screen):
         # Left-aligned widget
         header.add_widget(Image(source='images/soundeye.png', 
                                 size=(110,110), size_hint_x=None,
-                                keep_ratio=True, allow_stretch=True))
+                                ))
         # Spacer
         header.add_widget(Widget(size_hint_x=1))  # Spacer
 
@@ -103,9 +104,9 @@ class MenuScreen1(Screen):
         """
         Check the current mode and return a string representation.
         """
-
-        mode = load_config("config/V3.json").get("previous_mode", "fall.json")
-        single_multiple = "Multiple" if load_config(f"config/{mode}").get("mincount", 99) == 99 else "Single"
+        mode =  self.config.get("previous_mode", "fall.json")
+        mode_config = load_config(f'config/{mode}')
+        single_multiple = "Multiple" if mode_config.get("mincount", 99) == 99 else "Single"
         if mode == "fall.json":
             return f"Fall - {single_multiple}"
         elif mode == "bed.json":
@@ -142,8 +143,9 @@ class MenuScreen1(Screen):
         Called when the screen is entered.
         Updates the location, volume, mode, and alerts based on the current configuration.
         """
-        self.location = load_config("config/V3.json").get("location", "Room 101")
-        volume = load_config("config/V3.json").get("volume", 50)
+        self.config = load_config('config/V3.json')
+        self.location = self.config.get("location", "Room 101")
+        volume = self.config.get("volume", 50)
         self.volume = f"{volume}%"
         self.mode = self.check_mode()
         self.alerts = self.has_any_alert()
@@ -164,18 +166,11 @@ class MenuScreen1(Screen):
         self.content_buttons['location'].status.text = self.location
         self.content_buttons['volume'].status.text = str(self.volume)
         self.content_buttons['mode'].status.text = self.mode
-        mode = self.check_mode()
-        mode_path = self.check_mode_for_image(mode)
+        mode_path = self.check_mode_for_image(self.mode)
         # Update the icon image directly if possible
         self.content_buttons['mode'].image.source = f'images/{mode_path}.png'
         self.content_buttons['mode'].status.text = self.mode
         self.content_buttons['alerts'].status.text = self.alerts
-
-
-
-
-
-
 
 
 
@@ -270,10 +265,11 @@ class MenuScreen2(Screen):
         self.add_widget(main_layout)
 
     def on_pre_enter(self):
-        self.screen_saver = f"{load_config('config/V3.json').get('screensaver', 160)} s"
-        self.wifi_ssid = load_config('config/V3.json').get('wifi_ssid', 'N/A')
-        self.timezone = load_config('config/V3.json').get('timezone', 'N/A')
-        self.mqtt_address = load_config('config/V3.json').get('mqtt_address', 'N/A')
+        self.config = load_config('config/V3.json')
+        self.screen_saver = f"{self.config.get('screensaver', 160)} s"
+        self.wifi_ssid = self.config.get('wifi_ssid', 'N/A')
+        self.timezone = self.config.get('timezone', 'N/A')
+        self.mqtt_address = self.config.get('mqtt_address', 'N/A')
         self.config_status = [self.screen_saver, self.wifi_ssid, self.timezone, self.mqtt_address]
         self.update_config_status()
 

@@ -111,7 +111,6 @@ class ChangeVolume(IconTextButton):
         set_system_volume(new_volume)
         self.sound.play()
 
-
     def _decrease(self):
         current_volume = self.volume_screen.volume
         new_volume = max(current_volume - self.by, 0)
@@ -119,7 +118,6 @@ class ChangeVolume(IconTextButton):
         self.volume_label.text = f"{new_volume}%"
         set_system_volume(new_volume)
         self.sound.play()
-
 
 class SaveButton(IconTextButton):
     def __init__(self, volume_screen=None, **kwargs):

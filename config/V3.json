@@ -3,10 +3,10 @@
     "sensor_ID": "ABC123",
     "language": "en",
     "location": "Room 1011234543234567654321",
-    "volume": 48,
+    "volume": 55,
     "ack_enable": "yes",
     "screensaver": 50,
-    "timezone": "Singapore (GMT+8)",
+    "timezone": "Los Angeles (GMT-7)",
     "region_address": "192.168.1.100",
     "mqtt_address": "192.168.1.101",
     "mqtt_topic": "healthcare/alerts",
@@ -14,6 +14,6 @@
     "alert_lights_ip2": "192.168.1.202",
     "wifi_ssid": "MyWiFiNetwork",
     "wifi_password": "randompassword123",
-    "previous_mode": "fall.json",
+    "previous_mode": "bed.json",
     "placeholder": "placeholder"
 }

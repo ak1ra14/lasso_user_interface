@@ -2,11 +2,11 @@
     "mincount": 99,
     "alert_checking": [
         [
-            0,
+            1,
             "sit-to-stand"
         ],
         [
-            0,
+            1,
             "fall"
         ]
     ],
