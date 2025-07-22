@@ -13,20 +13,20 @@ class MonitorScreen(Screen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         print("MonitorScreen initialized")
-        ip_address = self.get_ip_address()
+        #ip_address = self.get_ip_address()
         header = BoxLayout(orientation='horizontal', pos_hint={'top': 1}, size_hint_y=0.2, padding=10, spacing=10)
-        label = ColoredLabel(
-            text=f"IP address: {ip_address}",
-            font_size=20,
-            color=(0, 0, 0, 1),  # Black text
-            size_hint=(None, None),
-            size=(250, 40),
-            pos_hint={'left': 1, 'top': 1},
-            bg_color=(1,1,1,1)  # RGBA
-        )
+        # label = ColoredLabel(
+        #     text=f"IP address: {ip_address}",
+        #     font_size=20,
+        #     color=(0, 0, 0, 1),  # Black text
+        #     size_hint=(None, None),
+        #     size=(250, 40),
+        #     pos_hint={'left': 1, 'top': 1},
+        #     bg_color=(1,1,1,1)  # RGBA
+        # )
 
-        label.bind(size=label.setter('text_size'))  # For text wrapping
-        header.add_widget(label)
+        # label.bind(size=label.setter('text_size'))  # For text wrapping
+        # header.add_widget(label)
         header.bind(minimum_height=header.setter('height'))
         header.add_widget(Widget())  # Spacer
 
