@@ -17,11 +17,13 @@ class MenuScreen1(Screen):
         self.location = self.config.get("location", "Room 101")
         volume = self.config.get("volume", 50)
         self.volume = f"{volume}%"
-        self.mode = self.check_mode()
-        self.alerts = self.has_any_alert()
+        self.mode = None
+        self.alerts = None
         self.content_buttons = {}
         self.config_status = [self.location, self.volume, self.mode, self.alerts]
         self.main_layout = None
+        self.build_ui()
+        self.add_widget(self.main_layout)
 
 
     def _update_bg(self, *args):
@@ -78,9 +80,7 @@ class MenuScreen1(Screen):
         self.volume = f"{volume}%"
         self.mode = self.check_mode()
         self.alerts = self.has_any_alert()
-        if not self.main_layout:
-            self.build_ui()
-            self.add_widget(self.main_layout)
+
         # Update the config status labels or other UI elements if necessary
         # For example, you might have labels to display these values
         self.update_status()
