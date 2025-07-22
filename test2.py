@@ -24,7 +24,7 @@ class MonitorScreen(Screen):
 
     def go_to_menu(self, instance):
         print("Button clicked, going to Menu")
-        Clock.schedule_once(lambda dt: setattr(self.manager, 'current', 'test'), 0)
+        Clock.schedule_once(lambda dt: setattr(self.manager, 'current', 'test2'), 0)
 
 class TestScreen(Screen):
     def __init__(self, **kwargs):
@@ -55,10 +55,8 @@ class TestScreen2(Screen):
         self.location = self.config.get("location", "Room 101")
         volume = self.config.get("volume", 50)
         self.volume = f"{volume}%"
-        self.mode = self.check_mode()
-        self.alerts = self.has_any_alert()
         self.content_buttons = {}
-        self.config_status = [self.location, self.volume, self.mode, self.alerts]
+
 
         main_layout = BoxLayout(orientation='vertical', padding= [30, 30, 30, 10], spacing=10)
 
@@ -102,14 +100,11 @@ class TestScreen2(Screen):
         content_names = ["Location", "Volume", "Mode", "Alerts"]
         for i in range(4):
             content_name = content_names[i].lower()
-            content_path = content_name
-            if content_name == "mode":
-                mode = self.check_mode()
-                content_path = self.check_mode_for_image(mode)
+
             self.content_buttons[content_name] = IconTextButton(
-                icon_path=f'images/{content_path}.png',  # Placeholder for icons
+                icon_path=f'images/{content_name}.png',  # Placeholder for icons
                 text=content_names[i],
-                config=self.config_status[i],  # Pass config name
+                config='test',  # Pass config name
                 size=(202, 202),
                 screen_name=content_name,  # Navigate to respective screen
             )
@@ -137,7 +132,7 @@ class TestApp(App):
     def build(self):
         sm = ScreenManager()
         sm.add_widget(MonitorScreen(name='monitor'))
-        sm.add_widget(TestScreen(name='test'))
+        sm.add_widget(TestScreen2(name='test2'))
         return sm
 
 TestApp().run()
