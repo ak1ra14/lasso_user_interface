@@ -21,79 +21,8 @@ class MenuScreen1(Screen):
         self.alerts = self.has_any_alert()
         self.content_buttons = {}
         self.config_status = [self.location, self.volume, self.mode, self.alerts]
+        self.main_layout = None
 
-        main_layout = BoxLayout(orientation='vertical', padding= [30, 30, 30, 10], spacing=10)
-
-        # Layer 1: Header
-        header = BoxLayout(orientation='horizontal', size_hint_y=0.20, padding=[0,0,0,0], spacing=10)
-        # Left-aligned widget
-        header.add_widget(Image(source='atlas://data/images/defaulttheme/audio-volume-high', 
-                                size=(110,110), size_hint_x=None,
-                                ))
-        # Spacer
-        header.add_widget(Widget(size_hint_x=1))  # Spacer
-
-        # Right-aligned buttons in a horizontal BoxLayout
-        right_buttons = BoxLayout(orientation='horizontal', padding=0, spacing=20, size_hint_x=None, width=370)
-
-        right_buttons.add_widget(IconTextButton(
-            icon_path='atlas://data/images/defaulttheme/audio-volume-high',
-            text="Language",
-            size=(110, 110),
-            screen_name='language'  # Navigate to language screen
-        ))
-        right_buttons.add_widget(IconTextButton(
-            icon_path='atlas://data/images/defaulttheme/audio-volume-high',
-            text="Monitor",
-            size=(110, 110),
-            screen_name='monitor',  # Navigate to monitor screen
-        ))
-        right_buttons.add_widget(IconTextButton(
-            icon_path='atlas://data/images/defaulttheme/audio-volume-high',
-            text="Power",
-            size=(110, 110),
-            screen_name='power'  # Navigate to power screen
-        ))
-        right_buttons.bind(minimum_width=right_buttons.setter('width'))  # Let width fit content
-
-
-        header.add_widget(right_buttons)
-
-        # Layer 2: Middle content (e.g., 4 buttons)
-        content = BoxLayout(orientation='horizontal', spacing=50, size_hint_y=0.35)
-        content_names = ["Location", "Volume", "Mode", "Alerts"]
-        for i in range(4):
-            content_name = content_names[i].lower()
-            content_path = content_name
-            if content_name == "mode":
-                mode = self.check_mode()
-                content_path = self.check_mode_for_image(mode)
-            self.content_buttons[content_name] = IconTextButton(
-                icon_path='atlas://data/images/defaulttheme/audio-volume-high',  # Placeholder for icons
-                text=content_names[i],
-                config=self.config_status[i],  # Pass config name
-                size=(202, 202),
-                screen_name=content_name,  # Navigate to respective screen
-            )
-            content.add_widget(self.content_buttons[content_name])
-
-        # Combine all layers
-        main_layout.add_widget(header)
-        main_layout.add_widget(Widget(size_hint_y=None, height=60))  # Spacer with 40px height
-        main_layout.add_widget(content)
-        main_layout.add_widget(Widget(size_hint_y=None, height=30))  # Spacer with 20px height
-        
-        #footer
-        main_layout.add_widget(Footer1Bar(screen_name='menu2'))  # Pass screen name for navigation
-        main_layout.add_widget(Footer2Bar())
-
-        time_bar = AnchorLayout(size_hint_y=0.05, )
-        time_bar.add_widget(Label(text="Time Bar Placeholder",
-                                size_hint_y=None, height=50,
-                                pos_hint={'center_x': 0.5, 'center_y': 0.5},
-                                font_size=20))
-        main_layout.add_widget(time_bar)
-        self.add_widget(main_layout)
 
     def _update_bg(self, *args):
         self.bg.size = self.size
@@ -149,6 +78,9 @@ class MenuScreen1(Screen):
         self.volume = f"{volume}%"
         self.mode = self.check_mode()
         self.alerts = self.has_any_alert()
+        if not self.main_layout:
+            self.build_ui()
+            self.add_widget(self.main_layout)
         # Update the config status labels or other UI elements if necessary
         # For example, you might have labels to display these values
         self.update_status()
@@ -172,7 +104,83 @@ class MenuScreen1(Screen):
         self.content_buttons['mode'].status.text = self.mode
         self.content_buttons['alerts'].status.text = self.alerts
 
+    def build_ui(self):
+        """
+        Build the UI for the MenuScreen1.
+        This method can be called to refresh the UI elements if needed.
+  
+      """
+        self.main_layout = BoxLayout(orientation='vertical', padding= [30, 30, 30, 10], spacing=10)
 
+        # Layer 1: Header
+        header = BoxLayout(orientation='horizontal', size_hint_y=0.20, padding=[0,0,0,0], spacing=10)
+        # Left-aligned widget
+        header.add_widget(Image(source='atlas://data/images/defaulttheme/audio-volume-high', 
+                                size=(110,110), size_hint_x=None,
+                                ))
+        # Spacer
+        header.add_widget(Widget(size_hint_x=1))  # Spacer
+
+        # Right-aligned buttons in a horizontal BoxLayout
+        right_buttons = BoxLayout(orientation='horizontal', padding=0, spacing=20, size_hint_x=None, width=370)
+
+        right_buttons.add_widget(IconTextButton(
+            icon_path='atlas://data/images/defaulttheme/audio-volume-high',
+            text="Language",
+            size=(110, 110),
+            screen_name='language'  # Navigate to language screen
+        ))
+        right_buttons.add_widget(IconTextButton(
+            icon_path='atlas://data/images/defaulttheme/audio-volume-high',
+            text="Monitor",
+            size=(110, 110),
+            screen_name='monitor',  # Navigate to monitor screen
+        ))
+        right_buttons.add_widget(IconTextButton(
+            icon_path='atlas://data/images/defaulttheme/audio-volume-high',
+            text="Power",
+            size=(110, 110),
+            screen_name='power'  # Navigate to power screen
+        ))
+        right_buttons.bind(minimum_width=right_buttons.setter('width'))  # Let width fit content
+
+
+        header.add_widget(right_buttons)
+
+        # Layer 2: Middle content (e.g., 4 buttons)
+        content = BoxLayout(orientation='horizontal', spacing=50, size_hint_y=0.35)
+        content_names = ["Location", "Volume", "Mode", "Alerts"]
+        for i in range(4):
+            content_name = content_names[i].lower()
+            content_path = content_name
+            if content_name == "mode":
+                mode = self.check_mode()
+                content_path = self.check_mode_for_image(mode)
+            self.content_buttons[content_name] = IconTextButton(
+                icon_path='atlas://data/images/defaulttheme/audio-volume-high',  # Placeholder for icons
+                text=content_names[i],
+                config=self.config_status[i],  # Pass config name
+                size=(202, 202),
+                screen_name=content_name,  # Navigate to respective screen
+            )
+            content.add_widget(self.content_buttons[content_name])
+
+        # Combine all layers
+        self.main_layout.add_widget(header)
+        self.main_layout.add_widget(Widget(size_hint_y=None, height=60))  # Spacer with 40px height
+        self.main_layout.add_widget(content)
+        self.main_layout.add_widget(Widget(size_hint_y=None, height=30))  # Spacer with 20px height
+        
+        #footer
+        self.main_layout.add_widget(Footer1Bar(screen_name='menu2'))  # Pass screen name for navigation
+        self.main_layout.add_widget(Footer2Bar())
+
+        time_bar = AnchorLayout(size_hint_y=0.05, )
+        time_bar.add_widget(Label(text="Time Bar Placeholder",
+                                size_hint_y=None, height=50,
+                                pos_hint={'center_x': 0.5, 'center_y': 0.5},
+                                font_size=20))
+        self.main_layout.add_widget(time_bar)
 
 class MenuScreen2(Screen):
     def __init__(self, **kwargs):
