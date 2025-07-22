@@ -66,6 +66,6 @@ class MonitorScreen(Screen):
         # if sound:
         #     sound.play()
         #Clock.schedule_once(lambda dt: setattr(self.manager, 'current', 'menu'), 0)
-        App.get_running_app().on_icon_click('menu')  # Change 'main' to the actual screen name for the menu
+        App.get_running_app().sm.current = 'menu'  # Change 'main' to the actual screen name for the menu
         print("Menu screen activated")
 

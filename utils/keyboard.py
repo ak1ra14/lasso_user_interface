@@ -12,7 +12,6 @@ from kivy.uix.image import Image
 from kivy.clock import Clock
 import mozcpy
 
-
 class QwertyKeyboard(FloatLayout):
     shift_activate = BooleanProperty(False)
     MAX_CHARS = 100  # Maximum characters allowed in the text input
@@ -389,7 +388,6 @@ class RoundedButton(Button):
     def trigger_long_press(self, dt):
         self.is_long_press = True
         # You can call a callback or set a flag here
-
 
 class SeparatorLine(Widget):
     def __init__(self, line_color=(1, 1, 1, 1), pos=(0, 0), **kwargs):

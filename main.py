@@ -1,3 +1,6 @@
+import os
+os.environ["KIVY_AUDIO"] = "pygame"
+
 from kivy.app import App
 from kivy.uix.screenmanager import ScreenManager, Screen, NoTransition
 from kivy.core.window import Window
@@ -6,7 +9,7 @@ from kivy.clock import Clock
 
 
 import socket
-from screens.home_screen_copy import MenuScreen1, MenuScreen2
+from screens.home_screen import MenuScreen1, MenuScreen2
 from screens.language import LanguageScreen
 from screens.monitor import MonitorScreen
 from screens.power import PowerScreen
@@ -58,31 +61,6 @@ class MyApp(App):
     def activate_screensaver(self, *args):
         if self.sm.current != 'dark':
             self.sm.current = 'dark'
-            
-    def on_icon_click(self, screen_name):
-        app = App.get_running_app()
-        if not app.sm.has_screen(screen_name):
-            # Instantiate and add the screen only when needed
-            if screen_name == 'menu':
-                app.sm.add_widget(MenuScreen1(name='menu')) 
-            elif screen_name == 'menu2':
-                app.sm.add_widget(MenuScreen2(name='menu2'))
-            elif screen_name == 'language':
-                app.sm.add_widget(LanguageScreen(name='language'))
-            elif screen_name == 'power':
-                app.sm.add_widget(PowerScreen(name='power'))
-            elif screen_name == 'screensaver':
-                app.sm.add_widget(ScreenSaverScreen(name='screensaver'))
-            elif screen_name == 'time zone':
-                app.sm.add_widget(TimezoneScreen(name='time zone'))
-            elif screen_name == 'volume':
-                app.sm.add_widget(VolumeScreen(name='volume'))
-            elif screen_name == 'mode':
-                app.sm.add_widget(AlertModeScreen(name='mode'))
-            elif screen_name == 'alerts':
-                app.sm.add_widget(AlertTypeScreen(name='alerts'))  
-       
-        app.sm.current = screen_name
 
 
 if __name__ == '__main__':

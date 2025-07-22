@@ -139,7 +139,7 @@ class IconTextButton(Button):
         sound = SoundLoader.load('sound/tap.wav')
         if sound:
             sound.play()
-        App.get_running_app().on_icon_click(self.screen_name)  # Navigate to the screen
+        App.get_running_app().sm.current = self.screen_name  # Navigate to the screen
 
 class CircularImageButton(Button):
     def __init__(self, image_path, diameter=80, screen_name=None, **kwargs):
@@ -181,7 +181,7 @@ class CircularImageButton(Button):
         sound = SoundLoader.load('sound/tap.wav')
         if sound:
             sound.play()
-        App.get_running_app().on_icon_click(self.screen_name)  # Navigate to the screen
+        App.get_running_app().sm.current = self.screen_name  # Navigate to the screen
 
     
 
