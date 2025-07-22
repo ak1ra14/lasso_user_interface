@@ -292,6 +292,9 @@ class TestScreen3(Screen):
 
 class TestApp(App):
     def build(self):
+        self.config = load_config('config/V3.json')
+        self.location = self.config.get("location", "Room 101")
+        volume = self.config.get("volume", 50)
         sm = ScreenManager()
         sm.add_widget(MonitorScreen(name='monitor'))
         sm.add_widget(TestScreen3(name='test3'))
