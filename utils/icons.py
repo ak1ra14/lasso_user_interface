@@ -136,9 +136,9 @@ class IconTextButton(Button):
         Override the on_press method to change the current screen.
         This method is called when the button is pressed.
         """
-        # sound = SoundLoader.load('sound/tap.mp3')
-        # if sound:
-        #     sound.play()
+        sound = SoundLoader.load('sound/tap.wav')
+        if sound:
+            sound.play()
         App.get_running_app().on_icon_click(self.screen_name)  # Navigate to the screen
 
 class CircularImageButton(Button):
@@ -178,9 +178,9 @@ class CircularImageButton(Button):
         Override the on_press method to change the current screen.
         This method is called when the button is pressed.
         """
-        # sound = SoundLoader.load('sound/tap.mp3')
-        # if sound:
-        #     sound.play()
+        sound = SoundLoader.load('sound/tap.wav')
+        if sound:
+            sound.play()
         App.get_running_app().on_icon_click(self.screen_name)  # Navigate to the screen
 
     

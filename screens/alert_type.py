@@ -171,7 +171,7 @@ class SaveButtonAT(IconTextButton):
         config_fall['alert_checking'] = alert_checking_fall
         save_config("config/fall.json", config_fall)
         
-        sound = SoundLoader.load('sound/tap.mp3')
+        sound = SoundLoader.load('sound/tap.wav')
         if sound:
             sound.play()
         App.get_running_app().sm.current = self.screen_name

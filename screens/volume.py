@@ -93,7 +93,7 @@ class ChangeVolume(IconTextButton):
         self.volume_label = volume_label
         self.change = change
         self.volume_screen = volume_screen  # Reference to the screen
-        # self.sound = SoundLoader.load('sound/beep.mp3')
+        self.sound = SoundLoader.load('sound/beep.wav')
 
     def on_press(self):
         if self.change == "increase":
@@ -109,8 +109,8 @@ class ChangeVolume(IconTextButton):
         self.volume_screen.volume = new_volume
         self.volume_label.text = f"{new_volume}%"
         set_system_volume(new_volume)
-        # if self.sound:
-        #     self.sound.play()
+        if self.sound:
+            self.sound.play()
 
 
     def _decrease(self):
@@ -119,8 +119,8 @@ class ChangeVolume(IconTextButton):
         self.volume_screen.volume = new_volume
         self.volume_label.text = f"{new_volume}%"
         set_system_volume(new_volume)
-        # if self.sound:
-        #     self.sound.play()
+        if self.sound:
+            self.sound.play()
 
 class SaveButton(IconTextButton):
     def __init__(self, volume_screen=None, **kwargs):

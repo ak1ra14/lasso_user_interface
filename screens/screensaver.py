@@ -104,7 +104,7 @@ class ChangeTime(IconTextButton):
         self.screensaver_time_label = screensaver_time_label
         self.change = change
         self.screensaver_screen = screensaver_screen  # Reference to the screen
-        # self.sound = SoundLoader.load('sound/tap.mp3')
+        self.sound = SoundLoader.load('sound/tap.wav')
 
     def on_press(self):
         if self.change == "increase":
@@ -118,8 +118,8 @@ class ChangeTime(IconTextButton):
         new_time = min(current_time + self.by, 600)
         self.screensaver_screen.screensaver_time = new_time
         self.screensaver_time_label.text = f"{new_time}"
-        # if self.sound:
-        #     self.sound.play()
+        if self.sound:
+            self.sound.play()
 
 
     def _decrease(self):
@@ -127,8 +127,8 @@ class ChangeTime(IconTextButton):
         new_time = max(current_time - self.by, 10)
         self.screensaver_screen.screensaver_time = new_time
         self.screensaver_time_label.text = f"{new_time}"
-        # if self.sound:
-        #     self.sound.play()
+        if self.sound:
+            self.sound.play()
 
 class SaveButton(IconTextButton):
     def __init__(self, screensaver_screen=None, **kwargs):
@@ -155,9 +155,9 @@ class HomeButtonScreensaver(IconTextButton):
 
     def on_press(self):
         super().on_press()
-        # sound = SoundLoader.load('sound/tap.mp3')
-        # if sound:
-        #     sound.play()
+        sound = SoundLoader.load('sound/tap.wav')
+        if sound:
+            sound.play()
         self.screensaver_screen.screensaver_time_label.text = f"{load_config('config/V3.json').get('screensaver', 50)}%"
         self.screensaver_screen.screensaver_time = load_config('config/V3.json').get('screensaver', 50)
           # Reset screensaver time to saved value
