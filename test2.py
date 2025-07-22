@@ -30,109 +30,110 @@ class MonitorScreen(Screen):
 
     def go_to_menu(self, instance):
         print("Button clicked, going to Menu")
-        Clock.schedule_once(lambda dt: setattr(self.manager, 'current', 'test3'), 0)
+        self.manager.current = 'test3'
+        #Clock.schedule_once(lambda dt: setattr(self.manager, 'current', 'test3'), 0)
 
-class TestScreen(Screen):
-    def __init__(self, **kwargs):
-        super(TestScreen, self).__init__(**kwargs)
-        print("TestScreen initialized")
-        # self.config = load_config('config/V3.json')  # Read once
-        # self.location = self.config.get("location", "Room 101")
-        # volume = self.config.get("volume", 50)
+# class TestScreen(Screen):
+#     def __init__(self, **kwargs):
+#         super(TestScreen, self).__init__(**kwargs)
+#         print("TestScreen initialized")
+#         # self.config = load_config('config/V3.json')  # Read once
+#         # self.location = self.config.get("location", "Room 101")
+#         # volume = self.config.get("volume", 50)
 
-        # Add header bar
-        self.header = HeaderBar(title="Test Screen")
-        self.add_widget(self.header)
-        self.add_widget(
-            IconTextButton(
-                text="Back to Monitor",
-                icon_path="images/home.png",
-                size_hint=(None, None),
-                size=(200, 50),
-                pos_hint={'center_x': 0.5, 'top': 1},
-                on_press=self.go_to_monitor
-            )
-        )
+#         # Add header bar
+#         self.header = HeaderBar(title="Test Screen")
+#         self.add_widget(self.header)
+#         self.add_widget(
+#             IconTextButton(
+#                 text="Back to Monitor",
+#                 icon_path="images/home.png",
+#                 size_hint=(None, None),
+#                 size=(200, 50),
+#                 pos_hint={'center_x': 0.5, 'top': 1},
+#                 on_press=self.go_to_monitor
+#             )
+#         )
 
-class TestScreen2(Screen):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.config = load_config('config/V3.json')
-        self.location = self.config.get("location", "Room 101")
-        volume = self.config.get("volume", 50)
-        self.volume = f"{volume}%"
-        self.content_buttons = {}
-
-
-        main_layout = BoxLayout(orientation='vertical', padding= [30, 30, 30, 10], spacing=10)
-
-        # Layer 1: Header
-        header = BoxLayout(orientation='horizontal', size_hint_y=0.20, padding=[0,0,0,0], spacing=10)
-        # Left-aligned widget
-        header.add_widget(Image(source='images/soundeye.png', 
-                                size=(110,110), size_hint_x=None,
-                                ))
-        # Spacer
-        header.add_widget(Widget(size_hint_x=1))  # Spacer
-
-        # Right-aligned buttons in a horizontal BoxLayout
-        right_buttons = BoxLayout(orientation='horizontal', padding=0, spacing=20, size_hint_x=None, width=370)
-
-        right_buttons.add_widget(IconTextButton(
-            icon_path='images/language.png',
-            text="Language",
-            size=(110, 110),
-            screen_name='language'  # Navigate to language screen
-        ))
-        right_buttons.add_widget(IconTextButton(
-            icon_path='images/monitor.png',
-            text="Monitor",
-            size=(110, 110),
-            screen_name='monitor',  # Navigate to monitor screen
-        ))
-        right_buttons.add_widget(IconTextButton(
-            icon_path='images/power.png',
-            text="Power",
-            size=(110, 110),
-            screen_name='power'  # Navigate to power screen
-        ))
-        right_buttons.bind(minimum_width=right_buttons.setter('width'))  # Let width fit content
+# class TestScreen2(Screen):
+#     def __init__(self, **kwargs):
+#         super().__init__(**kwargs)
+#         self.config = load_config('config/V3.json')
+#         self.location = self.config.get("location", "Room 101")
+#         volume = self.config.get("volume", 50)
+#         self.volume = f"{volume}%"
+#         self.content_buttons = {}
 
 
-        header.add_widget(right_buttons)
+#         main_layout = BoxLayout(orientation='vertical', padding= [30, 30, 30, 10], spacing=10)
 
-        # Layer 2: Middle content (e.g., 4 buttons)
-        content = BoxLayout(orientation='horizontal', spacing=50, size_hint_y=0.35)
-        content_names = ["Location", "Volume", "Mode", "Alerts"]
-        for i in range(4):
-            content_name = content_names[i].lower()
+#         # Layer 1: Header
+#         header = BoxLayout(orientation='horizontal', size_hint_y=0.20, padding=[0,0,0,0], spacing=10)
+#         # Left-aligned widget
+#         header.add_widget(Image(source='images/soundeye.png', 
+#                                 size=(110,110), size_hint_x=None,
+#                                 ))
+#         # Spacer
+#         header.add_widget(Widget(size_hint_x=1))  # Spacer
 
-            self.content_buttons[content_name] = IconTextButton(
-                icon_path=f'images/{content_name}.png',  # Placeholder for icons
-                text=content_names[i],
-                config='test',  # Pass config name
-                size=(202, 202),
-                screen_name=content_name,  # Navigate to respective screen
-            )
-            content.add_widget(self.content_buttons[content_name])
+#         # Right-aligned buttons in a horizontal BoxLayout
+#         right_buttons = BoxLayout(orientation='horizontal', padding=0, spacing=20, size_hint_x=None, width=370)
 
-        # Combine all layers
-        main_layout.add_widget(header)
-        main_layout.add_widget(Widget(size_hint_y=None, height=60))  # Spacer with 40px height
-        main_layout.add_widget(content)
-        main_layout.add_widget(Widget(size_hint_y=None, height=30))  # Spacer with 20px height
+#         right_buttons.add_widget(IconTextButton(
+#             icon_path='images/language.png',
+#             text="Language",
+#             size=(110, 110),
+#             screen_name='language'  # Navigate to language screen
+#         ))
+#         right_buttons.add_widget(IconTextButton(
+#             icon_path='images/monitor.png',
+#             text="Monitor",
+#             size=(110, 110),
+#             screen_name='monitor',  # Navigate to monitor screen
+#         ))
+#         right_buttons.add_widget(IconTextButton(
+#             icon_path='images/power.png',
+#             text="Power",
+#             size=(110, 110),
+#             screen_name='power'  # Navigate to power screen
+#         ))
+#         right_buttons.bind(minimum_width=right_buttons.setter('width'))  # Let width fit content
+
+
+#         header.add_widget(right_buttons)
+
+#         # Layer 2: Middle content (e.g., 4 buttons)
+#         content = BoxLayout(orientation='horizontal', spacing=50, size_hint_y=0.35)
+#         content_names = ["Location", "Volume", "Mode", "Alerts"]
+#         for i in range(4):
+#             content_name = content_names[i].lower()
+
+#             self.content_buttons[content_name] = IconTextButton(
+#                 icon_path=f'images/{content_name}.png',  # Placeholder for icons
+#                 text=content_names[i],
+#                 config='test',  # Pass config name
+#                 size=(202, 202),
+#                 screen_name=content_name,  # Navigate to respective screen
+#             )
+#             content.add_widget(self.content_buttons[content_name])
+
+#         # Combine all layers
+#         main_layout.add_widget(header)
+#         main_layout.add_widget(Widget(size_hint_y=None, height=60))  # Spacer with 40px height
+#         main_layout.add_widget(content)
+#         main_layout.add_widget(Widget(size_hint_y=None, height=30))  # Spacer with 20px height
         
-        #footer
-        main_layout.add_widget(Footer1Bar(screen_name='menu2'))  # Pass screen name for navigation
-        main_layout.add_widget(Footer2Bar())
+#         #footer
+#         main_layout.add_widget(Footer1Bar(screen_name='menu2'))  # Pass screen name for navigation
+#         main_layout.add_widget(Footer2Bar())
 
-        time_bar = AnchorLayout(size_hint_y=0.05, )
-        time_bar.add_widget(Label(text="Time Bar Placeholder",
-                                size_hint_y=None, height=50,
-                                pos_hint={'center_x': 0.5, 'center_y': 0.5},
-                                font_size=20))
-        main_layout.add_widget(time_bar)
-        self.add_widget(main_layout) 
+#         time_bar = AnchorLayout(size_hint_y=0.05, )
+#         time_bar.add_widget(Label(text="Time Bar Placeholder",
+#                                 size_hint_y=None, height=50,
+#                                 pos_hint={'center_x': 0.5, 'center_y': 0.5},
+#                                 font_size=20))
+#         main_layout.add_widget(time_bar)
+#         self.add_widget(main_layout) 
 
 class TestScreen3(Screen):
     def __init__(self, **kwargs):
