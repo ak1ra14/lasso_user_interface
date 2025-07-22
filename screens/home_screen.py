@@ -125,24 +125,26 @@ class MenuScreen1(Screen):
         # Right-aligned buttons in a horizontal BoxLayout
         right_buttons = BoxLayout(orientation='horizontal', padding=0, spacing=20, size_hint_x=None, width=370)
 
-        right_buttons.add_widget(IconTextButton(
-            icon_path='atlas://data/images/defaulttheme/audio-volume-high',
-            text="Language",
-            size=(110, 110),
-            screen_name='language'  # Navigate to language screen
-        ))
-        right_buttons.add_widget(IconTextButton(
-            icon_path='atlas://data/images/defaulttheme/audio-volume-high',
-            text="Monitor",
-            size=(110, 110),
-            screen_name='monitor',  # Navigate to monitor screen
-        ))
-        right_buttons.add_widget(IconTextButton(
-            icon_path='atlas://data/images/defaulttheme/audio-volume-high',
-            text="Power",
-            size=(110, 110),
-            screen_name='power'  # Navigate to power screen
-        ))
+
+        right_buttons.add_widget(Label(text=f"Location: {self.location}"))
+        # right_buttons.add_widget(IconTextButton(
+        #     icon_path='atlas://data/images/defaulttheme/audio-volume-high',
+        #     text="Language",
+        #     size=(110, 110),
+        #     screen_name='language'  # Navigate to language screen
+        # ))
+        # right_buttons.add_widget(IconTextButton(
+        #     icon_path='atlas://data/images/defaulttheme/audio-volume-high',
+        #     text="Monitor",
+        #     size=(110, 110),
+        #     screen_name='monitor',  # Navigate to monitor screen
+        # ))
+        # right_buttons.add_widget(IconTextButton(
+        #     icon_path='atlas://data/images/defaulttheme/audio-volume-high',
+        #     text="Power",
+        #     size=(110, 110),
+        #     screen_name='power'  # Navigate to power screen
+        # ))```
         right_buttons.bind(minimum_width=right_buttons.setter('width'))  # Let width fit content
 
 
