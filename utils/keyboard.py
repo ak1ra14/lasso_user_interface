@@ -10,19 +10,28 @@ from kivy.uix.floatlayout import FloatLayout
 from utils.icons import IconTextButton
 from kivy.uix.image import Image
 from kivy.clock import Clock
+import mozcpy
 
 
 class QwertyKeyboard(FloatLayout):
     shift_activate = BooleanProperty(False)
+    MAX_CHARS = 100  # Maximum characters allowed in the text input
 
     def __init__(self, title, **kwargs): 
         super().__init__(**kwargs)
-        self.buttons = []
-        main_layout = BoxLayout(
+        self.english_buttons = []
+        self.japanese_buttons = []
+        self.language_mode = 'english'  # Default language mode
+        self.kanji_converter = mozcpy.Converter()  # Initialize the converter
+        self.converting = False  # Flag to indicate if the text is being converted
+
+
+        ###layout for the keyboard screen
+        self.main_layout = BoxLayout(
             orientation='vertical', 
             padding=20, 
             size_hint=(1, 1), 
-            pos=(0, 0)
+            pos_hint={'center_x': 0.5, 'center_y': 0.53},
         )
         label = Label(
             text=title,
@@ -31,49 +40,92 @@ class QwertyKeyboard(FloatLayout):
             size_hint_x=1,
             font_name = 'fonts/Roboto-Bold.ttf',
             halign='left',
-            valign='middle'
+            valign='middle',
+            pos = (20, 480),
         )
         label.bind(size=lambda instance, value: setattr(instance, 'text_size', value))
-        main_layout.add_widget(label)
         self.text_input = TextInput(font_size=32, size_hint_y=0.15,
                                     background_color=(0, 0, 0, 0),   # transparent background
                                     foreground_color=(1, 1, 0, 1),
-                                    font_name='fonts/Roboto-Regular.ttf',
+                                    size_hint_x=None,
+                                    width=600,
+                                    font_name='fonts/MPLUS1p-Regular.ttf',
+                                    pos = (20, 420),
+                                    multiline=False,  # Single line input
+                                    halign='left',
                                     )
         
         partition = SeparatorLine(
-            size_hint=(0.4, 0.05),
+            size_hint=(0.6, 0.05),
             pos  = (20,440),
         )
-        main_layout.add_widget(self.text_input)
+        self.add_widget(label)
+        self.add_widget(self.text_input)
         self.add_widget(partition)
 
-
-        shift_keys = [
+        self.shift_keys = [
             ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'],
             ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'],
             ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L'],
             ['Shift','Z', 'X', 'C', 'V', 'B', 'N', 'M', 'Backspace'],
             ['Japanese', ',', 'Space','.', 'Enter']
         ]
-        keys = [
+        self.keys = [
             ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'],
             ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p'],
             ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l'],
             ['Shift', 'z', 'x', 'c', 'v', 'b', 'n', 'm', 'Backspace'],
             ['Japanese', ',', 'Space', '.', 'Enter']
         ]
-        subkeys = [
+        self.subkeys = [
             [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
             ['%', "\\", '|', '=', "[", "]", '<', '>', '{', '}'],   # 10 subkeys (correct)
             ['@', '#', '$', '_', '&', '-', '+', '(', ')'],
             [' ', '*', '\"', '\'', ':', ';', '!', '?', ' '],
             [' ', ' ', ' ', ' ', ' ', ' ']
         ]
+        self.japanese_keys = [
+            ['あ', 'か', 'さ', 'た', 'な', 'は', 'ま', 'や', 'ら', 'わ','Backspace'],
+            ['い', 'き', 'し', 'ち', 'に', 'ひ', 'み', '', 'り', 'を', 'Space'],
+            ['う', 'く', 'す', 'つ', 'ぬ', 'ふ', 'む', 'ゆ', 'る', 'ん', 'Enter'],
+            ['え', 'け', 'せ', 'て', 'ね', 'へ', 'め', '', 'れ', '。', 'Daku-on'],
+            ['お', 'こ', 'そ', 'と', 'の', 'ほ', 'も', 'よ', 'ろ', '、','English']
+            # Add more rows as needed
+        ]
+        self.japanese_subkeys = [
+            ['ア', 'カ', 'サ', 'タ', 'ナ', 'ハ', 'マ', 'ヤ', 'ラ', 'ワ',''],
+            ['イ', 'キ', 'シ', 'チ', 'ニ', 'ヒ', 'ミ', '', 'リ', 'ヲ',''],
+            ['ウ', 'ク', 'ス', 'ツ', 'ヌ', 'フ', 'ム', 'ユ', 'ル', 'ン',''],
+            ['エ', 'ケ', 'セ', 'テ', 'ネ', 'ヘ', 'メ', '', 'レ', 'ー',''],
+            ['オ', 'コ', 'ソ', 'ト', 'ノ', 'ホ', 'モ', 'ヨ', 'ロ', '','']
+            # Add more rows as needed
+        ]
+
+        self.build_qwerty_keyboard()  # Build the QWERTY keyboard layout
+        self.add_widget(self.main_layout)
+        self.add_widget(Label(text='time bar will be here', pos=(0,10), size_hint_y=0.05)) # Spacer at the bottom
+
+        overlay = FloatLayout(size_hint=(1, 1))
+        home_button = IconTextButton(
+            text='Home',
+            icon_path='images/home.png',
+            size_hint=(None, None),
+            size=(110, 110),
+            pos_hint={'top': 0.95, 'right': 0.97}
+        )
+        overlay.add_widget(home_button)
+        self.add_widget(overlay)  # Add overlay last so it's on top
+    
+    def build_qwerty_keyboard(self):
+        self.language_mode = 'english'  # Set the language mode to English
+        key_width = 90
+        key_spacing = 8
+        self.main_layout.clear_widgets()
         key_width = 90
         key_spacing = 8
 
-        for row, subrow, shift_row in zip(keys, subkeys, shift_keys):
+
+        for row, subrow, shift_row in zip(self.keys, self.subkeys, self.shift_keys):
             if len(row) == 10:
                 first_row_width = len(row) * key_width + (len(row) - 1) * key_spacing + 6
             num_keys = len(row)
@@ -119,45 +171,147 @@ class QwertyKeyboard(FloatLayout):
                 else:
                     btn = RoundedButton(text=key, sub_key=sub_key, font_size=24, font_name='fonts/Roboto-Bold.ttf',
                                         size_hint_x=None, width=key_width, shift_key=shift_key)
-                self.buttons.append(btn)
+                self.english_buttons.append(btn)
                 btn.bind(on_release=self.on_key_release)
                 row_layout.add_widget(btn)
-            main_layout.add_widget(row_layout)
-        main_layout.add_widget(Label(text='time bar will be here',size_hint_y=0.05)) # Spacer at the bottom
-        self.add_widget(main_layout)
-
-        overlay = FloatLayout(size_hint=(1, 1))
-        home_button = IconTextButton(
-            text='Home',
-            icon_path='images/home.png',
-            size_hint=(None, None),
-            size=(110, 110),
-            pos_hint={'top': 0.95, 'right': 0.97}
-        )
-        overlay.add_widget(home_button)
-        self.add_widget(overlay)  # Add overlay last so it's on top
+            self.main_layout.add_widget(row_layout)
     
+    def build_japanese_keyboard(self):
+        key_width = 77
+        key_spacing = 8
+        self.main_layout.clear_widgets()  # Clear the main layout
+        self.start_index = self.text_input.cursor_index()  # Save the cursor position
+        self.entered = False # Flag to indicate if the Enter key has not been pressed to determine the word conversion 
+        self.language_mode = 'japanese'  # Set the language mode to Japanese
+
+        for row, subrow in zip(self.japanese_keys, self.japanese_subkeys):
+            num_keys = len(row)
+            row_layout = GridLayout(
+                cols=num_keys,
+                size_hint_y=None,
+                height=80,
+                spacing=key_spacing,
+                padding=3,
+                size_hint_x=None,
+                width=num_keys * key_width + (num_keys - 1) * key_spacing
+            )
+            for key, sub_key in zip(row, subrow):
+                btn = None
+                if key == 'English':
+                    btn = RoundedButton(text='', sub_key=sub_key, image=f'images/{key}.png', font_size=24, font_name='fonts/MPLUS1p-Regular.ttf',
+                                        background_color=(0.22, 0.45, 0.91, 1), size_hint_x=None, width=key_width*1.5,
+                                        function='English')
+                elif key == 'Backspace':
+                    btn = RoundedButton(text='', sub_key=sub_key, image='images/backspace.png', font_size=24, font_name='fonts/Roboto-Bold.ttf',
+                                        background_color=(0.22, 0.45, 0.91, 1), size_hint_x=None, width=key_width*1.5,
+                                        function='Backspace',  shift_key='')
+                elif key == 'Enter':
+                    btn = RoundedButton(text='', sub_key=sub_key, image='images/enter.png', font_size=24, font_name='fonts/MPLUS1p-Regular.ttf',
+                                        background_color=(0.22, 0.45, 0.91, 1), size_hint_x=None, width=key_width*1.5,
+                                        function='Enter')
+                elif key == 'Space':
+                    btn = RoundedButton(text='空白/変換', sub_key=sub_key,  font_size=22, font_name='fonts/MPLUS1p-Regular.ttf',
+                                        size_hint_x=None, width=key_width*1.5, background_color=(0.22, 0.45, 0.91, 1),
+                                        function='Space')
+                elif key == 'Daku-on':
+                    btn = RoundedButton(text='', sub_key=sub_key, image='images/daku-on.png', font_size=24, font_name='fonts/Roboto-Bold.ttf',
+                                        background_color=(0.22, 0.45, 0.91, 1), size_hint_x=None, width=key_width*1.5,
+                                        function='Daku-on',  shift_key='')
+                else:
+                    btn = RoundedButton(text=key, sub_key=sub_key, font_size=24, font_name='fonts/MPLUS1p-Regular.ttf',
+                                        size_hint_x=None, width=key_width)
+                btn.bind(on_release=self.on_key_release)
+                self.japanese_buttons.append(btn)
+                row_layout.add_widget(btn)
+            self.main_layout.add_widget(row_layout)
 
     def on_key_release(self, instance):
+        ti = self.text_input #to indicate the position of the input in a word
+        ti.focus = True  # Keep the text input focused
+        cursor_pos = ti.cursor_index()
+
+        self.text_input.bind(text=self.limit_text_length)  # Bind the text input to limit its length
         if hasattr(instance, 'is_long_press') and instance.is_long_press and instance.sub_key:
-            # Handle long press for subkeys
-            self.text_input.text += instance.sub_key
+            # Insert subkey at cursor position
+            ti.text = ti.text[:cursor_pos] + instance.sub_key + ti.text[cursor_pos:]
+            ti.cursor = (cursor_pos + len(instance.sub_key), 0)
         elif instance.function == 'Space':
-            self.text_input.text += ' '
+            if self.language_mode == 'japanese' and self.start_index < cursor_pos and not self.converting:
+                # Convert the text to Kanji using the converter
+                self.converting = True
+                self.converted_text = self.kanji_converter.convert(ti.text[self.start_index:cursor_pos],n_best=20)
+
+            if self.converting and len(self.converted_text) > 0:
+                suggested_text = self.converted_text.pop() if self.converted_text else ti.text[self.start_index:cursor_pos]
+                ti.text = ti.text[:self.start_index] + suggested_text + ti.text[cursor_pos:]
+                ti.cursor = (ti.cursor_index() + len(suggested_text), 0)
+            else:
+                ti.text = ti.text[:cursor_pos] + ' ' + ti.text[cursor_pos:]
+                ti.cursor = (cursor_pos + 1, 0)
         elif instance.function == 'Backspace':
-            self.text_input.text = self.text_input.text[:-1]
+            if cursor_pos > 0:
+                ti.text = ti.text[:cursor_pos-1] + ti.text[cursor_pos:]
+                ti.cursor = (cursor_pos - 1, 0)
         elif instance.function == "Shift":
-                for btn in self.buttons:
+                for btn in self.english_buttons:
                     btn.update_shift_text()
         elif instance.function == "Japanese":
-            pass
+            self.build_japanese_keyboard()
+        elif instance.function == "English":
+            self.build_qwerty_keyboard()
+        elif instance.function == "Enter":
+            if not self.entered and self.language_mode == 'japanese':
+                self.entered = True
+            else:
+                pass #save it in the log 
+        elif instance.function == "Daku-on":
+            self.text_input.text = self.text_input.text[:-1] + self.change_dakuon(self.text_input.text[-1]) # Add Daku-on character
         else:
-            self.text_input.text += instance.text
+            if self.converting:
+                self.converting = False  # Reset the converting flag
+                self.start_index = cursor_pos  # Reset the start index
+            self.text_input.text = ti.text[:cursor_pos] + instance.text + ti.text[cursor_pos:]
+            ti.cursor = (cursor_pos + len(instance.text), 0)
 
+    def change_dakuon(self, char):
+        dakuon_map = {
+            'か': 'が', 'き': 'ぎ', 'く': 'ぐ', 'け': 'げ', 'こ': 'ご',
+            'が': 'か', 'ぎ': 'き', 'ぐ': 'く', 'げ': 'け', 'ご': 'こ',
+            'さ': 'ざ', 'し': 'じ', 'す': 'ず', 'せ': 'ぜ', 'そ': 'ぞ',
+            'ざ': 'さ', 'じ': 'し', 'ず': 'す', 'ぜ': 'せ', 'ぞ': 'そ',
+            'た': 'だ', 'ち': 'ぢ', 'つ': 'づ', 'て': 'で', 'と': 'ど',
+            'だ': 'た', 'ぢ': 'ち', 'づ': 'っ', 'で': 'て', 'ど': 'と',
+            'は': 'ば', 'ひ': 'び', 'ふ': 'ぶ', 'へ': 'べ', 'ほ': 'ぼ',
+            'ば': 'ぱ', 'び': 'ぴ', 'ぶ': 'ぷ', 'べ': 'ぺ', 'ぼ': 'ぽ',
+            'ぱ': 'は', 'ぴ': 'ひ', 'ぷ': 'ふ', 'ぺ': 'へ', 'ぽ': 'ほ',
+            'あ': 'ぁ', 'い': 'ぃ', 'う': 'ぅ', 'え': 'ぇ', 'お': 'ぉ',
+            'ぁ': 'あ', 'ぃ': 'い', 'ぅ': 'う', 'ぇ': 'え', 'ぉ': 'お',
+            'や': 'ゃ', 'ゆ': 'ゅ', 'よ': 'ょ','っ': 'つ',
+            'ゃ': 'や', 'ゅ': 'ゆ', 'ょ': 'よ',
+            'ア': 'ァ', 'イ': 'ィ', 'ウ': 'ゥ', 'エ': 'ェ', 'オ': 'ォ',
+            'ァ': 'ア', 'ィ': 'イ', 'ゥ': 'ウ', 'ェ': 'エ', 'ォ': 'オ',
+            'カ': 'ガ', 'キ': 'ギ', 'ク': 'グ', 'ケ': 'ゲ', 'コ': 'ゴ',
+            'ガ': 'カ', 'ギ': 'キ', 'グ': 'ク', 'ゲ': 'ケ', 'ゴ': 'コ',
+            'サ': 'ザ', 'シ': 'ジ', 'ス': 'ズ', 'セ': 'ゼ', 'ソ': 'ゾ',
+            'ザ': 'サ', 'ジ': 'シ', 'ズ': 'ス', 'ゼ':   'セ', 'ゾ': 'ソ',
+            'タ': 'ダ', 'チ': 'ヂ', 'ツ': 'ヅ', 'テ': 'デ', 'ト': 'ド',
+            'ダ': 'タ', 'ヂ': 'チ', 'ヅ': 'ッ', 'デ': 'テ', 'ド': 'ト',
+            'ハ': 'バ', 'ヒ': 'ビ', 'フ': 'ブ', 'ヘ': 'ベ', 'ホ': 'ボ',
+            'バ': 'パ', 'ビ': 'ピ', 'ブ': 'プ', 'ベ': 'ペ', 'ボ': 'ポ',
+            'パ': 'ハ', 'ピ': 'ヒ', 'プ': 'フ', 'ペ': 'ヘ', 'ポ': 'ホ',
+            'ヤ': 'ャ', 'ユ': 'ュ', 'ヨ': 'ョ',
+            'ャ': 'ヤ', 'ュ': 'ユ', 'ョ': 'ヨ','ッ': 'ツ',
+            # Add more mappings as needed
+        }
+        return dakuon_map.get(char, char)
+
+    def limit_text_length(self, instance, value):
+        if len(value) > self.MAX_CHARS:
+            instance.text = value[:self.MAX_CHARS]
 
 class RoundedButton(Button):
-    def __init__(self, text = None,sub_key = None, shift_key = None,function = None, image = None, background_color = (0.2, 0.2, 0.2, 1), **kwargs):
-        super().__init__(**kwargs)
+    def __init__(self, text = None,sub_key = None, shift_key = None,function = None, image = None, background_color = (0.2, 0.2, 0.2, 1), font_name='fonts/Roboto-Regular.ttf', **kwargs):
+        super().__init__(font_name=font_name, **kwargs)
         self.text = text
         self.sub_key = sub_key
         self.shift_key = shift_key
@@ -200,7 +354,7 @@ class RoundedButton(Button):
                 pos_hint={'right': 1, 'top': 1},
                 halign='right',
                 valign='top',
-                font_name='fonts/Roboto-Bold.ttf'
+                font_name='fonts/MPLUS1p-Regular.ttf'
             )
             sub_key_label.bind(size=lambda instance, value: setattr(instance, 'text_size', value))
             self.float_layout.add_widget(sub_key_label)

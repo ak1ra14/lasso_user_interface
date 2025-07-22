@@ -8,6 +8,7 @@ from kivy.uix.gridlayout import GridLayout
 from kivy.uix.anchorlayout import AnchorLayout
 from utils.icons import IconTextButton, CircularImageButton
 from utils.config_loader import load_config
+from utils.layout import HeaderBar, Footer1Bar, Footer2Bar
 
 class MenuScreen1(Screen):
     def __init__(self, **kwargs):
@@ -62,8 +63,12 @@ class MenuScreen1(Screen):
         content_names = ["Location", "Volume", "Mode", "Alerts"]
         for i in range(4):
             content_name = content_names[i].lower()
+            content_path = content_name
+            if content_name == "mode":
+                mode = self.check_mode()
+                content_path = self.check_mode_for_image(mode)
             self.content_buttons[content_name] = IconTextButton(
-                icon_path=f'images/{content_name}.png',  # Placeholder for icons
+                icon_path=f'images/{content_path}.png',  # Placeholder for icons
                 text=content_names[i],
                 config=self.config_status[i],  # Pass config name
                 size=(202, 202),
@@ -71,35 +76,15 @@ class MenuScreen1(Screen):
             )
             content.add_widget(self.content_buttons[content_name])
 
-        # Layer 3: Footer
-        footer1 = BoxLayout(orientation='horizontal', size_hint_y=0.15, padding=0, spacing=0)
-        footer1.add_widget(CircularImageButton(
-            image_path="images/left_arrow.png",
-            diameter=80,
-            screen_name='menu2'  # Navigate to menu2 screen
-        ))
-        center = AnchorLayout(anchor_x='center', anchor_y='center', size_hint_x=1)
-        center.add_widget(Label(text="Page indicator Placeholder",))
-        footer1.add_widget(center)
-        footer1.add_widget(CircularImageButton(
-            image_path="images/right_arrow.png",
-            diameter=80,
-            screen_name='menu2'  # Navigate to menu2 screen
-        ))
-
-        footer2 = BoxLayout(orientation='horizontal', size_hint_y=0.05, padding=0, spacing=10)
-        footer2.add_widget(Label(text="Previous", size_hint_x=None, width=100))
-        footer2.add_widget(Label(text=f"Version: {load_config('config/V3.json').get('version', 'N/A')} | Device ID: {load_config('config/V3.json').get('sensor_ID', 'N/A')}",size_hint_x =1) )
-        footer2.add_widget(Label(text="Next", size_hint_x=None, width=100))
-
-
         # Combine all layers
         main_layout.add_widget(header)
         main_layout.add_widget(Widget(size_hint_y=None, height=60))  # Spacer with 40px height
         main_layout.add_widget(content)
         main_layout.add_widget(Widget(size_hint_y=None, height=30))  # Spacer with 20px height
-        main_layout.add_widget(footer1)
-        main_layout.add_widget(footer2)
+        
+        #footer
+        main_layout.add_widget(Footer1Bar(screen_name='menu2'))  # Pass screen name for navigation
+        main_layout.add_widget(Footer2Bar())
 
         time_bar = AnchorLayout(size_hint_y=0.05, )
         time_bar.add_widget(Label(text="Time Bar Placeholder",
@@ -127,7 +112,14 @@ class MenuScreen1(Screen):
             return f"Bed Exit - {single_multiple}"
         else:
             return f"Unknown Mode - {single_multiple}"
-
+        
+    def check_mode_for_image(self, text):
+        if text.startswith("Fall"):
+            return "fall_multiple" if "Multiple" in text else "fall_single"
+        elif text.startswith("Bed"):
+            return "bed_multiple" if "Multiple" in text else "bed_single"
+    
+    
     def has_any_alert(self):
         bed_alerts = load_config("config/bed.json").get("alert_checking", [])
         fall_alerts = load_config("config/fall.json").get("alert_checking", [])
@@ -157,13 +149,13 @@ class MenuScreen1(Screen):
         self.alerts = self.has_any_alert()
         # Update the config status labels or other UI elements if necessary
         # For example, you might have labels to display these values
-        self.update_config_status()
+        self.update_status()
         return [self.location, self.volume, self.mode, self.alerts]
         
         # Update labels or other UI elements if necessary
         # For example, you might have labels to display these values
     
-    def update_config_status(self):
+    def update_status(self):
         """
         Update the configuration status labels or other UI elements.
         This method can be customized based on how you want to display the config status.
@@ -171,6 +163,11 @@ class MenuScreen1(Screen):
         # Example: Assuming you have labels for each config status
         self.content_buttons['location'].status.text = self.location
         self.content_buttons['volume'].status.text = str(self.volume)
+        self.content_buttons['mode'].status.text = self.mode
+        mode = self.check_mode()
+        mode_path = self.check_mode_for_image(mode)
+        # Update the icon image directly if possible
+        self.content_buttons['mode'].image.source = f'images/{mode_path}.png'
         self.content_buttons['mode'].status.text = self.mode
         self.content_buttons['alerts'].status.text = self.alerts
 
@@ -254,26 +251,6 @@ class MenuScreen2(Screen):
             )
             content.add_widget(self.content_buttons[content_name])
 
-        # Layer 3: Footer
-        footer1 = BoxLayout(orientation='horizontal', size_hint_y=0.15, padding=0, spacing=0)
-        footer1.add_widget(CircularImageButton(
-            image_path="images/left_arrow.png",
-            diameter=80,
-            screen_name='menu'  # Navigate to menu2 screen
-        ))
-        center = AnchorLayout(anchor_x='center', anchor_y='center', size_hint_x=1)
-        center.add_widget(Label(text="Page indicator Placeholder",))
-        footer1.add_widget(center)
-        footer1.add_widget(CircularImageButton(
-            image_path="images/right_arrow.png",
-            diameter=80,
-            screen_name='menu'  # Navigate to menu2 screen
-        ))
-
-        footer2 = BoxLayout(orientation='horizontal', size_hint_y=0.05, padding=0, spacing=10)
-        footer2.add_widget(Label(text="Previous", size_hint_x=None, width=100))
-        footer2.add_widget(Label(text=f"Version: {load_config('config/V3.json').get('version', 'N/A')} | Device ID: {load_config('config/V3.json').get('sensor_ID', 'N/A')}",size_hint_x =1) )
-        footer2.add_widget(Label(text="Next", size_hint_x=None, width=100))
 
 
         # Combine all layers
@@ -281,8 +258,8 @@ class MenuScreen2(Screen):
         main_layout.add_widget(Widget(size_hint_y=None, height=60))  # Spacer with 40px height
         main_layout.add_widget(content)
         main_layout.add_widget(Widget(size_hint_y=None, height=30))  # Spacer with 20px height
-        main_layout.add_widget(footer1)
-        main_layout.add_widget(footer2)
+        main_layout.add_widget(Footer1Bar(screen_name='menu'))  # Pass screen name for navigation
+        main_layout.add_widget(Footer2Bar())
 
         time_bar = AnchorLayout(size_hint_y=0.05, )
         time_bar.add_widget(Label(text="Time Bar Placeholder",

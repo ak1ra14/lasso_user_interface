@@ -3,6 +3,9 @@ from kivy.uix.label import Label
 from kivy.uix.widget import Widget
 from kivy.graphics import Color, Line
 from utils.icons import IconTextButton
+from utils.icons import CircularImageButton
+from kivy.uix.anchorlayout import AnchorLayout
+from utils.config_loader import load_config
 class HeaderBar(BoxLayout):
     def __init__(self, title="Language", icon_path="images/home.png", button_text="Home", button_screen="menu", padding=[50, 0, 50, 0], spacing=10, **kwargs):
         super().__init__(orientation='horizontal', size_hint_y=0.30, pos_hint={'top': 1}, padding=padding, spacing=spacing, **kwargs)
@@ -25,6 +28,36 @@ class HeaderBar(BoxLayout):
             height=50,
             screen_name=button_screen
         ))
+
+class Footer1Bar(BoxLayout):
+    def __init__(self, screen_name, **kwargs):
+        super().__init__(orientation='horizontal', size_hint_y=0.15, padding=0, spacing=0, **kwargs)
+        self.add_widget(CircularImageButton(
+            image_path="images/left_arrow.png",
+            diameter=80,
+            screen_name=screen_name  # Navigate to menu2 screen
+        ))
+        center = AnchorLayout(anchor_x='center', anchor_y='center', size_hint_x=1)
+        center.add_widget(Label(text="Page indicator Placeholder",))
+        self.add_widget(center)
+        self.add_widget(CircularImageButton(
+            image_path="images/right_arrow.png",
+            diameter=80,
+            screen_name=screen_name  # Navigate to menu2 screen
+        ))
+
+
+class Footer2Bar(BoxLayout):
+    def __init__(self, **kwargs):
+        super().__init__(orientation='horizontal', size_hint_y=0.03, padding=0, spacing=10)
+        previous = Label(text="   Previous", size_hint_x=None, width=100, halign='left')
+        previous.bind(size=lambda inst, val: setattr(inst, 'text_size', val))
+        self.add_widget(previous)
+        self.add_widget(Label(text=f"Version: {load_config('config/V3.json').get('version', 'N/A')} | Device ID: {load_config('config/V3.json').get('sensor_ID', 'N/A')}",size_hint_x =1) )
+        next = Label(text="Next      ", size_hint_x=None, width=100, halign='right')
+        next.bind(size=lambda inst, val: setattr(inst, 'text_size', val))
+        self.add_widget(next)
+
 
 class SeparatorLine(Widget):
     def __init__(self, points=[50, 300, 950, 300], **kwargs):

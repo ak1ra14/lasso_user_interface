@@ -1,5 +1,5 @@
 from kivy.app import App
-from kivy.uix.screenmanager import ScreenManager, Screen
+from kivy.uix.screenmanager import ScreenManager, Screen, NoTransition
 from kivy.core.window import Window
 from utils.config_loader import load_config
 from kivy.clock import Clock
@@ -18,12 +18,10 @@ from screens.alert_type import AlertTypeScreen
 
 class MyApp(App):
     def build(self):
-        self.sm = ScreenManager()
+        self.sm = ScreenManager(transition=NoTransition())
         # Set the default volume to config setting
         set_system_volume(load_config('config/V3.json').get('volume', 50))
         self.sm.add_widget(MonitorScreen(name='monitor'))
-        self.sm.add_widget(MenuScreen1(name='menu'))
-        self.sm.add_widget(MenuScreen2(name='menu2'))
         self.sm.add_widget(DarkScreen(name='dark'))
 
         self.sm.current = 'monitor'
@@ -54,7 +52,9 @@ class MyApp(App):
         app = App.get_running_app()
         if not app.sm.has_screen(screen_name):
             # Instantiate and add the screen only when needed
-            if screen_name == 'menu2':
+            if screen_name == 'menu':
+                app.sm.add_widget(MenuScreen1(name='menu')) 
+            elif screen_name == 'menu2':
                 app.sm.add_widget(MenuScreen2(name='menu2'))
             elif screen_name == 'language':
                 app.sm.add_widget(LanguageScreen(name='language'))
@@ -69,7 +69,9 @@ class MyApp(App):
             elif screen_name == 'mode':
                 app.sm.add_widget(AlertModeScreen(name='mode'))
             elif screen_name == 'alerts':
-                app.sm.add_widget(AlertTypeScreen(name='alerts'))           
+                app.sm.add_widget(AlertTypeScreen(name='alerts'))  
+
+       
         app.sm.current = screen_name
 
 

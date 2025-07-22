@@ -56,7 +56,7 @@ class IconTextButton(Button):
         layout.pos = self.pos
         self.bind(pos=layout.setter('pos'), size=layout.setter('size'))
         if text is None:
-            image = Image(
+            self.image = Image(
             source=icon_path,
             allow_stretch=True,
             keep_ratio=True,
@@ -64,14 +64,14 @@ class IconTextButton(Button):
             pos_hint={'center_x': 0.5, 'center_y': 0.50}  # Center image vertically
             )
         else:
-            image = Image(
+            self.image = Image(
                 source=icon_path,
                 allow_stretch=True,
                 keep_ratio=True,
                 size_hint=(0.45,0.45),
                 pos_hint={'center_x': 0.5, 'center_y': 0.65}  # Center image vertically
             )
-        layout.add_widget(image)
+        layout.add_widget(self.image)
         if self.config:
             label = Label(
                 text=text,
@@ -90,11 +90,14 @@ class IconTextButton(Button):
                 font_size= self.size[1] * 0.1 -3,  # Adjust font size based on button height
                 font_name='fonts/Roboto-Regular.ttf',  # Path to your bold font file
                 color=(1, 1, 1, 1),
-                size_hint=(0.7, 0.1),
+                size_hint=(0.9, 0.1),
                 pos_hint={'center_x': 0.5, 'center_y': 0.15},
                 halign='center',
-                valign='middle'
+                valign='middle',
+                shorten=True,
+                max_lines=1,
             )
+            self.status.bind(size=lambda inst, val: setattr(inst, 'text_size', val))
             layout.add_widget(label)
             layout.add_widget(self.status)
 
@@ -257,7 +260,10 @@ class ToggleButton(BoxLayout):
             halign='left',
             valign='middle',
         )
-        self.two_label.bind(size=lambda inst, val: setattr(inst, 'text_size', val))
+        #call back function to set text size
+        self.two_label.text_size = self.two_label.size
+        #self.two_label.bind(size=lambda inst, val: setattr(inst, 'text_size', val))
+
 
         self.add_widget(self.one_label)
         self.add_widget(self.switch)
