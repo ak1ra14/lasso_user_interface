@@ -22,16 +22,16 @@ from kivy.core.window import Window
 from utils.config_loader import load_config
 from kivy.clock import Clock
 from screens.monitor import MonitorScreen
-class MonitorScreen(Screen):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        btn = Button(text="Go to Menu")
-        btn.bind(on_press=self.go_to_menu)
-        self.add_widget(btn)
+# class MonitorScreen(Screen):
+#     def __init__(self, **kwargs):
+#         super().__init__(**kwargs)
+#         btn = Button(text="Go to Menu")
+#         btn.bind(on_press=self.on_icon_click('menu'))
+#         self.add_widget(btn)
 
-    def go_to_menu(self, instance):
-        print("Button clicked, going to Menu")
-        self.manager.current = 'menu'
+#     def go_to_menu(self, instance):
+#         print("Button clicked, going to Menu")
+#         self.manager.current = 'menu'
         #Clock.schedule_once(lambda dt: setattr(self.manager, 'current', 'test3'), 0)
 
 # class TestScreen(Screen):
@@ -336,7 +336,8 @@ class TestApp(App):
     def on_icon_click(self, screen_name):
         app = App.get_running_app()
         if not app.sm.has_screen(screen_name):
-            pass
+            if screen_name == 'menu':
+                app.sm.add_widget(MonitorScreen(name='menu'))
             # Instantiate and add the screen only when needed
  
        
