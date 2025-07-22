@@ -20,7 +20,8 @@ class MyApp(App):
     def build(self):
         self.sm = ScreenManager(transition=NoTransition())
         # Set the default volume to config setting
-        set_system_volume(load_config('config/V3.json').get('volume', 50))
+        self.config = load_config('config/V3.json')
+        set_system_volume(self.config.get('volume', 50))
         self.sm.add_widget(MonitorScreen(name='monitor'))
         self.sm.add_widget(DarkScreen(name='dark'))
 
@@ -34,11 +35,11 @@ class MyApp(App):
 
         # self.page_indicator = PageIndicator(num_pages=2)
         return self.sm
-    
+
     def reset_screensaver_timer(self, *args):
         if self.screensaver_event:
             self.screensaver_event.cancel()
-        timeout = load_config('config/V3.json').get('screensaver', 60)
+        timeout = self.config.get('screensaver', 60)
         self.screensaver_event = Clock.schedule_once(self.activate_screensaver, timeout)
 
     def on_user_activity(self, *args):
@@ -49,6 +50,7 @@ class MyApp(App):
             self.sm.current = 'dark'
             
     def on_icon_click(self, screen_name):
+        return
         app = App.get_running_app()
         if not app.sm.has_screen(screen_name):
             # Instantiate and add the screen only when needed

@@ -11,6 +11,7 @@ import socket
 class MonitorScreen(Screen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        print("MonitorScreen initialized")
         ip_address = self.get_ip_address()
         header = BoxLayout(orientation='horizontal', pos_hint={'top': 1}, size_hint_y=0.2, padding=10, spacing=10)
         label = ColoredLabel(
