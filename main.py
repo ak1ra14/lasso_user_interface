@@ -23,6 +23,16 @@ class MyApp(App):
         self.config = load_config('config/V3.json')
         set_system_volume(self.config.get('volume', 50))
         self.sm.add_widget(MonitorScreen(name='monitor'))
+        self.sm.add_widget(MenuScreen1(name='menu'))
+        self.sm.add_widget(MenuScreen2(name='menu2'))
+        self.sm.add_widget(LanguageScreen(name='language'))
+        self.sm.add_widget(PowerScreen(name='power'))
+        self.sm.add_widget(ScreenSaverScreen(name='screensaver'))       
+        self.sm.add_widget(TimezoneScreen(name='time zone'))
+        self.sm.add_widget(VolumeScreen(name='volume'))
+        self.sm.add_widget(AlertModeScreen(name='mode'))
+        self.sm.add_widget(AlertTypeScreen(name='alerts'))
+        # Add the dark screen for screensaver
         self.sm.add_widget(DarkScreen(name='dark'))
 
         self.sm.current = 'monitor'
