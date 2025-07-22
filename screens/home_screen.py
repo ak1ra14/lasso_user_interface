@@ -94,6 +94,7 @@ class MenuScreen1(Screen):
         Update the configuration status labels or other UI elements.
         This method can be customized based on how you want to display the config status.
         """
+        return
         # Example: Assuming you have labels for each config status
         self.content_buttons['location'].status.text = self.location
         self.content_buttons['volume'].status.text = str(self.volume)
@@ -156,14 +157,16 @@ class MenuScreen1(Screen):
             if content_name == "mode":
                 mode = self.check_mode()
                 content_path = self.check_mode_for_image(mode)
-            self.content_buttons[content_name] = IconTextButton(
-                icon_path='atlas://data/images/defaulttheme/audio-volume-high',  # Placeholder for icons
-                text=content_names[i],
-                config=self.config_status[i],  # Pass config name
-                size=(202, 202),
-                screen_name=content_name,  # Navigate to respective screen
-            )
-            content.add_widget(self.content_buttons[content_name])
+            self.content_buttons[content_name] = Label(
+                text=content_names[i])
+            # IconTextButton(
+            #     icon_path='atlas://data/images/defaulttheme/audio-volume-high',  # Placeholder for icons
+            #     text=content_names[i],
+            #     config=self.config_status[i],  # Pass config name
+            #     size=(202, 202),
+            #     screen_name=content_name,  # Navigate to respective screen
+            # )
+            # content.add_widget(self.content_buttons[content_name])
 
         # Combine all layers
         self.main_layout.add_widget(header)
