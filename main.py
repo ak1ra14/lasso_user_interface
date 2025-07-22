@@ -6,7 +6,7 @@ from kivy.clock import Clock
 
 
 import socket
-from screens.home_screen import MenuScreen1, MenuScreen2
+from screens.home_screen_copy import MenuScreen1, MenuScreen2
 from screens.language import LanguageScreen
 from screens.monitor import MonitorScreen
 from screens.power import PowerScreen
