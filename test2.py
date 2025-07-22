@@ -341,5 +341,5 @@ class TestApp(App):
         app.sm.current = screen_name
 
 if __name__ == '__main__':
-    #Window.size = (1024, 600)  # Set the window size to 1024x600 pixels
+    Window.size = (1024, 600)  # Set the window size to 1024x600 pixels
     TestApp().run()
