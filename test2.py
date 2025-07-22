@@ -11,10 +11,16 @@ from kivy.uix.image import Image
 from kivy.uix.widget import Widget
 from kivy.uix.anchorlayout import AnchorLayout
 from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.floatlayout import FloatLayout
-from kivy.uix.gridlayout import GridLayout
+from screens.screensaver import DarkScreen
+
 from kivy.uix.button import Button
 from utils.layout import Footer1Bar, Footer2Bar
+from screens.monitor import MonitorScreen
+from kivy.app import App
+from kivy.uix.screenmanager import ScreenManager, Screen, NoTransition
+from kivy.core.window import Window
+from utils.config_loader import load_config
+from kivy.clock import Clock
 class MonitorScreen(Screen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -292,12 +298,48 @@ class TestScreen3(Screen):
 
 class TestApp(App):
     def build(self):
+        self.sm = ScreenManager(transition=NoTransition())
+        # Set the default volume to config setting
         self.config = load_config('config/V3.json')
-        self.location = self.config.get("location", "Room 101")
-        volume = self.config.get("volume", 50)
-        sm = ScreenManager()
-        sm.add_widget(MonitorScreen(name='monitor'))
-        sm.add_widget(TestScreen3(name='test3'))
-        return sm
+        #set_system_volume(self.config.get('volume', 50))
+        self.sm.add_widget(MonitorScreen(name='monitor'))
 
-TestApp().run()
+        self.sm.add_widget(TestScreen3(name='test3'))
+        self.sm.add_widget(DarkScreen(name='dark'))
+
+        self.sm.current = 'monitor'
+        # Set the initial screen to menu
+
+        self.screensaver_event = None
+        self.reset_screensaver_timer()
+        Window.bind(on_touch_down=self.on_user_activity)
+        Window.bind(on_key_down=self.on_user_activity)
+
+        # self.page_indicator = PageIndicator(num_pages=2)
+        return self.sm
+
+    def reset_screensaver_timer(self, *args):
+        if self.screensaver_event:
+            self.screensaver_event.cancel()
+        timeout = self.config.get('screensaver', 60)
+        self.screensaver_event = Clock.schedule_once(self.activate_screensaver, timeout)
+
+    def on_user_activity(self, *args):
+        self.reset_screensaver_timer()
+
+    def activate_screensaver(self, *args):
+        if self.sm.current != 'dark':
+            self.sm.current = 'dark'
+            
+    def on_icon_click(self, screen_name):
+        app = App.get_running_app()
+        if not app.sm.has_screen(screen_name):
+            pass
+            # Instantiate and add the screen only when needed
+ 
+       
+        app.sm.current = screen_name
+
+if __name__ == '__main__':
+    #Window.size = (1024, 600)  # Set the window size to 1024x600 pixels
+    TestApp().run()
