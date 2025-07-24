@@ -44,6 +44,7 @@ class MyApp(App):
         self.sm.add_widget(DeviceKeyboardScreen(name='device'))
         # Add the dark screen for screensaver
         self.sm.add_widget(DarkScreen(name='dark'))
+        self.sm.bind(current=self.on_screen_change)
 
         self.sm.current = 'monitor'
         # Set the initial screen to menu
@@ -87,11 +88,29 @@ class MyApp(App):
         self.time_bar.value = self.time_left
         if self.time_left <= 0:
             self._timer_event.cancel()
-            self.sm.current = 'monitor'  # Switch to monitor screen
+            if self.sm.current != 'dark':
+                self.sm.current = 'monitor'  # Switch to dark screen when time runs out
+            else:
+                return  # Switch to monitor screen
 
     def reset_timer(self, *args):
         self.time_left = self.time_limit
         self.time_bar.value = self.time_limit
+
+    def on_screen_change(self, *args):
+        if self.sm.current == 'dark':
+            self.time_bar.opacity = 0  # Hide time bar in dark screen
+        else:
+            self.time_bar.opacity = 1
+            if self.sm.current == 'monitor':
+                self.reset_timer_event()
+
+    def reset_timer_event(self):
+        if self._timer_event:
+            self._timer_event.cancel()
+        self.time_left = self.time_limit
+        self.time_bar.value = self.time_limit
+        self._timer_event = Clock.schedule_interval(self._update_time_bar, 1)
 
 if __name__ == '__main__':
     Window.size = (1024, 600)  # Set the window size to 1024x600 pixels
