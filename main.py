@@ -9,7 +9,7 @@ from kivy.clock import Clock
 from kivy.uix.progressbar import ProgressBar
 from kivy.uix.floatlayout import FloatLayout
 
-
+import sys
 import socket
 from screens.home_screen import MenuScreen1, MenuScreen2
 from screens.language import LanguageScreen
@@ -95,4 +95,6 @@ class MyApp(App):
 
 if __name__ == '__main__':
     Window.size = (1024, 600)  # Set the window size to 1024x600 pixels
+    if not (sys.platform.startswith('win') or sys.platform == 'darwin'):
+        Window.fullscreen = 'auto'  # Enable full screen mode
     MyApp().run()
