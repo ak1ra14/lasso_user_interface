@@ -16,6 +16,7 @@ from kivy.clock import Clock
 from screens.volume import set_system_volume
 from screens.monitor import MonitorScreen
 from screens.home_screen import MenuScreen1, MenuScreen2
+from utils.num_pad import NumberPadScreen
 
 
 # class CustomSwitch(FloatLayout):
@@ -112,16 +113,21 @@ class ToggleButton(BoxLayout):
         self.add_widget(self.switch)
         self.add_widget(self.two_label)
 
+
 # class MyApp(App):
 #     def build(self):
 #         return QwertyKeyboard(title="Custom QWERTY Keyboard")  # Initialize the keyboard with a title
 class MyApp(App):
     def build(self):
         self.sm = ScreenManager()
-        # Set the default volume to config setting
-        set_system_volume(load_config('config/V3.json').get('volume', 50))
-        self.sm.add_widget(MenuScreen1(name='menu'))
+        # # Set the default volume to config setting
+        # set_system_volume(load_config('config/V3.json').get('volume', 50))
+        # self.sm.add_widget(MenuScreen1(name='menu'))
+        # return self.sm
+        self.sm.add_widget(NumberPadScreen(name='num_pad'))
+        self.sm.current = 'num_pad'
         return self.sm
+    
 
 if __name__ == '__main__':
     Window.size = (1024, 600)  # Set the window size to 1024x600 pixels

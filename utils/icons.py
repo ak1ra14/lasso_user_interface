@@ -132,14 +132,16 @@ class IconTextButton(Button):
         self.label_widget.text = value
 
     def on_press(self):
-        """
-        Override the on_press method to change the current screen.
-        This method is called when the button is pressed.
-        """
         sound = SoundLoader.load('sound/tap.wav')
         if sound:
             sound.play()
-        App.get_running_app().sm.current = self.screen_name  # Navigate to the screen
+        # Only navigate if screen_name is set and no custom handler is bound
+        if self.screen_name and not self.has_custom_handler():
+            App.get_running_app().sm.current = self.screen_name
+
+    def has_custom_handler(self):
+        # Check if more than one handler is bound to on_press (the default and a custom one)
+        return len(self.get_property_observers('on_press')) > 1
 
 class CircularImageButton(Button):
     def __init__(self, image_path, diameter=80, screen_name=None, **kwargs):
@@ -182,8 +184,6 @@ class CircularImageButton(Button):
         if sound:
             sound.play()
         App.get_running_app().sm.current = self.screen_name  # Navigate to the screen
-
-    
 
 
 

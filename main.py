@@ -6,6 +6,8 @@ from kivy.uix.screenmanager import ScreenManager, Screen, NoTransition
 from kivy.core.window import Window
 from utils.config_loader import load_config
 from kivy.clock import Clock
+from kivy.uix.progressbar import ProgressBar
+from kivy.uix.floatlayout import FloatLayout
 
 
 import socket
@@ -18,6 +20,7 @@ from screens.timezone import TimezoneScreen
 from screens.volume import VolumeScreen, set_system_volume
 from screens.alert_mode import AlertModeScreen
 from screens.alert_type import AlertTypeScreen
+from screens.location import LocationScreen, Bed1KeyboardScreen, Bed2KeyboardScreen, DeviceKeyboardScreen
 
 class MyApp(App):
     def build(self):
@@ -35,33 +38,60 @@ class MyApp(App):
         self.sm.add_widget(VolumeScreen(name='volume'))
         self.sm.add_widget(AlertModeScreen(name='mode'))
         self.sm.add_widget(AlertTypeScreen(name='alerts'))
+        self.sm.add_widget(LocationScreen(name='location'))
+        self.sm.add_widget(Bed1KeyboardScreen(name='bed1'))
+        self.sm.add_widget(Bed2KeyboardScreen(name='bed2'))
+        self.sm.add_widget(DeviceKeyboardScreen(name='device'))
         # Add the dark screen for screensaver
         self.sm.add_widget(DarkScreen(name='dark'))
 
         self.sm.current = 'monitor'
         # Set the initial screen to menu
 
+        # Create a FloatLayout to overlay the time bar
+        self.root_layout = FloatLayout()
+        self.root_layout.add_widget(self.sm)
+
+        # Create the time bar
+        self.time_limit = 60
+        self.time_left = self.time_limit
+        self.time_bar = ProgressBar(max=self.time_limit, value=self.time_limit, size_hint=(0.94, None), height=20, pos_hint={'x': 0.03, 'y': 0.02})
+        self.root_layout.add_widget(self.time_bar)
+
+        # Start timer
+        self._timer_event = Clock.schedule_interval(self._update_time_bar, 1)
         self.screensaver_event = None
         self.reset_screensaver_timer()
         Window.bind(on_touch_down=self.on_user_activity)
         Window.bind(on_key_down=self.on_user_activity)
 
         # self.page_indicator = PageIndicator(num_pages=2)
-        return self.sm
-
+        return self.root_layout
+    
+    def on_user_activity(self, *args):
+        self.reset_screensaver_timer()
+        self.reset_timer()
+    
     def reset_screensaver_timer(self, *args):
         if self.screensaver_event:
             self.screensaver_event.cancel()
         timeout = self.config.get('screensaver', 60)
         self.screensaver_event = Clock.schedule_once(self.activate_screensaver, timeout)
 
-    def on_user_activity(self, *args):
-        self.reset_screensaver_timer()
-
     def activate_screensaver(self, *args):
         if self.sm.current != 'dark':
             self.sm.current = 'dark'
 
+    def _update_time_bar(self, dt):
+        self.time_left -= 1
+        self.time_bar.value = self.time_left
+        if self.time_left <= 0:
+            self._timer_event.cancel()
+            self.sm.current = 'monitor'  # Switch to monitor screen
+
+    def reset_timer(self, *args):
+        self.time_left = self.time_limit
+        self.time_bar.value = self.time_limit
 
 if __name__ == '__main__':
     Window.size = (1024, 600)  # Set the window size to 1024x600 pixels

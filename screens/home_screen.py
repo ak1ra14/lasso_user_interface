@@ -14,7 +14,7 @@ class MenuScreen1(Screen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.config = load_config('config/V3.json')
-        self.location = self.config.get("location", "Room 101")
+        self.location = self.config.get("location", "")
         volume = self.config.get("volume", 50)
         self.volume = f"{volume}%"
         self.mode = self.check_mode()
@@ -73,12 +73,17 @@ class MenuScreen1(Screen):
                 mode = self.check_mode()
                 content_path = self.check_mode_for_image(mode)
             self.content_buttons[content_name] = IconTextButton(
-                icon_path=f'images/{content_path}.png',  # Placeholder for icons
+                icon_path=f'images/{content_path}.png',
                 text=content_names[i],
-                config=self.config_status[i],  # Pass config name
+                config=self.config_status[i],
                 size=(202, 202),
-                screen_name=content_name,  # Navigate to respective screen
+                # Do NOT set screen_name here for dynamic navigation!
             )
+            if content_name == 'location':
+                self.content_buttons[content_name].bind(on_press=self.go_to_location)
+            else:
+                # For other buttons, you can still use screen_name if you want
+                self.content_buttons[content_name].screen_name = content_name
             content.add_widget(self.content_buttons[content_name])
 
         # Combine all layers
@@ -92,10 +97,10 @@ class MenuScreen1(Screen):
         self.main_layout.add_widget(Footer2Bar())
 
         time_bar = AnchorLayout(size_hint_y=0.05, )
-        time_bar.add_widget(Label(text="Time Bar Placeholder",
-                                size_hint_y=None, height=50,
-                                pos_hint={'center_x': 0.5, 'center_y': 0.5},
-                                font_size=20))
+        # time_bar.add_widget(Label(text="Time Bar Placeholder",
+        #                         size_hint_y=None, height=50,
+        #                         pos_hint={'center_x': 0.5, 'center_y': 0.5},
+        #                         font_size=20))
         self.main_layout.add_widget(time_bar)
 
     def _update_bg(self, *args):
@@ -175,7 +180,15 @@ class MenuScreen1(Screen):
         self.content_buttons['mode'].status.text = self.mode
         self.content_buttons['alerts'].status.text = self.alerts
 
-
+    def go_to_location(self, instance):
+        self.config = load_config('config/V3.json')
+        print("previous_mode:", self.config.get('previous_mode'))
+        if self.config.get('previous_mode', 'fall.json') == 'fall.json':
+            print("Switching to device screen")
+            self.manager.current = 'device'
+        else:
+            print("Switching to location screen")
+            self.manager.current = 'location'
 
 class MenuScreen2(Screen):
     def __init__(self, **kwargs):
@@ -265,11 +278,11 @@ class MenuScreen2(Screen):
         self.main_layout.add_widget(Footer1Bar(screen_name='menu'))  # Pass screen name for navigation
         self.main_layout.add_widget(Footer2Bar())
 
-        time_bar = AnchorLayout(size_hint_y=0.05, )
-        time_bar.add_widget(Label(text="Time Bar Placeholder",
-                                size_hint_y=None, height=50,
-                                pos_hint={'center_x': 0.5, 'center_y': 0.5},
-                                font_size=20))
+        time_bar = AnchorLayout(size_hint_y=0.05)
+        # time_bar.add_widget(Label(text=" ",
+        #                         size_hint_y=None, height=50,
+                          
+        #                         font_size=20))
         self.main_layout.add_widget(time_bar)
 
     def on_pre_enter(self):

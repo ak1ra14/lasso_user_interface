@@ -1,18 +1,19 @@
 {
-    "mincount": 1,
+    "mincount": 99,
     "nbeds": [
         2,
         [
-            "bed_001"
+            "bed_001dxijuhb",
+            "bed_002"
         ]
     ],
     "alert_checking": [
         [
-            1,
+            0,
             "sit_up"
         ],
         [
-            1,
+            0,
             "bed_exit"
         ],
         [

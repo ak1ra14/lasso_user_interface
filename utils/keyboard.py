@@ -10,14 +10,26 @@ from kivy.uix.floatlayout import FloatLayout
 from utils.icons import IconTextButton
 from kivy.uix.image import Image
 from kivy.clock import Clock
+from kivy.uix.screenmanager import Screen
 import mozcpy
+
+class KeyboardScreen(Screen):
+    def __init__(self, title, **kwargs):
+        super().__init__(**kwargs)
+        self.keyboard = QwertyKeyboard(title=title, enter_callback=self.press_enter)
+        self.add_widget(self.keyboard)
+    
+    def press_enter(self, instance):
+        # Your save logic here
+        print("Enter pressed from screen!")
 
 class QwertyKeyboard(FloatLayout):
     shift_activate = BooleanProperty(False)
     MAX_CHARS = 100  # Maximum characters allowed in the text input
 
-    def __init__(self, title, **kwargs): 
+    def __init__(self, title, enter_callback=None, **kwargs):
         super().__init__(**kwargs)
+        self.enter_callback = enter_callback
         self.english_buttons = []
         self.japanese_buttons = []
         self.language_mode = 'english'  # Default language mode
@@ -110,7 +122,8 @@ class QwertyKeyboard(FloatLayout):
             icon_path='images/home.png',
             size_hint=(None, None),
             size=(110, 110),
-            pos_hint={'top': 0.95, 'right': 0.97}
+            pos_hint={'top': 0.95, 'right': 0.97},
+            screen_name='menu',
         )
         overlay.add_widget(home_button)
         self.add_widget(overlay)  # Add overlay last so it's on top
@@ -162,7 +175,7 @@ class QwertyKeyboard(FloatLayout):
                 elif key == 'Enter':
                     btn = RoundedButton(text='', sub_key=sub_key, image='images/enter.png', font_size=24, font_name='fonts/Roboto-Bold.ttf',
                                         background_color=(0.22, 0.45, 0.91, 1), size_hint_x=None, width=key_width*1.5,
-                                        function='Enter',  shift_key='')
+                                        function='Enter',  shift_key='',on_press=self.press_enter)
                 elif key == 'Space':
                     btn = RoundedButton(text='', sub_key=sub_key,  font_size=24, font_name='fonts/Roboto-Bold.ttf',
                                         size_hint_x=None, width=key_width*5.35,
@@ -207,7 +220,7 @@ class QwertyKeyboard(FloatLayout):
                 elif key == 'Enter':
                     btn = RoundedButton(text='', sub_key=sub_key, image='images/enter.png', font_size=24, font_name='fonts/MPLUS1p-Regular.ttf',
                                         background_color=(0.22, 0.45, 0.91, 1), size_hint_x=None, width=key_width*1.5,
-                                        function='Enter')
+                                        function='Enter', on_press=self.press_enter)
                 elif key == 'Space':
                     btn = RoundedButton(text='空白/変換', sub_key=sub_key,  font_size=22, font_name='fonts/MPLUS1p-Regular.ttf',
                                         size_hint_x=None, width=key_width*1.5, background_color=(0.22, 0.45, 0.91, 1),
@@ -259,10 +272,7 @@ class QwertyKeyboard(FloatLayout):
         elif instance.function == "English":
             self.build_qwerty_keyboard()
         elif instance.function == "Enter":
-            if not self.entered and self.language_mode == 'japanese':
-                self.entered = True
-            else:
-                pass #save it in the log 
+            pass
         elif instance.function == "Daku-on":
             self.text_input.text = self.text_input.text[:-1] + self.change_dakuon(self.text_input.text[-1]) # Add Daku-on character
         else:
@@ -271,6 +281,10 @@ class QwertyKeyboard(FloatLayout):
                 self.start_index = cursor_pos  # Reset the start index
             self.text_input.text = ti.text[:cursor_pos] + instance.text + ti.text[cursor_pos:]
             ti.cursor = (cursor_pos + len(instance.text), 0)
+
+    def press_enter(self, instance):
+        if self.enter_callback:
+            self.enter_callback(instance)
 
     def change_dakuon(self, char):
         dakuon_map = {
