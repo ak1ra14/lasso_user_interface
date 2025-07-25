@@ -17,6 +17,7 @@ from screens.volume import set_system_volume
 from screens.monitor import MonitorScreen
 from screens.home_screen import MenuScreen1, MenuScreen2
 from utils.num_pad import NumberPadScreen
+from utils.icons import PageIndicator
 
 
 # class CustomSwitch(FloatLayout):
@@ -114,6 +115,20 @@ class ToggleButton(BoxLayout):
         self.add_widget(self.two_label)
 
 
+class PageIndicatorScreen(Screen):
+    def __init__(self, num_pages=8, **kwargs):
+        super().__init__(**kwargs)
+        self.num_pages = num_pages
+        boxlayout = BoxLayout(orientation='vertical', padding=10, spacing=10)
+        self.page_indicator = PageIndicator(num_pages=self.num_pages, pos_hint={'center_x': 0.5, 'center_y': 0.5}, size_hint=(None, None), size=(200, 50))
+        boxlayout
+        boxlayout.add_widget(self.page_indicator)
+        boxlayout.add_widget(Label(text="Page Indicator Example", font_size=24, size_hint_y=None, height=50, halign='center', valign='middle'))
+        self.add_widget(boxlayout)
+
+    def update_page(self, current_page):
+        self.page_indicator.current_page = current_page
+
 # class MyApp(App):
 #     def build(self):
 #         return QwertyKeyboard(title="Custom QWERTY Keyboard")  # Initialize the keyboard with a title
@@ -124,8 +139,10 @@ class MyApp(App):
         # set_system_volume(load_config('config/V3.json').get('volume', 50))
         # self.sm.add_widget(MenuScreen1(name='menu'))
         # return self.sm
+        # self.sm.add_widget(NumberPadScreen(name='num_pad'))
         self.sm.add_widget(NumberPadScreen(name='num_pad'))
-        self.sm.current = 'num_pad'
+        self.sm.add_widget(PageIndicatorScreen(num_pages=8, name='page_indicator'))
+        self.sm.current = 'page_indicator'
         return self.sm
     
 

@@ -6,9 +6,10 @@ from kivy.uix.button import Button
 from kivy.uix.widget import Widget
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.anchorlayout import AnchorLayout
-from utils.icons import IconTextButton, CircularImageButton
+from utils.icons import IconTextButton, CircularImageButton, PageIndicator
 from utils.config_loader import load_config
 from utils.layout import HeaderBar, Footer1Bar, Footer2Bar
+
 
 class MenuScreen1(Screen):
     def __init__(self, **kwargs):
@@ -93,14 +94,15 @@ class MenuScreen1(Screen):
         self.main_layout.add_widget(Widget(size_hint_y=None, height=30))  # Spacer with 20px height
 
         #footer
-        self.main_layout.add_widget(Footer1Bar(screen_name='menu2'))  # Pass screen name for navigation
+        self.main_layout.add_widget(Footer1Bar(screen_name='menu2',current_page=1))  # Pass screen name for navigation
         self.main_layout.add_widget(Footer2Bar())
 
+
+        page_indicator = PageIndicator(num_pages=2, current_page=1, size_hint=(None, None), width=200, height=80)
+        page_indicator.pos_hint = {'center_x': 0.51, 'center_y': 0.23}
+        self.add_widget(page_indicator)
+
         time_bar = AnchorLayout(size_hint_y=0.05, )
-        # time_bar.add_widget(Label(text="Time Bar Placeholder",
-        #                         size_hint_y=None, height=50,
-        #                         pos_hint={'center_x': 0.5, 'center_y': 0.5},
-        #                         font_size=20))
         self.main_layout.add_widget(time_bar)
 
     def _update_bg(self, *args):
@@ -275,14 +277,14 @@ class MenuScreen2(Screen):
         self.main_layout.add_widget(Widget(size_hint_y=None, height=60))  # Spacer with 40px height
         self.main_layout.add_widget(content)
         self.main_layout.add_widget(Widget(size_hint_y=None, height=30))  # Spacer with 20px height
-        self.main_layout.add_widget(Footer1Bar(screen_name='menu'))  # Pass screen name for navigation
+        self.main_layout.add_widget(Footer1Bar(screen_name='menu',current_page=2))  # Pass screen name for navigation
         self.main_layout.add_widget(Footer2Bar())
 
+        # Page indicator
+        page_indicator = PageIndicator(num_pages=2, current_page=2, size_hint=(None, None), width=200, height=80)
+        page_indicator.pos_hint = {'center_x': 0.51, 'center_y': 0.23}
+        self.add_widget(page_indicator)
         time_bar = AnchorLayout(size_hint_y=0.05)
-        # time_bar.add_widget(Label(text=" ",
-        #                         size_hint_y=None, height=50,
-                          
-        #                         font_size=20))
         self.main_layout.add_widget(time_bar)
 
     def on_pre_enter(self):

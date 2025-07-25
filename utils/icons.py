@@ -281,12 +281,50 @@ class ToggleButton(BoxLayout):
         self.add_widget(self.two_label)
 
 
+class PageIndicatorWidget(Widget):
+    """
+    A widget that displays a page indicator with dots.
+    It can be used to indicate the current page in a multi-page layout.
+    """
+    def __init__(self, num_pages=2, current_page=0, **kwargs):
+        super().__init__(**kwargs)
+        self.num_pages = num_pages
+        self.current_page = current_page - 1  # Adjust for zero-based index
+        self.dots = []
+        self.build_dots()
+
+    def build_dots(self):
+        self.canvas.clear()
+        self.dots = []
+        for i in range(self.num_pages):
+            with self.canvas:
+                if i == self.current_page:
+                    Color(0.22, 0.45, 0.91, 1)  # Blue for active
+                else:
+                    Color(0.8, 0.8, 0.8, 1)  # Gray for inactive
+                Ellipse(pos=(i * 30 + 10, 10), size=(20, 20))  # Adjust position and size as needed
+            dot = Widget(size_hint=(None, None), size=(20, 20))
+            self.dots.append(dot)
+    
+    def update_dots(self):
+        self.canvas.clear()
+        for i, dot in enumerate(self.dots):
+            with self.canvas:
+                if i == self.current_page:
+                    Color(0.22, 0.45, 0.91, 1)
+                else:
+                    Color(0.8, 0.8, 0.8, 1)
+                Ellipse(pos=(i * 30 + 10, 10), size=(20, 20))
+            dot = Widget(size_hint=(None, None), size=(20, 20))
+            self.dots.append(dot)
 
 class PageIndicator(BoxLayout):
     def __init__(self, num_pages=2, current_page=0, **kwargs):
         super().__init__(orientation='horizontal', spacing=10, **kwargs)
         self.num_pages = num_pages
-        self.current_page = current_page
+        self.width = num_pages * 30 + 20
+        self.pos_hint = {'center_x': 0.5, 'center_y': 0.5}
+        self.current_page = current_page -1  # Adjust for zero-based index
         self.dots = []
         self.build_dots()
 
@@ -294,12 +332,12 @@ class PageIndicator(BoxLayout):
         self.clear_widgets()
         self.dots = []
         for i in range(self.num_pages):
-            dot = Widget(size_hint=(None, None), size=(20, 20))
+            dot = Widget(size_hint=(None, None), size=(20, 20), size_hint_y=None, height=20)
             with dot.canvas:
                 Color(0.8, 0.8, 0.8, 1 if i != self.current_page else 1)  # Gray for inactive
                 if i == self.current_page:
                     Color(0.22, 0.45, 0.91, 1)  # Blue for active
-                Ellipse(pos=dot.pos, size=dot.size)
+                Ellipse(pos=(i * 30 + 10, (self.height - 20) / 2), size=(20, 20))
             dot.bind(pos=self.update_dot, size=self.update_dot)
             self.add_widget(dot)
             self.dots.append(dot)

@@ -2,10 +2,10 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
 from kivy.uix.widget import Widget
 from kivy.graphics import Color, Line
-from utils.icons import IconTextButton
-from utils.icons import CircularImageButton
+from utils.icons import IconTextButton, PageIndicator, CircularImageButton, PageIndicatorWidget
 from kivy.uix.anchorlayout import AnchorLayout
 from utils.config_loader import load_config
+
 class HeaderBar(BoxLayout):
     def __init__(self, title="Language", icon_path="images/home.png", button_text="Home", button_screen="menu", padding=[50, 0, 50, 0], spacing=10, **kwargs):
         super().__init__(orientation='horizontal', size_hint_y=0.30, pos_hint={'top': 1}, padding=padding, spacing=spacing, **kwargs)
@@ -30,16 +30,14 @@ class HeaderBar(BoxLayout):
         ))
 
 class Footer1Bar(BoxLayout):
-    def __init__(self, screen_name, **kwargs):
+    def __init__(self, screen_name,current_page, **kwargs):
         super().__init__(orientation='horizontal', size_hint_y=0.15, padding=0, spacing=0, **kwargs)
         self.add_widget(CircularImageButton(
             image_path="images/left_arrow.png",
             diameter=80,
             screen_name=screen_name  # Navigate to menu2 screen
         ))
-        center = AnchorLayout(anchor_x='center', anchor_y='center', size_hint_x=1)
-        center.add_widget(Label(text="Page indicator Placeholder",))
-        self.add_widget(center)
+        self.add_widget(Widget(size_hint_x=1))
         self.add_widget(CircularImageButton(
             image_path="images/right_arrow.png",
             diameter=80,

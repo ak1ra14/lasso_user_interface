@@ -76,7 +76,6 @@ class MyApp(App):
         Window.bind(on_touch_down=self.on_user_activity)
         Window.bind(on_key_down=self.on_user_activity)
 
-        # self.page_indicator = PageIndicator(num_pages=2)
         return self.root_layout
     
     def on_user_activity(self, *args):
