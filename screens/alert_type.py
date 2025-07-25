@@ -30,7 +30,7 @@ class AlertTypeScreen(Screen):
             size_hint_y=None,
             height=50,
             switch = AlertTypeButton(ack_button_text),
-            text_size_l_r=(0,250),
+            text_size_l_r=(0,350),
             pos=(50, 340),
         )
         self.buttons.append(ack_button)

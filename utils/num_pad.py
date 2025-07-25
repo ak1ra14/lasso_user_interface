@@ -59,12 +59,14 @@ class NumberPadScreen(Screen):
         right = FloatLayout(size_hint=(1,1))
         right.add_widget(IconTextButton(text="Home", font_size=18,
                                         icon_path="images/home.png",
+                                        screen_name="menu",
                                 size_hint=(None, None), size = (120,120),
                                 pos_hint = None,
                                 pos = (875,450)
                              ))
         right.add_widget(IconTextButton(text="Save", font_size=18,
                                 icon_path="images/save.png",
+                                on_press = self.on_save,
                                 size_hint=(None, None), size=(120, 120),
                                  pos=(720, 200)))
         right.bind(pos=self.setter('pos'))
@@ -77,6 +79,8 @@ class NumberPadScreen(Screen):
         )
         self.add_widget(partition)
         
+    def on_save(self, instance):
+        pass
 
     def set_cursor_at_end(self, instance, value):
         if value:  # If focused

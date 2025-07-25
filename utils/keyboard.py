@@ -114,7 +114,6 @@ class QwertyKeyboard(FloatLayout):
 
         self.build_qwerty_keyboard()  # Build the QWERTY keyboard layout
         self.add_widget(self.main_layout)
-        self.add_widget(Label(text='time bar will be here', pos=(0,10), size_hint_y=0.05)) # Spacer at the bottom
 
         overlay = FloatLayout(size_hint=(1, 1))
         home_button = IconTextButton(

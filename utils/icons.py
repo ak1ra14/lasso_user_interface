@@ -30,7 +30,7 @@ class IconTextButton(Button):
     It includes properties for text and image source, and its layout
     is defined entirely in Python.
     """
-    def __init__(self, icon_path, text = None, size=(190,190), radius=[20,], screen_name=None, config = False, pos_hint = None, **kwargs):
+    def __init__(self, icon_path = None, text = None, font_size = 20, size=(190,190), radius=[20,], screen_name=None, config = False, pos_hint = None, **kwargs):
         super().__init__(**kwargs)
         self.config = config  # Store the config status
         if 'size_hint' not in kwargs:
@@ -61,6 +61,21 @@ class IconTextButton(Button):
             size_hint=(0.6,0.6),
             pos_hint={'center_x': 0.5, 'center_y': 0.50}  # Center image vertically
             )
+        elif icon_path is None: #for server button 
+            label = Label(
+                text=text,
+                font_size= font_size,  # Adjust font size based on button height
+                font_name='fonts/Roboto-Bold.ttf',
+                color=(1, 1, 1, 1),
+                size_hint=(0.9, 0.9),
+                pos_hint={'center_x': 0.5, 'center_y': 0.5},
+                halign='center',
+                valign='middle'
+            )
+            label.bind(size=lambda inst, val: setattr(inst, 'text_size', val))
+            layout.add_widget(label)
+            self.add_widget(layout)
+            return 
         else:
             self.image = Image(
                 source=icon_path,
