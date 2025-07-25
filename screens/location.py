@@ -14,6 +14,8 @@ class LocationScreen(Screen):
 
         self.bed_no = self.bed_config.get("nbeds", [1,[' ']])[0]
         # Create a layout for the keypad
+    
+    def build_ui(self):
         header = HeaderBar(title="Location", icon_path="images/home.png", button_text="Home", button_screen="menu")
         self.add_widget(header)
 
@@ -49,6 +51,20 @@ class LocationScreen(Screen):
                 pos_hint={'center_x': 0.7, 'center_y': 0.5},
                 screen_name='bed2'
             ))
+
+    def on_leave(self):
+        self.clear_widgets()
+
+    def on_pre_enter(self):
+        """
+        This method is called before the screen is displayed.
+        It can be used to update the UI or perform any necessary actions.
+        """
+        self.config = load_config("config/V3.json")
+        self.bed_config = load_config("config/bed.json")
+        self.bed_no = self.bed_config.get("nbeds", [1, [' ']])[0]
+        self.build_ui()
+    
 
         
 
