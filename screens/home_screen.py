@@ -202,8 +202,8 @@ class MenuScreen2(Screen):
         self.screen_saver = f"{screen_saver} s"
         self.wifi_ssid = config.get('wifi_ssid', 'N/A')
         self.timezone = config.get('timezone', 'N/A')
-        self.mqtt_address = config.get('mqtt_address', 'N/A')
-        self.config_status = [self.screen_saver, self.wifi_ssid, self.timezone, self.mqtt_address]
+        self.region_address = config.get('region_address', 'N/A')
+        self.config_status = [self.screen_saver, self.wifi_ssid, self.timezone, self.region_address]
         self.content_buttons = {}
 
         self.build_ui()
@@ -290,8 +290,8 @@ class MenuScreen2(Screen):
         self.screen_saver = f"{self.config.get('screensaver', 160)} s"
         self.wifi_ssid = self.config.get('wifi_ssid', 'N/A')
         self.timezone = self.config.get('timezone', 'N/A')
-        self.mqtt_address = self.config.get('mqtt_address', 'N/A')
-        self.config_status = [self.screen_saver, self.wifi_ssid, self.timezone, self.mqtt_address]
+        self.region_address = self.config.get('region_address', 'N/A')
+        self.config_status = [self.screen_saver, self.wifi_ssid, self.timezone, self.region_address]
         self.update_config_status()
 
     def update_config_status(self):
@@ -303,4 +303,4 @@ class MenuScreen2(Screen):
         self.content_buttons['screensaver'].status.text = self.screen_saver
         self.content_buttons['wi-fi'].status.text = self.wifi_ssid
         self.content_buttons['time zone'].status.text = self.timezone
-        self.content_buttons['servers'].status.text = self.mqtt_address
+        self.content_buttons['servers'].status.text = self.region_address
