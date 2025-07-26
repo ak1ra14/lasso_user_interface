@@ -1,5 +1,36 @@
 import sys
 import subprocess
+import threading
+from utils.layout import HeaderBar
+from kivy.uix.screenmanager import Screen
+from kivy.uix.label import Label
+from kivy.clock import Clock
+
+class WifiLoadingScreen(Screen):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.header = HeaderBar(title=" ")
+        self.add_widget(self.header)
+        self.add_widget(Label(text="Scanning WiFi...", size_hint=(1, 0.1), pos_hint={'center_x': 0.5, 'center_y': 0.5}))
+
+    def on_pre_enter(self):
+        # Start scanning in a background thread when the screen is shown
+        threading.Thread(target=self.scan_wifi, daemon=True).start()
+
+    def scan_wifi(self):
+        wifi_list = get_available_wifi()
+        # Update UI on the main thread
+        Clock.schedule_once(lambda dt: self.show_results(wifi_list))
+
+    def show_results(self, wifi_list):
+        self.clear_widgets()
+        self.add_widget(self.header)
+        if wifi_list:
+            for ssid in wifi_list:
+                self.add_widget(Label(text=ssid, size_hint=(1, None), height=40))
+        else:
+            self.add_widget(Label(text="No WiFi networks found.", size_hint=(1, None), height=40))
+
 
 def get_available_wifi():
     wifi_list = []

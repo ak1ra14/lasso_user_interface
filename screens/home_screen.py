@@ -257,7 +257,7 @@ class MenuScreen2(Screen):
         # Layer 2: Middle content (e.g., 4 buttons)
                 # Layer 2: Middle content (e.g., 4 buttons)
         content = BoxLayout(orientation='horizontal', spacing=50, size_hint_y=0.35)
-        content_names = ["Screensaver", "Wi-fi", "Time Zone", "Servers"]
+        content_names = ["Screensaver", "Wi-Fi", "Time Zone", "Servers"]
         image_path = ["screen_saver", "wifi", "timezone", "servers"]
         for i in range(4):
             content_name = content_names[i].lower()
