@@ -140,11 +140,9 @@ def get_available_wifi():
 
 
 class WifiPasswordScreen(KeyboardScreen):
-    def __init__(self, wifi_name = None, **kwargs):
-        super().__init__(**kwargs)
-        self.title = "Wi-Fi Password"   
+    def __init__(self, title = "Wi-Fi Password", wifi_name = None, **kwargs):
+        super().__init__(**kwargs, title=title)
         self.wifi_name = wifi_name
-        
 
 
 class SelectableButton(Button):
