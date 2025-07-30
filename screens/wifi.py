@@ -11,6 +11,7 @@ from kivy.graphics import Color, Rectangle
 from kivy.uix.button import Button
 from utils.config_loader import load_config, save_config
 from utils.icons import IconTextButton
+from utils.keyboard import QwertyKeyboard
 
 class WifiLoadingScreen(Screen):
     def __init__(self, **kwargs):
@@ -68,7 +69,7 @@ class WifiLoadingScreen(Screen):
             icon_path ='images/connection.png',
             size = (120,120),
             pos_hint={'center_x': 0.25, 'center_y': 0.25},
-            on_release=lambda x: self.select_wifi(self.selected_wifi)
+            on_release=self.connect_wifi(wifi_name=self.selected_wifi)
         )
                 
         scroll.add_widget(list_box)
@@ -85,6 +86,14 @@ class WifiLoadingScreen(Screen):
         btn.selected = True
         btn.update_color()
         self.selected_wifi = btn.text
+    
+    def connect_wifi(self, wifi_name):
+        self.clear_widgets()
+        self.keyboard = QwertyKeyboard(
+            title='wifi_password',
+        )
+        self.add_widget(self.keyboard)
+
 
 
 def get_available_wifi():
@@ -119,6 +128,7 @@ def get_available_wifi():
         except Exception as e:
             print("Error getting Wi-Fi:", e)
     return wifi_list
+
 
 
 class SelectableButton(Button):
