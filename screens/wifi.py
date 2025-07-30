@@ -47,7 +47,6 @@ class WifiLoadingScreen(Screen):
                             bar_color=(0.2, 0.6, 0.8, 1),  # Active bar color (blue)
                             bar_inactive_color=(0.7, 0.7, 0.7, 1),  # Inactive bar color (gray)
                             pos_hint={'center_x': 0.5, 'center_y': 0.5},
-                            size_hint = (None, None),
                             size=(500,300),
                             do_scroll_x=False)
         with scroll.canvas.before:
