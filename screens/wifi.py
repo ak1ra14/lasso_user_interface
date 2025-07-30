@@ -69,7 +69,7 @@ class WifiLoadingScreen(Screen):
             icon_path ='images/connection.png',
             size = (120,120),
             pos_hint={'center_x': 0.25, 'center_y': 0.25},
-            on_release=self.connect_wifi(wifi_name=self.selected_wifi)
+            on_release=self.connect_wifi()
         )
                 
         scroll.add_widget(list_box)
@@ -148,7 +148,7 @@ class SelectableButton(Button):
             self.rect = Rectangle(pos=self.pos, size=self.size)
         self.bind(pos=self._update_rect, size=self._update_rect)
         self.update_color()
-        self.bind(on_relase=self.on_press)
+        self.bind(on_release=self.on_press)
     
     def _update_rect(self, *args):
         """
