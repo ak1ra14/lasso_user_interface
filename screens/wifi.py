@@ -11,7 +11,7 @@ from kivy.graphics import Color, Rectangle
 from kivy.uix.button import Button
 from utils.config_loader import load_config, save_config
 from utils.icons import IconTextButton
-from utils.keyboard import QwertyKeyboard
+from utils.keyboard import KeyboardScreen
 
 class WifiLoadingScreen(Screen):
     def __init__(self, **kwargs):
@@ -87,12 +87,21 @@ class WifiLoadingScreen(Screen):
         btn.update_color()
         self.selected_wifi = btn.text
     
-    def connect_wifi(self, wifi_name):
-        self.clear_widgets()
-        self.keyboard = QwertyKeyboard(
-            title='wifi_password',
-        )
-        self.add_widget(self.keyboard)
+    def connect_wifi(self):
+        """
+        Connect to the selected Wi-Fi network.
+        """
+        if not self.selected_wifi:
+            print("No Wi-Fi selected")
+            return
+        print(f"Connecting to {self.selected_wifi}...")
+        # Here you would implement the logic to connect to the Wi-Fi network
+        # For example, you might open a new screen to enter the password
+        self.manager.current = 'wifi_password'
+        wifi_password_screen = self.manager.get_screen('wifi_password')
+        wifi_password_screen.wifi_name = self.selected_wifi
+        
+
 
 
 
@@ -129,6 +138,12 @@ def get_available_wifi():
             print("Error getting Wi-Fi:", e)
     return wifi_list
 
+
+class WifiPasswordScreen(KeyboardScreen):
+    def __init__(self, wifi_name = None, **kwargs):
+        super().__init__(**kwargs)
+        self.wifi_name = wifi_name
+        
 
 
 class SelectableButton(Button):
