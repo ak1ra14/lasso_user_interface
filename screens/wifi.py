@@ -2,6 +2,7 @@ import sys
 import subprocess
 import threading
 from utils.layout import HeaderBar
+from kivy.app import App
 from kivy.uix.screenmanager import Screen
 from kivy.uix.label import Label
 from kivy.clock import Clock
@@ -97,8 +98,8 @@ class WifiLoadingScreen(Screen):
         print(f"Connecting to {self.selected_wifi}...")
         # Here you would implement the logic to connect to the Wi-Fi network
         # For example, you might open a new screen to enter the password
-        self.manager.current = 'wifi_password'
-        wifi_password_screen = self.manager.get_screen('wifi_password')
+        App.get_running_app().sm.current = 'wifi password'
+        wifi_password_screen = App.get_running_app().sm.get_screen('wifi password')
         wifi_password_screen.wifi_name = self.selected_wifi
         
 
