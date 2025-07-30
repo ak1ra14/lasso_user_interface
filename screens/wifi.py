@@ -10,13 +10,14 @@ from kivy.uix.scrollview import ScrollView
 from kivy.graphics import Color, Rectangle
 from kivy.uix.button import Button
 from utils.config_loader import load_config, save_config
+from utils.icons import IconTextButton
 
 class WifiLoadingScreen(Screen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.config = load_config("config/V3.json")
         self.selected_wifi = self.config.get('wifi_ssid', {})
-        self.header = HeaderBar(title=" ")
+        self.header = HeaderBar(title="Wi-Fi SSID")
         self.add_widget(self.header)
         self.add_widget(Label(text="Scanning WiFi...", size_hint=(1, 0.1), pos_hint={'center_x': 0.5, 'center_y': 0.5}))
         self.wifi_list = []
@@ -54,10 +55,26 @@ class WifiLoadingScreen(Screen):
             rect = Rectangle(pos=scroll.pos, size=scroll.size)
         scroll.bind(pos=lambda instance, value: setattr(rect, 'pos', value))
         scroll.bind(size=lambda instance, value: setattr(rect, 'size', value))
+
+        scan_wifi = IconTextButton(
+            text="Scan WiFi",
+            icon_path ='images/wifi.png',
+            size = (120,120),
+            pos_hint={'center_x': 0.3, 'center_y': 0.6},
+            on_release=lambda x: threading.Thread(target=self.scan_wifi, daemon=True).start()
+        )
+        connect_wifi = IconTextButton(
+            text="Connect",
+            icon_path ='images/connection.png',
+            size = (120,120),
+            pos_hint={'center_x': 0.3, 'center_y': 0.2},
+            on_release=lambda x: self.select_wifi(self.selected_wifi)
+        )
                 
         scroll.add_widget(list_box)
         self.add_widget(scroll)
-    
+        self.add_widget(scan_wifi)
+        self.add_widget(connect_wifi)
 
     def select_wifi(self, btn):
         for b in self.timezone_list:
