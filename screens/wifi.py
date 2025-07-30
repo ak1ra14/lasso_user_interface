@@ -67,7 +67,7 @@ class WifiLoadingScreen(Screen):
             text="Connect Wi-Fi",
             icon_path ='images/connection.png',
             size = (120,120),
-            pos_hint={'center_x': 0.3, 'center_y': 0.25},
+            pos_hint={'center_x': 0.25, 'center_y': 0.25},
             on_release=lambda x: self.select_wifi(self.selected_wifi)
         )
                 
@@ -77,7 +77,7 @@ class WifiLoadingScreen(Screen):
         self.add_widget(connect_wifi)
 
     def select_wifi(self, btn):
-        for b in self.timezone_list:
+        for b in self.wifi_list:
             if b == btn:
                 continue
             b.selected = False
