@@ -57,17 +57,17 @@ class WifiLoadingScreen(Screen):
         scroll.bind(size=lambda instance, value: setattr(rect, 'size', value))
 
         scan_wifi = IconTextButton(
-            text="Scan WiFi",
+            text="Scan Wi-Fi",
             icon_path ='images/wifi.png',
             size = (120,120),
-            pos_hint={'center_x': 0.3, 'center_y': 0.6},
+            pos_hint={'center_x': 0.25, 'center_y': 0.55},
             on_release=lambda x: threading.Thread(target=self.scan_wifi, daemon=True).start()
         )
         connect_wifi = IconTextButton(
-            text="Connect",
+            text="Connect Wi-Fi",
             icon_path ='images/connection.png',
             size = (120,120),
-            pos_hint={'center_x': 0.3, 'center_y': 0.2},
+            pos_hint={'center_x': 0.3, 'center_y': 0.25},
             on_release=lambda x: self.select_wifi(self.selected_wifi)
         )
                 
@@ -161,6 +161,9 @@ class SelectableButton(Button):
         Override the on_press method to handle button press.
         """
         super().on_press()
+        self.selection.selected_wifi = self.text
+        print(f"Selected Wi-Fi: {self.text}")
+        self.selection.select_wifi(self)
 
 # Example usage:
 if __name__ == "__main__":
