@@ -221,9 +221,10 @@ class WifiConnectedScreen(Screen):
         self.add_widget(Label(
             text="Successfully connected to ",
             font_size=40,
-            pos_hint={'center_x': 0.5, 'center_y': 0.4},
+            pos_hint={'center_x': 0.5, 'center_y': 0.43},
             size_hint=(None, None),
-            size=(400, 100)
+            size=(400, 100),
+            font_family='fonts/MPLUS1p-Regular.ttf'
         ))
         self.label = Label(
             text='temporary',
@@ -231,7 +232,8 @@ class WifiConnectedScreen(Screen):
             color = (1,1,0,0.5),  # Yellow color for success
             pos_hint={'center_x': 0.5, 'center_y': 0.3},
             size_hint=(None, None),
-            size=(400, 100)
+            size=(400, 100),
+            font_family='fonts/MPLUS1p-Regular.ttf'
         )
         self.add_widget(self.label)
 
@@ -248,7 +250,8 @@ class WifiErrorScreen(Screen):
             font_size=40,
             pos_hint={'center_x': 0.5, 'center_y': 0.5},
             size_hint=(None, None),
-            size=(400, 100)
+            size=(400, 100),
+            font_family='fonts/MPLUS1p-Regular.ttf'
         ))
         self.label = Label(
             text="temporary",
@@ -256,13 +259,16 @@ class WifiErrorScreen(Screen):
             color = (1,1,0,0.5),  # Yellow color for error
             pos_hint={'center_x': 0.5, 'center_y': 0.4},
             size_hint=(None, None),
-            size=(400, 100)
+            size=(400, 100),
+            font_family='fonts/MPLUS1p-Regular.ttf'
         )
         self.add_widget(IconTextButton(
             text="Try again",
             size=(200,80),
-            pos_hint={'center_x': 0.5, 'center_y': 0.3},
+            font_size=40,
+            pos_hint={'center_x': 0.5, 'center_y': 0.25},
             screen_name='wifi password',
+            font_family='fonts/MPLUS1p-Regular.ttf'
         ))  
 
         self.add_widget(self.label)
