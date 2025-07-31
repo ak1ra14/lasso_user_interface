@@ -23,7 +23,7 @@ from screens.alert_type import AlertTypeScreen
 from screens.location import LocationScreen, Bed1KeyboardScreen, Bed2KeyboardScreen, DeviceKeyboardScreen
 from screens.server import ServerScreen, MQTTTopicKeyboardScreen, RegionServerScreen, MQTTBrokerIPScreen, AlertLight1Screen, AlertLight2Screen
 from utils.num_pad import NumberPadScreen
-from screens.wifi import WifiLoadingScreen, WifiPasswordScreen, WifiConnectingScreen
+from screens.wifi import WifiLoadingScreen, WifiPasswordScreen, WifiConnectingScreen, WifiConnectedScreen, WifiErrorScreen
 
 
 class MyApp(App):
@@ -55,7 +55,8 @@ class MyApp(App):
         self.sm.add_widget(WifiLoadingScreen(name='wi-fi'))
         self.sm.add_widget(WifiPasswordScreen(name='wifi password'))
         self.sm.add_widget(WifiConnectingScreen(name='wifi connecting'))
-
+        self.sm.add_widget(WifiConnectedScreen(name='wifi connected'))
+        self.sm.add_widget(WifiErrorScreen(name='wifi error'))
 
         # Add the dark screen for screensaver
         self.sm.add_widget(DarkScreen(name='dark'))

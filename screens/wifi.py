@@ -186,20 +186,11 @@ class WifiPasswordScreen(KeyboardScreen):
                     config['wifi_password'] = password
                     save_config('config/V3.json', config)
                     print(f"Connected to {self.wifi_name} with password: {password}")
-                    self.clear_widgets()
-                    self.add_widget(HeaderBar(title=" "))
-                    self.add_widget(Label(text=f"Connected to {self.wifi_name}", font_size=40, pos_hint={'center_x': 0.5, 'center_y': 0.5}))
+                    App.get_running_app().sm.current = 'wifi connected'
+
                 else:
                     print(f"Failed to connect to {self.wifi_name} with password: {password}")
-                    self.clear_widgets()
-                    self.add_widget(HeaderBar(title=" "))
-                    self.add_widget(Label(text=f"Failed to connect to {self.wifi_name}", font_size=40, pos_hint={'center_x': 0.5, 'center_y': 0.5}))
-                    self.add_widget(IconTextButton(
-                        text="Try again",
-                        size=(200, 80),
-                        pos_hint={'center_x': 0.5, 'center_y': 0.3},
-                        screen_name='wifi password'
-                        ))
+                    App.get_running_app().sm.current = 'wifi error'
             Clock.schedule_once(after_connect, 0)
 
         threading.Thread(target=do_connect, daemon=True).start()
@@ -215,6 +206,35 @@ class WifiConnectingScreen(Screen):
             size=(400, 100)
         ))
 
+class WifiConnectedScreen(Screen):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.add_widget(HeaderBar(title=" "))
+        self.add_widget(Label(
+            text="Connected to Wi-Fi!",
+            font_size=40,
+            pos_hint={'center_x': 0.5, 'center_y': 0.5},
+            size_hint=(None, None),
+            size=(400, 100)
+        ))
+
+class WifiErrorScreen(Screen):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.add_widget(HeaderBar(title=" "))
+        self.add_widget(Label(
+            text="Failed to connect to Wi-Fi.",
+            font_size=40,
+            pos_hint={'center_x': 0.5, 'center_y': 0.5},
+            size_hint=(None, None),
+            size=(400, 100)
+        ))
+        self.add_widget(IconTextButton(
+            text="Try again",
+            size=(200,80),
+            pos_hint={'center_x': 0.5, 'center_y': 0.3},
+            screen_name='wifi password',
+        ))  
 
 def connect_wifi_linux(ssid, password):
     try:
