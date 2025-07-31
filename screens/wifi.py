@@ -31,7 +31,6 @@ class WifiLoadingScreen(Screen):
     def scan_wifi(self):
         wifi_list = get_available_wifi()
         # Update UI on the main thread
-
         Clock.schedule_once(lambda dt: self.show_results(wifi_list), 1)
 
     def show_results(self, wifi_list):
@@ -104,6 +103,10 @@ class WifiLoadingScreen(Screen):
         wifi_password_screen.wifi_name = self.selected_wifi
         
 def get_available_wifi():
+    '''
+    Get a list of available Wi-Fi networks based on the platform.
+    Returns:
+        list: A list of available Wi-Fi SSIDs.'''
     wifi_list = []
     if sys.platform == 'darwin':  # Mac
         try:
@@ -157,6 +160,76 @@ class WifiPasswordScreen(KeyboardScreen):
         App.get_running_app().sm.current = 'wi-fi'
         wifi_loading_screen = App.get_running_app().sm.get_screen('wi-fi')
         wifi_loading_screen.selected_wifi = self.wifi_name
+
+    def on_press_enter(self, instance):
+        """
+        Handle the Enter key press to save the Wi-Fi password.
+        """
+        password = self.keyboard_input.text.strip()
+        if not password:
+            print("Password cannot be empty")
+            return
+        if not self.wifi_name:
+            print("No Wi-Fi network selected")
+            return
+        
+        # Connect to the Wi-Fi network
+        if not connect_wifi(self.wifi_name, password):
+            print(f"Failed to connect to {self.wifi_name} with password: {password}")
+            return
+        
+        # Save the Wi-Fi configuration
+        config = load_config('config/V3.json')
+        config['wifi_ssid'] = self.wifi_name
+        config['wifi_password'] = password
+        save_config('config/V3.json', config)
+        
+        print(f"Connected to {self.wifi_name} with password: {password}")
+        App.get_running_app().sm.current = 'menu'
+
+
+def connect_wifi_linux(ssid, password):
+    try:
+        # Add Wi-Fi connection
+        subprocess.run(['nmcli', 'dev', 'wifi', 'connect', ssid, 'password', password], check=True)
+        print(f"Connected to {ssid}")
+        return True
+    except subprocess.CalledProcessError as e:
+        print(f"Failed to connect: {e}")
+        return False
+
+def connect_wifi_mac(ssid, password):
+    try:
+        # Find your Wi-Fi device name (usually 'en0')
+        device = 'en0'
+        subprocess.run(['networksetup', '-setairportnetwork', device, ssid, password], check=True)
+        print(f"Connected to {ssid}")
+        return True
+    except subprocess.CalledProcessError as e:
+        print(f"Failed to connect: {e}")
+        return False
+
+def connect_wifi_windows(ssid):
+    try:
+        subprocess.run(['netsh', 'wlan', 'connect', f'name={ssid}'], check=True)
+        print(f"Connected to {ssid}")
+        return True
+    except subprocess.CalledProcessError as e:
+        print(f"Failed to connect: {e}")
+        return False
+
+def connect_wifi(ssid, password):
+    if sys.platform.startswith('linux'):
+        return connect_wifi_linux(ssid, password)
+    elif sys.platform == 'darwin':
+        return connect_wifi_mac(ssid, password)
+    elif sys.platform.startswith('win'):
+        return connect_wifi_windows(ssid)
+    else:
+        print("Unsupported platform")
+        return False
+            
+
 
 class SelectableButton(Button):
     """
