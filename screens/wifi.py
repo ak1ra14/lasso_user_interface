@@ -186,11 +186,20 @@ class WifiPasswordScreen(KeyboardScreen):
                     config['wifi_password'] = password
                     save_config('config/V3.json', config)
                     print(f"Connected to {self.wifi_name} with password: {password}")
-                    app.sm.current = 'menu'
+                    self.clear_widgets()
+                    self.add_widget(HeaderBar(title=" "))
+                    self.add_widget(Label(text=f"Connected to {self.wifi_name}", font_size=40, pos_hint={'center_x': 0.5, 'center_y': 0.5}))
                 else:
                     print(f"Failed to connect to {self.wifi_name} with password: {password}")
-                    # Optionally show an error screen or message
-                    app.sm.current = 'wifi password'
+                    self.clear_widgets()
+                    self.add_widget(HeaderBar(title=" "))
+                    self.add_widget(Label(text=f"Failed to connect to {self.wifi_name}", font_size=40, pos_hint={'center_x': 0.5, 'center_y': 0.5}))
+                    self.add_widget(IconTextButton(
+                        text="Try again",
+                        size=(200, 80),
+                        pos_hint={'center_x': 0.5, 'center_y': 0.3},
+                        screen_name='wifi password'
+                        ))
             Clock.schedule_once(after_connect, 0)
 
         threading.Thread(target=do_connect, daemon=True).start()
