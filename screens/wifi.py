@@ -102,7 +102,6 @@ class WifiLoadingScreen(Screen):
         wifi_password_screen = App.get_running_app().sm.get_screen('wifi password')
         wifi_password_screen.wifi_name = self.selected_wifi
         
-
 def get_available_wifi():
     wifi_list = []
     if sys.platform == 'darwin':  # Mac
@@ -141,7 +140,14 @@ class WifiPasswordScreen(KeyboardScreen):
     def __init__(self, title = "Wi-Fi Password", wifi_name = None, **kwargs):
         super().__init__(**kwargs, title=title)
         self.wifi_name = wifi_name
-
+        self.wifi_scan_button = IconTextButton(
+            text="Wi-Fi SSID",
+            icon_path ='images/wifi.png',
+            size = (120,120),
+            pos_hint={'center_x': 0.75, 'center_y': 0.75},
+            on_release=lambda x: threading.Thread(target=self.scan_wifi, daemon=True).start()
+        )
+        self.add_widget(self.wifi_scan_button)
 
 class SelectableButton(Button):
     """
