@@ -229,7 +229,7 @@ class WifiConnectedScreen(Screen):
         self.label = Label(
             text='temporary',
             font_size=60,
-            color = (1,1,0,0.5),  # Yellow color for success
+            color = (1,1,0,1),  # Yellow color for success
             pos_hint={'center_x': 0.5, 'center_y': 0.3},
             size_hint=(None, None),
             size=(400, 100),
@@ -245,6 +245,12 @@ class WifiErrorScreen(Screen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.add_widget(HeaderBar(title=" "))
+        self.add_widget(Image(
+            source='images/wifi_failed.png',
+            size_hint=(None, None),
+            size=(200, 200),
+            pos_hint={'center_x': 0.5, 'center_y': 0.6}
+        ))
         self.add_widget(Label(
             text="Failed to connect to",
             font_size=40,
@@ -256,7 +262,7 @@ class WifiErrorScreen(Screen):
         self.label = Label(
             text="temporary",
             font_size=60,
-            color = (1,1,0,0.5),  # Yellow color for error
+            color = (1,1,0,1),  # Yellow color for error
             pos_hint={'center_x': 0.5, 'center_y': 0.4},
             size_hint=(None, None),
             size=(400, 100),
@@ -264,8 +270,8 @@ class WifiErrorScreen(Screen):
         )
         self.add_widget(IconTextButton(
             text="Try again",
-            size=(200,80),
-            font_size=40,
+            size=(300,80),
+            font_size=30,
             pos_hint={'center_x': 0.5, 'center_y': 0.25},
             screen_name='wifi password',
             font_family='fonts/MPLUS1p-Regular.ttf'
