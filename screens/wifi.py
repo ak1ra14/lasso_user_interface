@@ -163,7 +163,7 @@ class SelectableButton(Button):
             self.rect = Rectangle(pos=self.pos, size=self.size)
         self.bind(pos=self._update_rect, size=self._update_rect)
         self.update_color()
-        self.bind(on_release=self.on_press)
+        #self.bind(on_release=self.on_press)
     
     def _update_rect(self, *args):
         """
