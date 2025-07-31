@@ -165,7 +165,7 @@ class WifiPasswordScreen(KeyboardScreen):
         """
         Handle the Enter key press to save the Wi-Fi password.
         """
-        password = self.keyboard_input.text.strip()
+        password = self.keyboard.text_input.text.strip()
         print(f"Entered password: {password}")
         if not password:
             print("Password cannot be empty")
