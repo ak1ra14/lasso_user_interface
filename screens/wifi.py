@@ -70,7 +70,7 @@ class WifiLoadingScreen(Screen):
             icon_path ='images/connection.png',
             size = (120,120),
             pos_hint={'center_x': 0.25, 'center_y': 0.25},
-            on_release=self.connect_wifi()
+            on_release=self.connect_wifi
         )
                 
         scroll.add_widget(list_box)
