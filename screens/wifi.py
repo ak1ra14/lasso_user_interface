@@ -145,7 +145,7 @@ class WifiPasswordScreen(KeyboardScreen):
             icon_path ='images/wifi.png',
             size = (110,110),
             pos_hint={'center_x': 0.79, 'center_y': 0.86},
-            on_release=lambda x: threading.Thread(target=self.scan_wifi, daemon=True).start()
+            on_release=lambda x: threading.Thread(target=App.get_running_app().sm.get_screen('wi-fi').scan_wifi, daemon=True).start()
         )
         self.add_widget(self.wifi_scan_button)
 
