@@ -161,11 +161,12 @@ class WifiPasswordScreen(KeyboardScreen):
         wifi_loading_screen = App.get_running_app().sm.get_screen('wi-fi')
         wifi_loading_screen.selected_wifi = self.wifi_name
 
-    def on_press_enter(self, instance):
+    def press_enter(self, instance):
         """
         Handle the Enter key press to save the Wi-Fi password.
         """
         password = self.keyboard_input.text.strip()
+        print(f"Entered password: {password}")
         if not password:
             print("Password cannot be empty")
             return
