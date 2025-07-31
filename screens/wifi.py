@@ -88,7 +88,7 @@ class WifiLoadingScreen(Screen):
         btn.update_color()
         self.selected_wifi = btn.text
     
-    def connect_wifi(self):
+    def connect_wifi(self, instance):
         """
         Connect to the selected Wi-Fi network.
         """
@@ -102,9 +102,6 @@ class WifiLoadingScreen(Screen):
         wifi_password_screen = App.get_running_app().sm.get_screen('wifi password')
         wifi_password_screen.wifi_name = self.selected_wifi
         
-
-
-
 
 def get_available_wifi():
     wifi_list = []
