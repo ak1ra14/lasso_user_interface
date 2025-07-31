@@ -31,7 +31,8 @@ class WifiLoadingScreen(Screen):
     def scan_wifi(self):
         wifi_list = get_available_wifi()
         # Update UI on the main thread
-        Clock.schedule_once(lambda dt: self.show_results(wifi_list))
+
+        Clock.schedule_once(lambda dt: self.show_results(wifi_list), 1)
 
     def show_results(self, wifi_list):
         self.clear_widgets()
@@ -156,7 +157,7 @@ class WifiPasswordScreen(KeyboardScreen):
         App.get_running_app().sm.current = 'wi-fi'
         wifi_loading_screen = App.get_running_app().sm.get_screen('wi-fi')
         wifi_loading_screen.selected_wifi = self.wifi_name
-        
+
 class SelectableButton(Button):
     """
     A button that can be selected or deselected.
