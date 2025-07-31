@@ -145,10 +145,18 @@ class WifiPasswordScreen(KeyboardScreen):
             icon_path ='images/wifi.png',
             size = (110,110),
             pos_hint={'center_x': 0.79, 'center_y': 0.86},
-            on_release=lambda x: threading.Thread(target=App.get_running_app().sm.get_screen('wi-fi').scan_wifi, daemon=True).start()
+            on_release=self.go_to_wifi_scan
         )
         self.add_widget(self.wifi_scan_button)
 
+    def go_to_wifi_scan(self, instance):
+        """
+        Navigate back to the Wi-Fi scanning screen.
+        """
+        App.get_running_app().sm.current = 'wi-fi'
+        wifi_loading_screen = App.get_running_app().sm.get_screen('wi-fi')
+        wifi_loading_screen.selected_wifi = self.wifi_name
+        
 class SelectableButton(Button):
     """
     A button that can be selected or deselected.
