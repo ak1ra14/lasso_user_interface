@@ -225,14 +225,19 @@ class WifiConnectedScreen(Screen):
             size_hint=(None, None),
             size=(400, 100)
         ))
-        self.add_widget(Label(
-            text=App.get_running_app().sm.get_screen('wifi password').wifi_name,
+        self.label = Label(
+            text='temporary',
             font_size=60,
             color = (1,1,0,0.5),  # Yellow color for success
             pos_hint={'center_x': 0.5, 'center_y': 0.3},
             size_hint=(None, None),
             size=(400, 100)
-        ))
+        )
+        self.add_widget(self.label)
+
+    def on_pre_enter(self):
+        wifi_name = App.get_running_app().sm.get_screen('wifi password').wifi_name
+        self.label.text = wifi_name if wifi_name else "Unknown Network"
 
 class WifiErrorScreen(Screen):
     def __init__(self, **kwargs):
@@ -245,20 +250,26 @@ class WifiErrorScreen(Screen):
             size_hint=(None, None),
             size=(400, 100)
         ))
-        self.add_widget(Label(
-            text=App.get_running_app().sm.get_screen('wifi password').wifi_name,
+        self.label = Label(
+            text="temporary",
             font_size=60,
             color = (1,1,0,0.5),  # Yellow color for error
             pos_hint={'center_x': 0.5, 'center_y': 0.4},
             size_hint=(None, None),
             size=(400, 100)
-        ))
+        )
         self.add_widget(IconTextButton(
             text="Try again",
             size=(200,80),
             pos_hint={'center_x': 0.5, 'center_y': 0.3},
             screen_name='wifi password',
         ))  
+
+        self.add_widget(self.label)
+    
+    def on_pre_enter(self):
+        wifi_name = App.get_running_app().sm.get_screen('wifi password').wifi_name
+        self.label.text = wifi_name if wifi_name else "Unknown Network"
 
 def connect_wifi_linux(ssid, password):
     try:
