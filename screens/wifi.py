@@ -162,9 +162,6 @@ class WifiPasswordScreen(KeyboardScreen):
         wifi_loading_screen.selected_wifi = self.wifi_name
 
     def press_enter(self, instance):
-        """
-        Handle the Enter key press to save the Wi-Fi password.
-        """
         password = self.keyboard.text_input.text.strip()
         print(f"Entered password: {password}")
         if not password:
@@ -173,20 +170,41 @@ class WifiPasswordScreen(KeyboardScreen):
         if not self.wifi_name:
             print("No Wi-Fi network selected")
             return
-        
-        # Connect to the Wi-Fi network
-        if not connect_wifi(self.wifi_name, password):
-            print(f"Failed to connect to {self.wifi_name} with password: {password}")
-            return
-        
-        # Save the Wi-Fi configuration
-        config = load_config('config/V3.json')
-        config['wifi_ssid'] = self.wifi_name
-        config['wifi_password'] = password
-        save_config('config/V3.json', config)
-        
-        print(f"Connected to {self.wifi_name} with password: {password}")
-        App.get_running_app().sm.current = 'menu'
+
+        # Show connecting screen
+        app = App.get_running_app()
+        app.sm.current = 'wifi connecting'
+
+        # Connect in a background thread
+        def do_connect():
+            success = connect_wifi(self.wifi_name, password)
+            # Save config and switch screen on main thread
+            def after_connect(dt):
+                if success:
+                    config = load_config('config/V3.json')
+                    config['wifi_ssid'] = self.wifi_name
+                    config['wifi_password'] = password
+                    save_config('config/V3.json', config)
+                    print(f"Connected to {self.wifi_name} with password: {password}")
+                    app.sm.current = 'menu'
+                else:
+                    print(f"Failed to connect to {self.wifi_name} with password: {password}")
+                    # Optionally show an error screen or message
+                    app.sm.current = 'wifi password'
+            Clock.schedule_once(after_connect, 0)
+
+        threading.Thread(target=do_connect, daemon=True).start()
+
+class WifiConnectingScreen(Screen):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.add_widget(Label(
+            text="Connecting to Wi-Fi...",
+            font_size=40,
+            pos_hint={'center_x': 0.5, 'center_y': 0.5},
+            size_hint=(None, None),
+            size=(400, 100)
+        ))
 
 
 def connect_wifi_linux(ssid, password):
