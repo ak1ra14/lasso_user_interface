@@ -2,6 +2,7 @@ import sys
 import subprocess
 import threading
 from utils.layout import HeaderBar
+from kivy.uix.image import Image
 from kivy.app import App
 from kivy.uix.screenmanager import Screen
 from kivy.uix.label import Label
@@ -210,10 +211,25 @@ class WifiConnectedScreen(Screen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.add_widget(HeaderBar(title=" "))
+        self.add_widget(Image(
+            source='images/wifi.png',
+            size_hint=(None, None),
+            size=(200, 200),
+            pos_hint={'center_x': 0.5, 'center_y': 0.6}
+        ))
+
         self.add_widget(Label(
-            text="Connected to Wi-Fi!",
+            text="Successfully connected to ",
             font_size=40,
-            pos_hint={'center_x': 0.5, 'center_y': 0.5},
+            pos_hint={'center_x': 0.5, 'center_y': 0.4},
+            size_hint=(None, None),
+            size=(400, 100)
+        ))
+        self.add_widget(Label(
+            text=App.get_running_app().sm.get_screen('wifi password').wifi_name,
+            font_size=60,
+            color = (1,1,0,0.5),  # Yellow color for success
+            pos_hint={'center_x': 0.5, 'center_y': 0.3},
             size_hint=(None, None),
             size=(400, 100)
         ))
@@ -223,9 +239,17 @@ class WifiErrorScreen(Screen):
         super().__init__(**kwargs)
         self.add_widget(HeaderBar(title=" "))
         self.add_widget(Label(
-            text="Failed to connect to Wi-Fi.",
+            text="Failed to connect to",
             font_size=40,
             pos_hint={'center_x': 0.5, 'center_y': 0.5},
+            size_hint=(None, None),
+            size=(400, 100)
+        ))
+        self.add_widget(Label(
+            text=App.get_running_app().sm.get_screen('wifi password').wifi_name,
+            font_size=60,
+            color = (1,1,0,0.5),  # Yellow color for error
+            pos_hint={'center_x': 0.5, 'center_y': 0.4},
             size_hint=(None, None),
             size=(400, 100)
         ))
