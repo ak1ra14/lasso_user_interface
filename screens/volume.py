@@ -13,14 +13,14 @@ from kivy.app import App
 import json
 import os
 
-from utils.config_loader import load_config
+from utils.config_loader import load_config, save_config, update_current_page
 from utils.layout import HeaderBar
 
 
 class VolumeScreen(Screen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.volume = load_config('config/V3.json').get('volume', 50)
+        self.volume = load_config('config/settings.json', 'v3_json').get('volume', 50)
         header = HeaderBar(title="Volume", icon_path="images/home.png", button_text="Home", button_screen="menu")
         buttons = BoxLayout(orientation='horizontal', spacing=15, size_hint_y=0.3, pos_hint={'center_x': 0.5, 'center_y': 0.5}, padding=[50,0,50,0])  # Only left and right padding
 
@@ -81,7 +81,8 @@ class VolumeScreen(Screen):
         self.add_widget(save_anchor)
 
     def on_pre_enter(self):
-        self.volume = load_config('config/V3.json').get('volume', 50)
+        update_current_page('volume')
+        self.volume = load_config('config/settings.json', 'v3_json').get('volume', 50)
         self.volume_label.text = f"{self.volume}%"
 
 
@@ -133,11 +134,9 @@ class SaveButton(IconTextButton):
         This method is called when the save button is pressed.
         """
         # Save the current volume to the config file
-        config = load_config('config/V3.json')
+        config = load_config('config/settings.json', 'v3_json')
         config['volume'] = self.volume_screen.volume
-        with open('config/V3.json', 'w') as f:
-            json.dump(config, f, indent=4)
-        print("Volume settings saved:", config['volume'])
+        save_config('config/settings.json', 'v3_json', data=config)
         App.get_running_app().sm.current = 'menu'  # Navigate back to the menu screen
 
 class HomeButtonVolume(IconTextButton):

@@ -7,14 +7,14 @@ from kivy.uix.widget import Widget
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.anchorlayout import AnchorLayout
 from utils.icons import IconTextButton, CircularImageButton, PageIndicator
-from utils.config_loader import load_config
+from utils.config_loader import load_config, update_current_page
 from utils.layout import HeaderBar, Footer1Bar, Footer2Bar
 
 
 class MenuScreen1(Screen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.config = load_config('config/V3.json')
+        self.config = load_config('config/settings.json', 'v3_json')
         self.location = self.config.get("location", "")
         volume = self.config.get("volume", 50)
         self.volume = f"{volume}%"
@@ -132,8 +132,8 @@ class MenuScreen1(Screen):
     
     
     def has_any_alert(self):
-        bed_alerts = load_config("config/bed.json").get("alert_checking", [])
-        fall_alerts = load_config("config/fall.json").get("alert_checking", [])
+        bed_alerts = load_config("config/settings.json", 'bed_json').get("alert_checking", [])
+        fall_alerts = load_config("config/settings.json", 'fall_json').get("alert_checking", [])
 
         # Check if any nested list's first element is 1
         bed_has_alert = any(isinstance(item, list) and len(item) > 0 and item[0] == 1 for item in bed_alerts)
@@ -153,7 +153,7 @@ class MenuScreen1(Screen):
         Called when the screen is entered.
         Updates the location, volume, mode, and alerts based on the current configuration.
         """
-        self.config = load_config('config/V3.json')
+        self.config = load_config('config/settings.json', 'v3_json')
         self.location = self.config.get("location", "Room 101")
         volume = self.config.get("volume", 50)
         self.volume = f"{volume}%"
@@ -162,6 +162,7 @@ class MenuScreen1(Screen):
         # Update the config status labels or other UI elements if necessary
         # For example, you might have labels to display these values
         self.update_status()
+        update_current_page('menu')
         return [self.location, self.volume, self.mode, self.alerts]
         
         # Update labels or other UI elements if necessary
@@ -183,7 +184,7 @@ class MenuScreen1(Screen):
         self.content_buttons['alerts'].status.text = self.alerts
 
     def go_to_location(self, instance):
-        self.config = load_config('config/V3.json')
+        self.config = load_config('config/settings.json', 'v3_json')
         print("previous_mode:", self.config.get('previous_mode'))
         if self.config.get('previous_mode', 'fall.json') == 'fall.json':
             print("Switching to device screen")
@@ -197,7 +198,7 @@ class MenuScreen2(Screen):
         super().__init__(**kwargs)
 
         # Load configuration
-        config = load_config('config/V3.json')   
+        config = load_config('config/settings.json','v3_json')   
         self.device_id = config.get('sensor_ID', 'N/A')
         self.version = config.get('version', 'N/A')
         screen_saver = config.get('screensaver', 160)
@@ -288,13 +289,15 @@ class MenuScreen2(Screen):
         self.main_layout.add_widget(time_bar)
 
     def on_pre_enter(self):
-        self.config = load_config('config/V3.json')
+        self.config = load_config('config/settings.json', 'v3_json')
         self.screen_saver = f"{self.config.get('screensaver', 160)} s"
         self.wifi_ssid = self.config.get('wifi_ssid', 'N/A')
         self.timezone = self.config.get('timezone', 'N/A')
         self.region_address = self.config.get('region_address', 'N/A')
         self.config_status = [self.screen_saver, self.wifi_ssid, self.timezone, self.region_address]
         self.update_config_status()
+        update_current_page('menu2')
+
 
     def update_config_status(self):
         """

@@ -5,7 +5,7 @@ from kivy.uix.widget import Widget
 from utils.icons import IconTextButton
 from kivy.uix.button import Button
 from kivy.uix.scrollview import ScrollView
-from utils.config_loader import load_config, save_config
+from utils.config_loader import load_config, save_config, update_current_page
 from kivy.uix.gridlayout import GridLayout
 from kivy.app import App
 from kivy.uix.button import Button
@@ -20,12 +20,11 @@ class TimezoneScreen(Screen):
         This screen allows users to select a timezone.
         """
         super().__init__(**kwargs)
-        self.selected_timezone = load_config('config/V3.json').get('timezone', '')
+        self.selected_timezone = load_config('config/settings.json', 'v3_json').get('timezone', '')
         self.timezone_list = []
-        header = HeaderBar(title="Timezone", icon_path="images/home.png", button_text="Home", button_screen="menu")
+        header = HeaderBar(title="Timezone", icon_path="images/home.png", button_text="Home", button_screen="menu2")
 
         ##main layout
-        self.selected_timezone = load_config('config/V3.json').get('timezone', '')
         main = BoxLayout(orientation='horizontal', size_hint=(1,0.75),
                           padding=[50, 50, 50, 0], spacing=100, 
                           pos_hint={'center_x': 0.5, 'center_y': 0.5})
@@ -59,7 +58,7 @@ class TimezoneScreen(Screen):
         
         main.add_widget(TZSaveButton(text = "Save", icon_path="images/save.png", 
                                      tz_screen=self,
-                                     screen_name='menu',
+                                     screen_name='menu2',
                                      pos_hint={'center_x': 0.5, 'center_y': 0.4},
                                      size_hint=(None, None), size=(120, 120)))
 
@@ -76,6 +75,9 @@ class TimezoneScreen(Screen):
         btn.selected = True
         btn.update_color()
         self.selected_timezone = btn.text
+
+    def on_pre_enter(self):
+        update_current_page('timezone')
 
 class SelectableButton(Button):
     """
@@ -133,10 +135,10 @@ class TZSaveButton(IconTextButton):
     def on_press(self):
         super().on_press()
         print(f"Saving timezone: {self.tz_screen.selected_timezone}")
-        config = load_config('config/V3.json')
+        config = load_config('config/settings.json', 'v3_json')
         config['timezone'] = self.tz_screen.selected_timezone
-        save_config('config/V3.json', config)
-        
+        save_config('config/settings.json', 'v3_json', data=config)
+
 
         
 

@@ -11,16 +11,16 @@ from kivy.core.audio import SoundLoader
 from kivy.properties import BooleanProperty
 from utils.layout import SeparatorLine
 from utils.layout import HeaderBar
-from utils.config_loader import load_config, save_config
+from utils.config_loader import load_config, save_config, update_current_page
 class AlertModeScreen(Screen):
     """
     Alert Mode Screen
     """
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.modes = load_config('config/V3.json').get('previous_mode', 'fall.json')
+        self.modes = load_config('config/settings.json','fall_json').get('previous_mode', 'fall.json')
         self.single_multiple = load_config(f"config/{self.modes}").get('mincount', 1)
-        self.no_beds = load_config("config/bed.json").get('nbeds', [1, 1])[0] == 2
+        self.no_beds = load_config("config/settings.json",'bed_json').get('nbeds', [1, 1])[0] == 2
         header = HeaderBar(title="Alert Mode", icon_path="images/home.png", button_text="Home", button_screen="menu")
         main_layout = BoxLayout(orientation='horizontal', padding=[50, 0, 50, 0], spacing=50,size_hint_y=0.5, pos_hint={'center_x': 0.5,'center_y':0.4})  # Only left and right padding
         main_layout.add_widget(Widget())  # Spacer on the left
@@ -71,9 +71,10 @@ class AlertModeScreen(Screen):
         Called when the screen is entered.
         Updates the active state of buttons based on the current mode and single/multiple state.
         """
-        self.modes = load_config('config/V3.json').get('previous_mode', 'fall.json')
+        update_current_page('alert_mode')
+        self.modes = load_config('config/settings.json','fall_json').get('previous_mode', 'fall.json')
         self.single_multiple = load_config(f"config/{self.modes}").get('mincount', 1)
-        self.no_beds = load_config("config/bed.json").get('nbeds', [1, 1])[0] 
+        self.no_beds = load_config("config/settings.json",'bed_json').get('nbeds', [1, 1])[0]
             # Update the toggle button state and graphics
         self.toggle_button.switch.no_beds = self.no_beds
         self.toggle_button.switch.active = True if self.no_beds == 2 else False
@@ -113,12 +114,12 @@ class AlertModeButton(IconTextButton):
             self.active = True
             self.screen.modes = f"{self.mode}.json"
             self.screen.single_multiple = self.active_state
-            config = load_config('config/V3.json')
+            config = load_config('config/settings.json','v3_json')
             config['previous_mode'] = self.screen.modes
-            save_config('config/V3.json', config)
+            save_config('config/settings.json','v3_json', data=config)
             config = load_config(f"config/{self.screen.modes}")
             config['mincount'] = self.active_state
-            save_config(f"config/{self.screen.modes}", config)
+            save_config(f"config/{self.screen.modes}", data=config)
             for button in self.screen.buttons:
                 if button != self:
                     button.active = False
@@ -148,7 +149,7 @@ class CustomSwitchAM(CustomSwitch):
             self.no_beds = 2 if self.no_beds == 1 else 1
             config = load_config("config/bed.json")
             config['nbeds'] = [self.no_beds, load_config("config/bed.json").get('nbeds', [1])[1]]
-            save_config("config/bed.json", config)
+            save_config("config/settings.json", "bed_json", data=config)
             return True
         return False
             

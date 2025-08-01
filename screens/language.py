@@ -6,7 +6,7 @@ from kivy.uix.anchorlayout import AnchorLayout
 from kivy.uix.image import Image
 from kivy.uix.button import Button
 from kivy.uix.widget import Widget
-
+from utils.config_loader import load_config, update_current_page
 from utils.layout import HeaderBar
 
 class LanguageScreen(Screen):
@@ -28,3 +28,11 @@ class LanguageScreen(Screen):
         :param screen_name: The name of the screen to navigate to.
         """
         self.manager.current = 'menu'
+
+    def on_pre_enter(self):
+        """
+        This method is called when the screen is about to be displayed.
+        It can be used to perform any setup or updates needed before the screen is shown.
+        """
+        # You can add any setup code here if needed
+        update_current_page('language')

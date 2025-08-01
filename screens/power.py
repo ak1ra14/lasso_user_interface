@@ -6,6 +6,7 @@ from kivy.uix.widget import Widget
 from utils.icons import IconTextButton, CircularImageButton
 from kivy.app import App
 import os, sys
+from utils.config_loader import load_config, save_config, update_current_page
 from utils.layout import HeaderBar
 
 class PowerScreen(Screen):
@@ -23,6 +24,9 @@ class PowerScreen(Screen):
         buttons.add_widget(Widget())
         self.add_widget(header)
         self.add_widget(buttons)
+
+    def on_pre_enter(self):
+        update_current_page('power')
 
 class ShutdownButton(IconTextButton):
     """

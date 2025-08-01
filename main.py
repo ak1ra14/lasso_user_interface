@@ -30,7 +30,7 @@ class MyApp(App):
     def build(self):
         self.sm = ScreenManager(transition=NoTransition())
         # Set the default volume to config setting
-        self.config = load_config('config/V3.json')
+        self.config = load_config('config/settings.json','v3_json')
         set_system_volume(self.config.get('volume', 50))
         self.sm.add_widget(MonitorScreen(name='monitor'))
         self.sm.add_widget(MenuScreen1(name='menu'))

@@ -11,22 +11,23 @@ from kivy.uix.gridlayout import GridLayout
 from kivy.uix.scrollview import ScrollView
 from kivy.graphics import Color, Rectangle
 from kivy.uix.button import Button
-from utils.config_loader import load_config, save_config
+from utils.config_loader import load_config, save_config, update_current_page
 from utils.icons import IconTextButton
 from utils.keyboard import KeyboardScreen
 
 class WifiLoadingScreen(Screen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.config = load_config("config/V3.json")
+        self.config = load_config("config/settings.json", "v3_json")
         self.selected_wifi = self.config.get('wifi_ssid', {})
-        self.header = HeaderBar(title="Wi-Fi SSID")
+        self.header = HeaderBar(title="Wi-Fi SSID", button_screen="menu2")
         self.add_widget(self.header)
         self.add_widget(Label(text="Scanning WiFi...", size_hint=(1, 0.1), pos_hint={'center_x': 0.5, 'center_y': 0.5}))
         self.wifi_list = []
 
     def on_pre_enter(self):
         # Start scanning in a background thread when the screen is shown
+        update_current_page('wifi loading')
         threading.Thread(target=self.scan_wifi, daemon=True).start()
 
     def scan_wifi(self):
@@ -182,10 +183,10 @@ class WifiPasswordScreen(KeyboardScreen):
             # Save config and switch screen on main thread
             def after_connect(dt):
                 if success:
-                    config = load_config('config/V3.json')
+                    config = load_config('config/settings.json', 'v3_json')
                     config['wifi_ssid'] = self.wifi_name
                     config['wifi_password'] = password
-                    save_config('config/V3.json', config)
+                    save_config('config/settings.json', 'v3_json', data=config)
                     print(f"Connected to {self.wifi_name} with password: {password}")
                     App.get_running_app().sm.current = 'wifi connected'
 
@@ -195,6 +196,9 @@ class WifiPasswordScreen(KeyboardScreen):
             Clock.schedule_once(after_connect, 0)
 
         threading.Thread(target=do_connect, daemon=True).start()
+
+    def on_pre_enter(self):
+        update_current_page('wifi password')
 
 class WifiConnectingScreen(Screen):
     def __init__(self, **kwargs):
@@ -210,7 +214,7 @@ class WifiConnectingScreen(Screen):
 class WifiConnectedScreen(Screen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.add_widget(HeaderBar(title=" "))
+        self.add_widget(HeaderBar(title=" ",button_screen="menu2"))
         self.add_widget(Image(
             source='images/wifi.png',
             size_hint=(None, None),
@@ -238,18 +242,19 @@ class WifiConnectedScreen(Screen):
         self.add_widget(self.label)
 
     def on_pre_enter(self):
+        update_current_page('wifi connected')
         wifi_name = App.get_running_app().sm.get_screen('wifi password').wifi_name
         self.label.text = wifi_name if wifi_name else "Unknown Network"
 
 class WifiErrorScreen(Screen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.add_widget(HeaderBar(title=" "))
+        self.add_widget(HeaderBar(title=" ",button_screen="menu2"))
         self.add_widget(Image(
             source='images/wifi_failed.png',
             size_hint=(None, None),
-            size=(200, 200),
-            pos_hint={'center_x': 0.5, 'center_y': 0.6}
+            size=(400, 400),
+            pos_hint={'center_x': 0.5, 'center_y': 0.7}
         ))
         self.add_widget(Label(
             text="Failed to connect to",
@@ -280,6 +285,7 @@ class WifiErrorScreen(Screen):
         self.add_widget(self.label)
     
     def on_pre_enter(self):
+        update_current_page('wifi error')
         wifi_name = App.get_running_app().sm.get_screen('wifi password').wifi_name
         self.label.text = wifi_name if wifi_name else "Unknown Network"
 

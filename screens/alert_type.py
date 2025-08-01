@@ -15,11 +15,14 @@ from utils.config_loader import load_config, save_config
 class AlertTypeScreen(Screen):
     def __init__(self, **kwargs):
         super(AlertTypeScreen, self).__init__(**kwargs)
-        self.ack_enable = load_config("config/V3.json").get("ack_enable", 'Yes')
-        self.attach_video_bed = load_config("config/bed.json").get("attach_video", 1)
-        self.attach_video_fall = load_config("config/fall.json").get("attach_video", 1)
-        self.alert_checking_bed = load_config("config/bed.json").get("alert_checking", None)
-        self.alert_checking_fall = load_config("config/fall.json").get("alert_checking", None)
+        self.config = load_config('config/settings.json','v3_json')
+        self.ack_enable = self.config.get("ack_enable", 'Yes')
+        self.bed_json = load_config("config/settings.json",'bed_json')
+        self.fall_json = load_config("config/settings.json",'fall_json')
+        self.attach_video_bed = self.bed_json.get("attach_video", 1)
+        self.attach_video_fall = self.fall_json.get("attach_video", 1)
+        self.alert_checking_bed = self.bed_json.get("alert_checking", None)
+        self.alert_checking_fall = self.fall_json.get("alert_checking", None)
         header = HeaderBar(title="Alert Type", icon_path="images/home.png", button_text="Home", button_screen="menu")
         self.buttons = []
         self.add_widget(header)
@@ -105,17 +108,20 @@ class AlertTypeScreen(Screen):
 
     def on_pre_enter(self):
         status = []
-        ack_enable = load_config("config/V3.json").get("ack_enable", 'yes')
+        self.config = load_config('config/settings.json','v3_json')
+        ack_enable = self.config.get("ack_enable", 'yes')
         status.append(1 if ack_enable == "yes" else 0)
-        attach_video_bed = load_config("config/bed.json").get("attach_video", 1)
+        self.bed_json = load_config("config/settings.json",'bed_json')
+        self.fall_json = load_config("config/settings.json",'fall_json')
+        attach_video_bed = self.bed_json.get("attach_video", 1)
         status.append(attach_video_bed)
-        alert_checking_bed = load_config("config/bed.json").get("alert_checking", None)
+        alert_checking_bed = self.bed_json.get("alert_checking", None)
         if alert_checking_bed:
             for item in alert_checking_bed:
                 status.append(item[0])
-        attach_video_fall = load_config("config/fall.json").get("attach_video", 1)
+        attach_video_fall = self.fall_json.get("attach_video", 1)
         status.append(attach_video_fall)
-        alert_checking_fall = load_config("config/fall.json").get("alert_checking", None)
+        alert_checking_fall = self.fall_json.get("alert_checking", None)
         if alert_checking_fall:
             for item in alert_checking_fall:
                 status.append(item[0])
@@ -136,7 +142,6 @@ class SaveButtonAT(IconTextButton):
     def __init__(self, AT_screen, **kwargs):
         super().__init__(**kwargs)
         self.icon_path = "images/save.png"
-        self.text = "Save"
         self.size_hint = (None, None)
         self.size = (120, 120)
         self.pos = (800, 140)
@@ -144,13 +149,13 @@ class SaveButtonAT(IconTextButton):
         self.AT_screen = AT_screen
 
     def on_press(self):
-        config_v3 = load_config('config/V3.json')
+        config_v3 = load_config('config/settings.json','v3_json')
         ack_enable = "yes" if self.AT_screen.buttons[0].switch.active else "no"
         config_v3['ack_enable'] = ack_enable
-        save_config('config/V3.json', config_v3)
+        save_config('config/settings.json','v3_json', data=config_v3)
 
 
-        config_bed = load_config("config/bed.json")
+        config_bed = load_config("config/settings.json",'bed_json')
         attach_video_bed = 1 if self.AT_screen.buttons[1].switch.active else 0
         config_bed['attach_video'] = attach_video_bed
 
@@ -159,9 +164,9 @@ class SaveButtonAT(IconTextButton):
         for button in self.AT_screen.buttons[2:6]:
             alert_checking_bed.append([1 if button.switch.active else 0, button.text_right.lower().replace(" ", "_")])
         config_bed['alert_checking'] = alert_checking_bed
-        save_config("config/bed.json", config_bed)
+        save_config("config/settings.json", 'bed_json', data=config_bed)
 
-        config_fall = load_config("config/fall.json")
+        config_fall = load_config("config/settings.json",'fall_json')
         attach_video_fall = 1 if self.AT_screen.buttons[6].switch.active else 0
         config_fall['attach_video'] = attach_video_fall
 
@@ -169,8 +174,8 @@ class SaveButtonAT(IconTextButton):
         for button in self.AT_screen.buttons[7:]:
             alert_checking_fall.append([1 if button.switch.active else 0, button.text_right.lower().replace(" ", "_")])
         config_fall['alert_checking'] = alert_checking_fall
-        save_config("config/fall.json", config_fall)
-        
+        save_config("config/settings.json", 'fall_json', data=config_fall)
+
         sound = SoundLoader.load('sound/tap.wav')
         if sound:
             sound.play()

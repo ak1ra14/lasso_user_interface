@@ -7,6 +7,7 @@ from utils.icons import ColoredLabel
 from kivy.core.audio import SoundLoader
 from kivy.app import App
 from kivy.clock import Clock
+from utils.config_loader import load_config, update_current_page
 import socket
 
 class MonitorScreen(Screen):
@@ -68,4 +69,7 @@ class MonitorScreen(Screen):
         #Clock.schedule_once(lambda dt: setattr(self.manager, 'current', 'menu'), 0)
         App.get_running_app().sm.current = 'menu'  # Change 'main' to the actual screen name for the menu
         print("Menu screen activated")
+
+    def on_pre_enter(self):
+        update_current_page('monitor')
 

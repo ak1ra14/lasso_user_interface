@@ -1,6 +1,6 @@
 from kivy.uix.screenmanager import Screen
 from utils.layout import HeaderBar
-from utils.config_loader import load_config, save_config
+from utils.config_loader import load_config, save_config, update_current_page
 from kivy.uix.floatlayout import FloatLayout
 from utils.icons import IconTextButton
 from utils.num_pad import NumberPadScreen
@@ -10,8 +10,8 @@ from utils.keyboard import KeyboardScreen
 class LocationScreen(Screen):
     def __init__(self, **kwargs):
         super(LocationScreen, self).__init__(**kwargs)
-        self.config = load_config("config/V3.json")            
-        self.bed_config = load_config("config/bed.json")
+        self.config = load_config("config/settings.json", "v3_json")
+        self.bed_config = load_config("config/settings.json", "bed_json")
 
         self.bed_no = self.bed_config.get("nbeds", [1,[' ']])[0]
         # Create a layout for the keypad
@@ -61,8 +61,9 @@ class LocationScreen(Screen):
         This method is called before the screen is displayed.
         It can be used to update the UI or perform any necessary actions.
         """
-        self.config = load_config("config/V3.json")
-        self.bed_config = load_config("config/bed.json")
+        update_current_page('location')
+        self.config = load_config("config/settings.json", "v3_json")
+        self.bed_config = load_config("config/settings.json", "bed_json")
         self.bed_no = self.bed_config.get("nbeds", [1, [' ']])[0]
         self.build_ui()
     
@@ -72,7 +73,7 @@ class LocationScreen(Screen):
 class Bed1KeyboardScreen(KeyboardScreen):
     def __init__(self, **kwargs):
         super().__init__(title="Bed Location 1", **kwargs)
-        self.config = load_config("config/bed.json")
+        self.config = load_config("config/settings.json",'bed_json')
         self.text = self.config.get("nbeds", [1, [' ']])[1][0]
     
     def press_enter(self,instance):
@@ -86,14 +87,15 @@ class Bed1KeyboardScreen(KeyboardScreen):
         """
         Override the on_pre_enter method to set the keyboard title.
         """
-        self.config = load_config("config/bed.json")
+        self.keyboard.title = "Bed Location 1"
+        self.config = load_config("config/settings.json", "bed_json")
         self.keyboard.text_input.text = self.config.get("nbeds", [1, [' ']])[1][0]
 
 
 class Bed2KeyboardScreen(KeyboardScreen):
     def __init__(self, **kwargs):
         super().__init__(title="Bed Location 2", **kwargs)
-        self.config = load_config("config/bed.json")
+        self.config = load_config("config/settings.json", "bed_json")
         self.text = self.config.get("nbeds", [1, [' ']])[1][1]
     
     def press_enter(self, instance):
@@ -107,13 +109,14 @@ class Bed2KeyboardScreen(KeyboardScreen):
         """
         Override the on_pre_enter method to set the keyboard title.
         """
-        self.config = load_config("config/bed.json")
+        self.keyboard.title = "Bed Location 2"
+        self.config = load_config("config/settings.json", "bed_json")
         self.keyboard.text_input.text = self.config.get("nbeds", [1, [' ']])[1][1]
 
 class DeviceKeyboardScreen(KeyboardScreen):
     def __init__(self, **kwargs):
         super().__init__(title="Device Location", **kwargs)
-        self.config = load_config("config/V3.json")
+        self.config = load_config("config/settings.json", "v3_json")
         self.text = self.config.get('location', 'Room 1')
     
     def press_enter(self, instance):
@@ -121,11 +124,12 @@ class DeviceKeyboardScreen(KeyboardScreen):
         Override the on_enter method to set the keyboard title.
         """
         self.config['location'] = self.keyboard.text_input.text
-        save_config("config/V3.json", self.config)
+        save_config("config/settings.json", "v3_json", data=self.config)
 
     def on_pre_enter(self):
         """
         Override the on_pre_enter method to set the keyboard title.
         """
-        self.config = load_config("config/V3.json")
+        self.keyboard.title = "Device Location"
+        self.config = load_config("config/settings.json", "v3_json")
         self.keyboard.text_input.text = self.config.get("location", "Room 1")

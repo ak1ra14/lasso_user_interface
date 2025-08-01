@@ -13,7 +13,7 @@ from kivy.app import App
 import json
 import os
 
-from utils.config_loader import load_config, save_config
+from utils.config_loader import load_config, save_config, update_current_page
 from utils.layout import HeaderBar
 
 class ScreenSaverScreen(Screen):
@@ -21,7 +21,7 @@ class ScreenSaverScreen(Screen):
         
         super().__init__(**kwargs)
         self.screensaver_time = load_config('config/V3.json').get('screensaver', 60)
-        header = HeaderBar(title="Screensaver", icon_path="images/home.png", button_text="Home", button_screen="menu")
+        header = HeaderBar(title="Screensaver", icon_path="images/home.png", button_text="Home", button_screen="menu2")
         buttons = BoxLayout(orientation='horizontal', spacing=15, size_hint_y=0.3, pos_hint={'center_x': 0.5, 'center_y': 0.5}, padding=[50,0,50,0])  # Only left and right padding
 
         time = BoxLayout(orientation='vertical', spacing=30, size_hint_y=0.3, pos_hint={'center_x': 0.5, 'center_y': 0.5}, padding=[20,0,20,0])
@@ -93,6 +93,7 @@ class ScreenSaverScreen(Screen):
         This method is called when the screen is about to be displayed.
         It updates the screensaver time label with the current value.
         """
+        update_current_page('screensaver')
         self.screensaver_time = load_config('config/V3.json').get('screensaver', 60)
         self.screensaver_time_label.text = f"{self.screensaver_time}"
 
@@ -141,11 +142,11 @@ class SaveButton(IconTextButton):
         This method is called when the save button is pressed.
         """
         # Save the current screensaver time to the config file
-        config = load_config('config/V3.json')
+        config = load_config('config/settings.json','v3_json')
         config['screensaver'] = self.screensaver_screen.screensaver_time
-        save_config('config/V3.json', config)
+        save_config('config/settings.json', 'v3_json', data=config)
         print("Screensaver settings saved:", config['screensaver'])
-        App.get_running_app().sm.current = 'menu'
+        App.get_running_app().sm.current = 'menu2'
         App.get_running_app().reset_screensaver_timer()  # Reset screensaver timer
 
 class HomeButtonScreensaver(IconTextButton):
@@ -158,8 +159,9 @@ class HomeButtonScreensaver(IconTextButton):
         sound = SoundLoader.load('sound/tap.wav')
         if sound:
             sound.play()
-        self.screensaver_screen.screensaver_time_label.text = f"{load_config('config/V3.json').get('screensaver', 50)}%"
-        self.screensaver_screen.screensaver_time = load_config('config/V3.json').get('screensaver', 50)
+        self.config = load_config('config/settings.json', 'v3_json')
+        self.screensaver_screen.screensaver_time_label.text = f"{self.config.get('screensaver', 50)}%"
+        self.screensaver_screen.screensaver_time = self.config.get('screensaver', 50)
           # Reset screensaver time to saved value
 
 class DarkScreen(Screen):
@@ -178,3 +180,6 @@ class DarkScreen(Screen):
 
     def stop_screensaver(self, dt):
         App.get_running_app().sm.current = 'monitor'  # Navigate back to the menu screen after the timeout
+
+    def on_pre_enter(self):
+        update_current_page('dark_screen')

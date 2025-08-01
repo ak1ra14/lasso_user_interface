@@ -13,7 +13,7 @@ from kivy.graphics import Color, RoundedRectangle, Line
 from utils.keyboard import SeparatorLine
 
 class NumberPadScreen(Screen):
-    def __init__(self, title = 'Custom Numpad', **kwargs):
+    def __init__(self, title = 'Custom Numpad',screen_name='menu2', **kwargs):
         super(NumberPadScreen,self).__init__(**kwargs)
         # === Left side ===
         self.title = title
@@ -59,7 +59,7 @@ class NumberPadScreen(Screen):
         right = FloatLayout(size_hint=(1,1))
         right.add_widget(IconTextButton(text="Home", font_size=18,
                                         icon_path="images/home.png",
-                                        screen_name="menu",
+                                        screen_name=screen_name,
                                 size_hint=(None, None), size = (120,120),
                                 pos_hint = None,
                                 pos = (875,450)

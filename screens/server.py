@@ -7,7 +7,7 @@ from utils.config_loader import load_config
 from utils.icons import IconTextButton
 from kivy.graphics import Line, Color, Rectangle
 from utils.keyboard import KeyboardScreen
-from utils.config_loader import save_config
+from utils.config_loader import save_config, update_current_page
 from utils.layout import SeparatorLine
 from utils.num_pad import NumberPadScreen
 
@@ -15,12 +15,12 @@ from utils.num_pad import NumberPadScreen
 class ServerScreen(Screen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.config = load_config('config/V3.json')
+        self.config = load_config('config/settings.json', 'v3_json')
         self.buttons = {}
         self.build_ui()
 
     def build_ui(self):
-        self.header = HeaderBar(title="Servers", icon_path="images/home.png", button_text="Home", button_screen="menu")
+        self.header = HeaderBar(title="Servers", icon_path="images/home.png", button_text="Home", button_screen="menu2")
     
         self.main_layout = FloatLayout(size_hint=(1, 1))
         self.main_layout.add_widget(self.header)
@@ -58,7 +58,8 @@ class ServerScreen(Screen):
         This method is called before the screen is displayed.
         It can be used to update the UI or perform any necessary actions.
         """
-        self.config = load_config('config/V3.json')
+        update_current_page('server')
+        self.config = load_config('config/settings.json', 'v3_json')
         for key, button in self.buttons.items():
             button.status = self.config.get(key, '')
             button.label.text = button.status
@@ -120,7 +121,7 @@ class EditSetting(FloatLayout):
 class RegionServerScreen(NumberPadScreen):
     def __init__(self, **kwargs):
         super().__init__(title="Region Server IP", **kwargs)
-        self.config = load_config("config/V3.json")
+        self.config = load_config("config/settings.json", "v3_json")
         self.text = self.config.get('region_address', '')
 
     def on_save(self, instance):
@@ -128,20 +129,21 @@ class RegionServerScreen(NumberPadScreen):
         Override the on_save method to save the region address.
         """
         self.config['region_address'] = self.ip_input.text
-        save_config("config/V3.json", self.config)
+        save_config("config/settings.json", "v3_json", data=self.config)
 
     def on_pre_enter(self):
         """
         Override the on_pre_enter method to set the keyboard title.
         """
-        self.config = load_config("config/V3.json")
+        update_current_page('region_server')
+        self.config = load_config("config/settings.json", "v3_json")
         self.ip_input.text = self.config.get("region_address", "")
 
 
 class MQTTBrokerIPScreen(NumberPadScreen):
     def __init__(self, **kwargs):
         super().__init__(title="MQTT Broker IP", **kwargs)
-        self.config = load_config("config/V3.json")
+        self.config = load_config("config/settings.json", "v3_json")
         self.text = self.config.get('mqtt_address', '')
 
     def on_save(self, instance):
@@ -149,19 +151,20 @@ class MQTTBrokerIPScreen(NumberPadScreen):
         Override the on_save method to save the MQTT broker address.
         """
         self.config['mqtt_address'] = self.ip_input.text
-        save_config("config/V3.json", self.config)
+        save_config("config/settings.json", "v3_json", data=self.config)
 
     def on_pre_enter(self):
         """
         Override the on_pre_enter method to set the keyboard title.
         """
-        self.config = load_config("config/V3.json")
+        update_current_page('mqtt_broker_ip')
+        self.config = load_config("config/settings.json", "v3_json")
         self.ip_input.text = self.config.get("mqtt_address", "")
 
 class AlertLight1Screen(NumberPadScreen):
     def __init__(self, **kwargs):
         super().__init__(title="Alert Light 1 IP", **kwargs)
-        self.config = load_config("config/V3.json")
+        self.config = load_config("config/settings.json", "v3_json")
         self.text = self.config.get('alert_lights_ip1', '')
 
     def on_save(self, instance):
@@ -169,20 +172,21 @@ class AlertLight1Screen(NumberPadScreen):
         Override the on_save method to save the alert light 1 address.
         """
         self.config['alert_lights_ip1'] = self.ip_input.text
-        save_config("config/V3.json", self.config)
+        save_config("config/settings.json", "v3_json", data=self.config)
 
     def on_pre_enter(self):
         """
         Override the on_pre_enter method to set the keyboard title.
         """
-        self.config = load_config("config/V3.json")
+        update_current_page('alert_light_1')
+        self.config = load_config("config/settings.json", "v3_json")
         self.ip_input.text = self.config.get("alert_lights_ip1", "")
 
 
 class AlertLight2Screen(NumberPadScreen):
     def __init__(self, **kwargs):
         super().__init__(title="Alert Light 2 IP", **kwargs)
-        self.config = load_config("config/V3.json")
+        self.config = load_config("config/settings.json", "v3_json")
         self.text = self.config.get('alert_lights_ip2', '')
 
     def on_save(self, instance):
@@ -190,20 +194,21 @@ class AlertLight2Screen(NumberPadScreen):
         Override the on_save method to save the alert light 2 address.
         """
         self.config['alert_lights_ip2'] = self.ip_input.text
-        save_config("config/V3.json", self.config)
+        save_config("config/settings.json", "v3_json", data=self.config)
 
     def on_pre_enter(self):
         """
         Override the on_pre_enter method to set the keyboard title.
         """
-        self.config = load_config("config/V3.json")
+        update_current_page('alert_light_2')
+        self.config = load_config("config/settings.json", "v3_json")
         self.ip_input.text = self.config.get("alert_lights_ip2", "")
 
 
 class MQTTTopicKeyboardScreen(KeyboardScreen):
     def __init__(self, **kwargs):
         super().__init__(title="MQTT Topic", **kwargs)
-        self.config = load_config("config/V3.json")
+        self.config = load_config("config/settings.json", "v3_json")
         self.text = self.config.get('mqtt_topic', '')
 
     def press_enter(self, instance):
@@ -211,11 +216,12 @@ class MQTTTopicKeyboardScreen(KeyboardScreen):
         Override the on_enter method to set the keyboard title.
         """
         self.config['mqtt_topic'] = self.keyboard.text_input.text
-        save_config("config/V3.json", self.config)
+        save_config("config/settings.json", "v3_json", data=self.config)
 
     def on_pre_enter(self):
         """
         Override the on_pre_enter method to set the keyboard title.
         """
-        self.config = load_config("config/V3.json")
+        self.keyboard.title = "MQTT Topic"
+        self.config = load_config("config/settings.json", "v3_json")
         self.keyboard.text_input.text = self.config.get("mqtt_topic", "")
