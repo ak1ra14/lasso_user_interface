@@ -25,15 +25,15 @@ class NumberPadScreen(Screen):
                            size_hint_y=None, height=50, halign='left')
         self.label.bind(size=self.label.setter('text_size'))
         left.add_widget(self.label)
-        self.ip_input = TextInput(text='192.168.0.171', multiline=False, font_size=40,
+        self.input = TextInput(text='192.168.0.171', multiline=False, font_size=40,
                                   background_color=(0, 0, 0, 0),
                                   foreground_color=(1, 1, 0, 1),  # Yellow
                                   cursor_color=(1, 1, 1, 1),
                                   font_family='fonts/Roboto-Bold.ttf',
                                   size_hint_y=None, height=60,
                                   halign='left')
-        self.ip_input.bind(focus=self.set_cursor_at_end)
-        left.add_widget(self.ip_input)
+        self.input.bind(focus=self.set_cursor_at_end)
+        left.add_widget(self.input)
         left.add_widget(Widget(size_hint_y=None, height=2))  # Fake underline
 
         # Keypad Grid
@@ -89,9 +89,9 @@ class NumberPadScreen(Screen):
     def on_key_press(self, instance):
         key = instance.text
         if key == 'DEL':
-            self.ip_input.text = self.ip_input.text[:-1]
+            self.input.text = self.input.text[:-1]
         else:
-            self.ip_input.text += key
+            self.input.text += key
 
 
 class RoundedButton(Button):

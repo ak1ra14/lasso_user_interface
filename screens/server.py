@@ -128,7 +128,7 @@ class RegionServerScreen(NumberPadScreen):
         """
         Override the on_save method to save the region address.
         """
-        self.config['region_address'] = self.ip_input.text
+        self.config['region_address'] = self.input.text
         save_config("config/settings.json", "v3_json", data=self.config)
 
     def on_pre_enter(self):
@@ -137,7 +137,7 @@ class RegionServerScreen(NumberPadScreen):
         """
         update_current_page('region_server')
         self.config = load_config("config/settings.json", "v3_json")
-        self.ip_input.text = self.config.get("region_address", "")
+        self.input.text = self.config.get("region_address", "")
 
 
 class MQTTBrokerIPScreen(NumberPadScreen):
@@ -150,7 +150,7 @@ class MQTTBrokerIPScreen(NumberPadScreen):
         """
         Override the on_save method to save the MQTT broker address.
         """
-        self.config['mqtt_address'] = self.ip_input.text
+        self.config['mqtt_address'] = self.input.text
         save_config("config/settings.json", "v3_json", data=self.config)
 
     def on_pre_enter(self):
@@ -159,7 +159,7 @@ class MQTTBrokerIPScreen(NumberPadScreen):
         """
         update_current_page('mqtt_broker_ip')
         self.config = load_config("config/settings.json", "v3_json")
-        self.ip_input.text = self.config.get("mqtt_address", "")
+        self.input.text = self.config.get("mqtt_address", "")
 
 class AlertLight1Screen(NumberPadScreen):
     def __init__(self, **kwargs):
@@ -171,7 +171,7 @@ class AlertLight1Screen(NumberPadScreen):
         """
         Override the on_save method to save the alert light 1 address.
         """
-        self.config['alert_lights_ip1'] = self.ip_input.text
+        self.config['alert_lights_ip1'] = self.input.text
         save_config("config/settings.json", "v3_json", data=self.config)
 
     def on_pre_enter(self):
@@ -180,7 +180,7 @@ class AlertLight1Screen(NumberPadScreen):
         """
         update_current_page('alert_light_1')
         self.config = load_config("config/settings.json", "v3_json")
-        self.ip_input.text = self.config.get("alert_lights_ip1", "")
+        self.input.text = self.config.get("alert_lights_ip1", "")
 
 
 class AlertLight2Screen(NumberPadScreen):
@@ -193,7 +193,7 @@ class AlertLight2Screen(NumberPadScreen):
         """
         Override the on_save method to save the alert light 2 address.
         """
-        self.config['alert_lights_ip2'] = self.ip_input.text
+        self.config['alert_lights_ip2'] = self.input.text
         save_config("config/settings.json", "v3_json", data=self.config)
 
     def on_pre_enter(self):
@@ -202,7 +202,7 @@ class AlertLight2Screen(NumberPadScreen):
         """
         update_current_page('alert_light_2')
         self.config = load_config("config/settings.json", "v3_json")
-        self.ip_input.text = self.config.get("alert_lights_ip2", "")
+        self.input.text = self.config.get("alert_lights_ip2", "")
 
 
 class MQTTTopicKeyboardScreen(KeyboardScreen):
