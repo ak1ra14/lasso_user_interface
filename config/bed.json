@@ -1,10 +1,10 @@
 {
     "mincount": 99,
     "nbeds": [
-        1,
+        2,
         [
-            "bed_001dxijuhbdb",
-            "bed_002"
+            1,
+            2
         ]
     ],
     "alert_checking": [

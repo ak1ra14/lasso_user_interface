@@ -11,7 +11,7 @@ from kivy.core.audio import SoundLoader
 from utils.layout import SeparatorLine 
 from utils.layout import HeaderBar
 from utils.icons import ToggleButton, CustomSwitch
-from utils.config_loader import load_config, save_config
+from utils.config_loader import load_config, save_config, update_current_page
 class AlertTypeScreen(Screen):
     def __init__(self, **kwargs):
         super(AlertTypeScreen, self).__init__(**kwargs)
@@ -107,6 +107,7 @@ class AlertTypeScreen(Screen):
         self.add_widget(fall_image)
 
     def on_pre_enter(self):
+        update_current_page('alert_type')
         status = []
         self.config = load_config('config/settings.json','v3_json')
         ack_enable = self.config.get("ack_enable", 'yes')

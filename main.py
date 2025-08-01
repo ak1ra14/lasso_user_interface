@@ -20,7 +20,7 @@ from screens.timezone import TimezoneScreen
 from screens.volume import VolumeScreen, set_system_volume
 from screens.alert_mode import AlertModeScreen
 from screens.alert_type import AlertTypeScreen
-from screens.location import LocationScreen, Bed1KeyboardScreen, Bed2KeyboardScreen, DeviceKeyboardScreen
+from screens.location import LocationScreen, Bed1Screen, Bed2Screen, DeviceKeyboardScreen
 from screens.server import ServerScreen, MQTTTopicKeyboardScreen, RegionServerScreen, MQTTBrokerIPScreen, AlertLight1Screen, AlertLight2Screen
 from utils.num_pad import NumberPadScreen
 from screens.wifi import WifiLoadingScreen, WifiPasswordScreen, WifiConnectingScreen, WifiConnectedScreen, WifiErrorScreen
@@ -43,8 +43,8 @@ class MyApp(App):
         self.sm.add_widget(AlertModeScreen(name='mode'))
         self.sm.add_widget(AlertTypeScreen(name='alerts'))
         self.sm.add_widget(LocationScreen(name='location'))
-        self.sm.add_widget(Bed1KeyboardScreen(name='bed1'))
-        self.sm.add_widget(Bed2KeyboardScreen(name='bed2'))
+        self.sm.add_widget(Bed1Screen(name='bed1'))
+        self.sm.add_widget(Bed2Screen(name='bed2'))
         self.sm.add_widget(DeviceKeyboardScreen(name='device'))
         self.sm.add_widget(ServerScreen(name='servers'))
         self.sm.add_widget(RegionServerScreen(name='region server'))
