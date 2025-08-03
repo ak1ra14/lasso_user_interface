@@ -78,6 +78,7 @@ class MyApp(App):
         self.time_limit = 60
         self.time_left = self.time_limit
         self.time_bar = ProgressBar(max=self.time_limit, value=self.time_limit, size_hint=(0.94, None), height=20, pos_hint={'x': 0.03, 'y': 0.02})
+        self.time_bar.opacity = 0
         self.root_layout.add_widget(self.time_bar)
 
         # Start timer

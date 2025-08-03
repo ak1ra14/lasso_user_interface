@@ -10,7 +10,7 @@ from kivy.uix.floatlayout import FloatLayout
 from kivy.core.audio import SoundLoader
 from kivy.properties import BooleanProperty
 from utils.layout import SeparatorLine
-from utils.layout import HeaderBar
+from utils.layout import HeaderBar, SafeScreen
 from utils.config_loader import load_config, save_config, update_current_page
 class AlertModeScreen(Screen):
     """
