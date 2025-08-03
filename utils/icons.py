@@ -151,9 +151,7 @@ class IconTextButton(Button):
         self.label_widget.text = value
 
     def on_press(self):
-        sound = SoundLoader.load('sound/tap.mp3')
-        if sound:
-            sound.play()
+        App.get_running_app().play_sound()  # Play sound on button press
         # Only navigate if screen_name is set and no custom handler is bound
         if self.screen_name and not self.has_custom_handler():
             App.get_running_app().sm.current = self.screen_name

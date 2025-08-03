@@ -64,10 +64,7 @@ class MonitorScreen(SafeScreen):
         
     def go_to_menu(self, instance):
         print("Going to menu")
-        # sound = SoundLoader.load('sound/tap.mp3')
-        # if sound:
-        #     sound.play()
-        #Clock.schedule_once(lambda dt: setattr(self.manager, 'current', 'menu'), 0)
+        App.get_running_app().play_sound()
         App.get_running_app().sm.current = 'menu'  # Change 'main' to the actual screen name for the menu
         print("Menu screen activated")
 

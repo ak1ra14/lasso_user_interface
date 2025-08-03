@@ -29,11 +29,12 @@ from screens.location import LocationScreen, Bed1Screen, Bed2Screen, DeviceKeybo
 from screens.server import ServerScreen, MQTTTopicKeyboardScreen, RegionServerScreen, MQTTBrokerIPScreen, AlertLight1Screen, AlertLight2Screen
 from utils.num_pad import NumberPadScreen
 from screens.wifi import WifiLoadingScreen, WifiPasswordScreen, WifiConnectingScreen, WifiConnectedScreen, WifiErrorScreen
-
+from kivy.core.audio import SoundLoader
 
 class MyApp(App):
     def build(self):
         self.sm = ScreenManager(transition=NoTransition())
+        self.sound = SoundLoader.load('sound/tap.mp3')  # Load sound once
         # Set the default volume to config setting
         self.config = load_config('config/settings.json','v3_json')
         set_system_volume(self.config.get('volume', 50))
@@ -89,6 +90,13 @@ class MyApp(App):
         Window.bind(on_key_down=self.on_user_activity)
 
         return self.root_layout
+    
+    def play_sound(self):
+        if self.sound:
+            self.sound.stop()  # Stop if already playing
+            self.sound.play()
+        else:
+            print("Sound file not found or unsupported format.")
     
     def on_user_activity(self, *args):
         self.reset_screensaver_timer()

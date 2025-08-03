@@ -14,6 +14,7 @@ from kivy.uix.image import Image
 from kivy.clock import Clock
 from kivy.uix.screenmanager import Screen
 import mozcpy
+from kivy.app import App
 
 class KeyboardScreen(SafeScreen):
     def __init__(self, title, **kwargs):
@@ -407,6 +408,7 @@ class RoundedButton(Button):
 
     def on_press(self):
         print(f"Button {self.text} pressed")
+        App.get_running_app().play_sound()
         freeze_ui(0.3)
 
 

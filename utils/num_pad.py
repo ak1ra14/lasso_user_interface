@@ -13,6 +13,7 @@ from kivy.graphics import Color, RoundedRectangle, Line
 from utils.keyboard import SeparatorLine
 from utils.layout import SafeScreen
 from utils.freeze_screen import freeze_ui
+from kivy.app import App
 
 class NumberPadScreen(SafeScreen):
     def __init__(self, title = 'Custom Numpad',screen_name='menu2', **kwargs):
@@ -117,5 +118,6 @@ class RoundedButton(Button):
         self.bg_color.rgba = self.background_color
     
     def on_press(self):
+        App.get_running_app().play_sound()  # Play sound on press
         freeze_ui(0.3)
 
