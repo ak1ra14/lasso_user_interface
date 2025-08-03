@@ -279,7 +279,6 @@ class ToggleButton(BoxLayout):
         #call back function to set text size
         self.two_label.text_size = self.two_label.size
 
-
         self.add_widget(self.one_label)
         self.add_widget(self.switch)
         self.add_widget(self.two_label)

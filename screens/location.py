@@ -22,8 +22,39 @@ class LocationScreen(SafeScreen):
 
         if self.bed_no == 1:
             self.add_widget(IconTextButton(
+                text="Location",
+                config = self.config.get('location', " "),
+                font_size=18,
+                icon_path="images/location.png",
+                size_hint=(None, None),
+                size=(200, 200),
+                pos_hint={'center_x': 0.3, 'center_y': 0.5},
+                screen_name='device'
+            ))
+            self.add_widget(IconTextButton(
                 text="Bed 1",
-                config = f"Bed-{self.bed_config.get('nbeds', [1,[' ']])[1][0]}",
+                config = self.bed_config.get('nbeds', [1,[' ']])[1][0],
+                font_size=18,
+                icon_path="images/bed.png",
+                size_hint=(None, None),
+                size=(200, 200),
+                pos_hint={'center_x': 0.7, 'center_y': 0.5},
+                screen_name='bed1'
+            ))
+        elif self.bed_no == 2:
+            self.add_widget(IconTextButton(
+                text="Location",
+                config = self.config.get('location', " "),
+                font_size=18,
+                icon_path="images/location.png",
+                size_hint=(None, None),
+                size=(200, 200),
+                pos_hint={'center_x': 0.25, 'center_y': 0.5},
+                screen_name='device'
+            ))
+            self.add_widget(IconTextButton(
+                text="Bed 1",
+                config = self.bed_config.get('nbeds', [1,[' ']])[1][0],
                 font_size=18,
                 icon_path="images/bed.png",
                 size_hint=(None, None),
@@ -31,25 +62,14 @@ class LocationScreen(SafeScreen):
                 pos_hint={'center_x': 0.5, 'center_y': 0.5},
                 screen_name='bed1'
             ))
-        elif self.bed_no == 2:
-            self.add_widget(IconTextButton(
-                text="Bed 1",
-                config = f"Bed-{self.bed_config.get('nbeds', [1,[' ']])[1][0]}",
-                font_size=18,
-                icon_path="images/bed.png",
-                size_hint=(None, None),
-                size=(200, 200),
-                pos_hint={'center_x': 0.3, 'center_y': 0.5},
-                screen_name='bed1'
-            ))
             self.add_widget(IconTextButton(
                 text="Bed 2",
-                config = f"Bed-{self.bed_config.get('nbeds', [1,[' ']])[1][1]}",
+                config = self.bed_config.get('nbeds', [1,[' ']])[1][1],
                 font_size=18,
                 icon_path="images/bed.png",
                 size_hint=(None, None),
                 size=(200, 200),
-                pos_hint={'center_x': 0.7, 'center_y': 0.5},
+                pos_hint={'center_x': 0.75, 'center_y': 0.5},
                 screen_name='bed2'
             ))
 
@@ -68,17 +88,17 @@ class LocationScreen(SafeScreen):
         self.build_ui()
     
 
-class Bed1Screen(NumberPadScreen):
+class Bed1Screen(KeyboardScreen):
     def __init__(self, **kwargs):
-        super(Bed1Screen, self).__init__(title="Bed Location 1", screen_name='menu',**kwargs)
+        super(Bed1Screen, self).__init__(title="Bed Location 1",**kwargs)
         self.config = load_config("config/settings.json", "bed_json")
-        self.text = str(self.config.get("nbeds", [1, [' ']])[1][0])
+        self.text = self.config.get("nbeds", [1, [' ']])[1][0]
 
-    def on_save(self, instance):
+    def press_enter(self, instance):
         """
         Override the on_enter method to set the keyboard title.
         """    
-        self.config['nbeds'][1][0] = int(self.input.text)
+        self.config['nbeds'][1][0] = self.keyboard.text_input.text
         save_config("config/settings.json", "bed_json", self.config)
 
     def on_pre_enter(self):
@@ -87,19 +107,19 @@ class Bed1Screen(NumberPadScreen):
         """
         update_current_page('bed1')
         self.config = load_config("config/settings.json", "bed_json")
-        self.input.text = str(self.config.get("nbeds", [1, [1]])[1][0])
+        self.keyboard.text_input.text = self.config.get("nbeds", [1, [1]])[1][0]
 
-class Bed2Screen(NumberPadScreen):
+class Bed2Screen(KeyboardScreen):
     def __init__(self, **kwargs):
-        super().__init__(title="Bed Location 2", screen_name='menu', **kwargs)
+        super().__init__(title="Bed Location 2", **kwargs)
         self.config = load_config("config/settings.json", "bed_json")
-        self.text = str(self.config.get("nbeds", [1, [' ']])[1][1])
+        self.text = self.config.get("nbeds", [1, [' ']])[1][1]
 
-    def on_save(self, instance):
+    def press_enter(self, instance):
         """
         Override the on_enter method to set the keyboard title.
         """    
-        self.config['nbeds'][1][1] = int(self.input.text)
+        self.config['nbeds'][1][1] = self.keyboard.text_input.text
         save_config("config/settings.json", "bed_json", self.config)
 
     def on_pre_enter(self):
@@ -107,8 +127,9 @@ class Bed2Screen(NumberPadScreen):
         Override the on_pre_enter method to set the keyboard title.
         """
         update_current_page('bed2')
+        self.keyboard.title = "Bed Location 2"
         self.config = load_config("config/settings.json", "bed_json")
-        self.input.text = str(self.config.get("nbeds", [2, [1, 2]])[1][1])
+        self.keyboard.text_input.text = self.config.get("nbeds", [2, [1, 2]])[1][1]
 
 class DeviceKeyboardScreen(KeyboardScreen):
     def __init__(self, **kwargs):
@@ -127,6 +148,7 @@ class DeviceKeyboardScreen(KeyboardScreen):
         """
         Override the on_pre_enter method to set the keyboard title.
         """
+        update_current_page('device_keyboard')
         self.keyboard.title = "Device Location"
         self.config = load_config("config/settings.json", "v3_json")
         self.keyboard.text_input.text = self.config.get("location", "Room 1")

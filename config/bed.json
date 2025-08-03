@@ -1,10 +1,10 @@
 {
-    "mincount": 99,
+    "mincount": 1,
     "nbeds": [
-        2,
+        1,
         [
-            158,
-            2
+            "158wsftss",
+            "2"
         ]
     ],
     "alert_checking": [
