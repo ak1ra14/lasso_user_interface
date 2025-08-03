@@ -118,12 +118,13 @@ class MyApp(App):
         self.time_bar.value = self.time_limit
 
     def on_screen_change(self, *args):
-        if self.sm.current == 'dark':
+        if self.sm.current == 'dark' or self.sm.current == 'monitor':
             self.time_bar.opacity = 0  # Hide time bar in dark screen
-        else:
-            self.time_bar.opacity = 1
             if self.sm.current == 'monitor':
                 self.reset_timer_event()
+        else:
+            self.time_bar.opacity = 1
+
 
     def reset_timer_event(self):
         if self._timer_event:
