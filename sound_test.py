@@ -23,7 +23,7 @@ class TestSoundApp(App):
         return layout
 
     def play_sound(self, instance):
-        sound = SoundLoader.load('sound/tap.wav')
+        sound = SoundLoader.load('sound/tap.mp3')
         if sound:
             sound.play()
             self.label.text = "Playing sound!"
