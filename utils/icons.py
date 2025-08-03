@@ -151,7 +151,7 @@ class IconTextButton(Button):
         self.label_widget.text = value
 
     def on_press(self):
-        sound = SoundLoader.load('sound/tap.wav')
+        sound = SoundLoader.load('sound/tap.mp3')
         if sound:
             sound.play()
         # Only navigate if screen_name is set and no custom handler is bound
@@ -199,7 +199,7 @@ class CircularImageButton(Button):
         Override the on_press method to change the current screen.
         This method is called when the button is pressed.
         """
-        sound = SoundLoader.load('sound/tap.wav')
+        sound = SoundLoader.load('sound/tap.mp3')
         if sound:
             sound.play()
         App.get_running_app().sm.current = self.screen_name  # Navigate to the screen
