@@ -11,8 +11,7 @@ from kivy.clock import Clock
 from kivy.core.audio import SoundLoader
 from kivy.app import App
 from utils.freeze_screen import freeze_ui
-import json
-import os
+import os, sys
 
 from utils.config_loader import load_config, save_config, update_current_page
 from utils.layout import HeaderBar, SafeScreen
@@ -95,11 +94,9 @@ class ChangeVolume(IconTextButton):
         self.volume_label = volume_label
         self.change = change
         self.volume_screen = volume_screen  # Reference to the screen
-        self.sound = SoundLoader.load('sound/beep.wav')
 
     def on_press(self):
         freeze_ui(0.3)  # Freeze the UI for 0.3 seconds
-        App.get_running_app().play_sound()  # Play sound on button press
         if self.change == "increase":
             self._increase()
         elif self.change == "decrease":
@@ -113,8 +110,7 @@ class ChangeVolume(IconTextButton):
         self.volume_screen.volume = new_volume
         self.volume_label.text = f"{new_volume}%"
         set_system_volume(new_volume)
-        if self.sound:
-            self.sound.play()
+        App.get_running_app().play_sound()  # Play sound on button press
 
 
     def _decrease(self):
@@ -123,8 +119,8 @@ class ChangeVolume(IconTextButton):
         self.volume_screen.volume = new_volume
         self.volume_label.text = f"{new_volume}%"
         set_system_volume(new_volume)
-        if self.sound:
-            self.sound.play()
+        App.get_running_app().play_sound()
+
 
 class SaveButton(IconTextButton):
     def __init__(self, volume_screen=None, **kwargs):
@@ -147,21 +143,19 @@ class HomeButtonVolume(IconTextButton):
         super().__init__(**kwargs)
         self.volume_screen = volume_screen
 
-    def on_press(self):
-        super().on_press()
-        # sound = SoundLoader.load('sound/tap.mp3')
-        # sound.play()
-        # self.volume_screen.volume_label.text = f"{load_config('config/V3.json').get('volume', 50)}%"
-        # self.volume_screen.volume = load_config('config/V3.json').get('volume', 50)
-          # Reset volume to saved value
+def set_system_volume(percent):
+    if sys.platform == 'linux':
+        set_system_volume_linux(percent)
+    elif sys.platform == 'darwin':  # macOS
+        set_system_volume_mac(percent)
 
     #raspberry pi
-# def set_system_volume(percent):
-#     # Clamp percent between 0 and 100
-#     percent = max(0, min(100, percent))
-#     os.system(f"amixer sset 'Master' {percent}%")
+def set_system_volume_raspberry_pi(percent):
+    # Clamp percent between 0 and 100
+    percent = max(0, min(100, percent))
+    os.system(f"amixer sset 'Master' {percent}%")
 
 #macOS
-def set_system_volume(percent):
+def set_system_volume_mac(percent):
     percent = max(0, min(100, percent))
     os.system(f"osascript -e 'set volume output volume {percent}'")
