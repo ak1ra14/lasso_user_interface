@@ -212,7 +212,7 @@ class QwertyKeyboard(FloatLayout):
             for key, sub_key in zip(row, subrow):
                 btn = None
                 if key == 'English':
-                    btn = RoundedButton(text='', sub_key=sub_key, image=f'images/{key}.png', font_size=24, font_name='fonts/MPLUS1p-Regular.ttf',
+                    btn = RoundedButton(text='', sub_key=sub_key, image=f'images/english.png', font_size=24, font_name='fonts/MPLUS1p-Regular.ttf',
                                         background_color=(0.22, 0.45, 0.91, 1), size_hint_x=None, width=key_width*1.5,
                                         function='English')
                 elif key == 'Backspace':
