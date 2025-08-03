@@ -47,7 +47,7 @@ class AlertModeScreen(Screen):
             text_right="Two Beds",
             size_hint_y=None,
             switch=CustomSwitchAM(parent=self),
-            pos=(125, 340)
+            pos=(130, 345)
 
         )
 
