@@ -11,6 +11,7 @@ from kivy.core.audio import SoundLoader
 from utils.config_loader import load_config
 from kivy.properties import BooleanProperty
 from kivy.clock import Clock
+from utils.layout import freeze_ui, UILockOverlay
 
 
 class ColoredLabel(Label):
@@ -239,6 +240,7 @@ class CustomSwitch(FloatLayout):
     def toggle(self, instance, touch):
         if self.collide_point(*touch.pos):
             self.active = not self.active
+            freeze_ui(0.3)  # Freeze UI for 0.3 seconds
             return True
         return False
 
@@ -276,7 +278,6 @@ class ToggleButton(BoxLayout):
         )
         #call back function to set text size
         self.two_label.text_size = self.two_label.size
-        #self.two_label.bind(size=lambda inst, val: setattr(inst, 'text_size', val))
 
 
         self.add_widget(self.one_label)

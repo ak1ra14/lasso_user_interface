@@ -406,7 +406,7 @@ class RoundedButton(Button):
 
     def on_press(self):
         print(f"Button {self.text} pressed")
-        freeze_ui(0.5)
+        freeze_ui(0.3)
 
 
 class SeparatorLine(Widget):

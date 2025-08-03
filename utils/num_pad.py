@@ -116,5 +116,5 @@ class RoundedButton(Button):
         self.bg_color.rgba = self.background_color
     
     def on_press(self):
-        freeze_ui(0.5)
+        freeze_ui(0.3)
 
