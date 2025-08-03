@@ -8,7 +8,8 @@ from kivy.graphics import Color, RoundedRectangle, Ellipse, Line
 from kivy.properties import BooleanProperty
 from kivy.uix.floatlayout import FloatLayout
 from utils.icons import IconTextButton
-from utils.layout import SafeScreen, freeze_ui
+from utils.layout import SafeScreen
+from utils.freeze_screen import freeze_ui
 from kivy.uix.image import Image
 from kivy.clock import Clock
 from kivy.uix.screenmanager import Screen

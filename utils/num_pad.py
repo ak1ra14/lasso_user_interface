@@ -11,7 +11,8 @@ from utils.config_loader import load_config
 from utils.icons import IconTextButton
 from kivy.graphics import Color, RoundedRectangle, Line
 from utils.keyboard import SeparatorLine
-from utils.layout import SafeScreen, freeze_ui
+from utils.layout import SafeScreen
+from utils.freeze_screen import freeze_ui
 
 class NumberPadScreen(SafeScreen):
     def __init__(self, title = 'Custom Numpad',screen_name='menu2', **kwargs):

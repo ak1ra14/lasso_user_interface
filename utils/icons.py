@@ -11,7 +11,7 @@ from kivy.core.audio import SoundLoader
 from utils.config_loader import load_config
 from kivy.properties import BooleanProperty
 from kivy.clock import Clock
-from utils.layout import freeze_ui, UILockOverlay
+from utils.freeze_screen import freeze_ui
 
 
 class ColoredLabel(Label):
