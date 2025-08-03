@@ -405,7 +405,8 @@ class RoundedButton(Button):
         # You can call a callback or set a flag here
 
     def on_release(self):
-        freeze_ui(0.3)
+        print(f"Button {self.text} released")
+        freeze_ui(1)
 
 
 class SeparatorLine(Widget):
