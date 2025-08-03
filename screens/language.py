@@ -7,9 +7,9 @@ from kivy.uix.image import Image
 from kivy.uix.button import Button
 from kivy.uix.widget import Widget
 from utils.config_loader import load_config, update_current_page
-from utils.layout import HeaderBar
+from utils.layout import HeaderBar, SafeScreen
 
-class LanguageScreen(Screen):
+class LanguageScreen(SafeScreen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         header = HeaderBar(title="Language", icon_path="images/home.png", button_text="Home", button_screen="menu")

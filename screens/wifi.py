@@ -1,7 +1,7 @@
 import sys
 import subprocess
 import threading
-from utils.layout import HeaderBar
+from utils.layout import HeaderBar, SafeScreen
 from kivy.uix.image import Image
 from kivy.app import App
 from kivy.uix.screenmanager import Screen
@@ -15,7 +15,7 @@ from utils.config_loader import load_config, save_config, update_current_page
 from utils.icons import IconTextButton
 from utils.keyboard import KeyboardScreen
 
-class WifiLoadingScreen(Screen):
+class WifiLoadingScreen(SafeScreen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.config = load_config("config/settings.json", "v3_json")
@@ -211,7 +211,7 @@ class WifiConnectingScreen(Screen):
             size=(400, 100)
         ))
 
-class WifiConnectedScreen(Screen):
+class WifiConnectedScreen(SafeScreen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.add_widget(HeaderBar(title=" ",button_screen="menu2"))
@@ -246,7 +246,7 @@ class WifiConnectedScreen(Screen):
         wifi_name = App.get_running_app().sm.get_screen('wifi password').wifi_name
         self.label.text = wifi_name if wifi_name else "Unknown Network"
 
-class WifiErrorScreen(Screen):
+class WifiErrorScreen(SafeScreen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.add_widget(HeaderBar(title=" ",button_screen="menu2"))

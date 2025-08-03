@@ -7,9 +7,9 @@ from utils.icons import IconTextButton, CircularImageButton
 from kivy.app import App
 import os, sys
 from utils.config_loader import load_config, save_config, update_current_page
-from utils.layout import HeaderBar
+from utils.layout import HeaderBar, SafeScreen
 
-class PowerScreen(Screen):
+class PowerScreen(SafeScreen):
     """
     Power screen for the Soundeye application.
     This screen allows users to power off or restart the device.

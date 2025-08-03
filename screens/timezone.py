@@ -10,10 +10,10 @@ from kivy.uix.gridlayout import GridLayout
 from kivy.app import App
 from kivy.uix.button import Button
 from kivy.graphics import Color, Rectangle
-from utils.layout import HeaderBar
+from utils.layout import HeaderBar, SafeScreen
 import json
 
-class TimezoneScreen(Screen):
+class TimezoneScreen(SafeScreen):
     def __init__(self, **kwargs):
         """
         Timezone screen for the Soundeye application.

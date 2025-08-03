@@ -8,12 +8,13 @@ from kivy.graphics import Color, RoundedRectangle, Ellipse, Line
 from kivy.properties import BooleanProperty
 from kivy.uix.floatlayout import FloatLayout
 from utils.icons import IconTextButton
+from utils.layout import SafeScreen
 from kivy.uix.image import Image
 from kivy.clock import Clock
 from kivy.uix.screenmanager import Screen
 import mozcpy
 
-class KeyboardScreen(Screen):
+class KeyboardScreen(SafeScreen):
     def __init__(self, title, **kwargs):
         super().__init__(**kwargs)
         self.keyboard = QwertyKeyboard(title=title, enter_callback=self.press_enter)

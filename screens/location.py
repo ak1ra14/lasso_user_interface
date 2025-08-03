@@ -1,5 +1,5 @@
 from kivy.uix.screenmanager import Screen
-from utils.layout import HeaderBar
+from utils.layout import HeaderBar, SafeScreen
 from utils.config_loader import load_config, save_config, update_current_page
 from kivy.uix.floatlayout import FloatLayout
 from utils.icons import IconTextButton
@@ -7,7 +7,7 @@ from utils.num_pad import NumberPadScreen
 from utils.keyboard import KeyboardScreen
 
 
-class LocationScreen(Screen):
+class LocationScreen(SafeScreen):
     def __init__(self, **kwargs):
         super(LocationScreen, self).__init__(**kwargs)
         self.config = load_config("config/settings.json", "v3_json")

@@ -8,9 +8,10 @@ from kivy.core.audio import SoundLoader
 from kivy.app import App
 from kivy.clock import Clock
 from utils.config_loader import load_config, update_current_page
+from utils.layout import HeaderBar, SafeScreen
 import socket
 
-class MonitorScreen(Screen):
+class MonitorScreen(SafeScreen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         print("MonitorScreen initialized")

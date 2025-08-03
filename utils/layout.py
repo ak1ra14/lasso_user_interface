@@ -5,6 +5,8 @@ from kivy.graphics import Color, Line
 from utils.icons import IconTextButton, PageIndicator, CircularImageButton, PageIndicatorWidget
 from kivy.uix.anchorlayout import AnchorLayout
 from utils.config_loader import load_config
+from kivy.uix.screenmanager import Screen
+from kivy.clock import Clock
 
 class HeaderBar(BoxLayout):
     def __init__(self, title="Language", icon_path="images/home.png", button_text="Home", button_screen="menu", padding=[50, 0, 50, 0], spacing=10, **kwargs):
@@ -67,3 +69,20 @@ class SeparatorLine(Widget):
     def on_size(self, *args):
         # Optionally update line position if widget size changes
         self.line.points = [self.x, self.center_y, self.right, self.center_y]
+
+
+class SafeScreen(Screen):
+    touch_enabled = False
+
+    def on_enter(self):
+        # Delay touch activation by 300ms
+        self.touch_enabled = False
+        Clock.schedule_once(self.enable_touch, 1)
+
+    def enable_touch(self, dt):
+        self.touch_enabled = True
+
+    def on_touch_down(self, touch):
+        if not self.touch_enabled:
+            return True  # Swallow touch during transition
+        return super().on_touch_down(touch)

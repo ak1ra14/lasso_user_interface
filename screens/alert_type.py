@@ -9,10 +9,10 @@ from kivy.properties import BooleanProperty
 from kivy.app import App
 from kivy.core.audio import SoundLoader
 from utils.layout import SeparatorLine 
-from utils.layout import HeaderBar
+from utils.layout import HeaderBar, SafeScreen
 from utils.icons import ToggleButton, CustomSwitch
 from utils.config_loader import load_config, save_config, update_current_page
-class AlertTypeScreen(Screen):
+class AlertTypeScreen(SafeScreen):
     def __init__(self, **kwargs):
         super(AlertTypeScreen, self).__init__(**kwargs)
         self.config = load_config('config/settings.json','v3_json')

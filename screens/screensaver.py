@@ -14,9 +14,9 @@ import json
 import os
 
 from utils.config_loader import load_config, save_config, update_current_page
-from utils.layout import HeaderBar
+from utils.layout import HeaderBar, SafeScreen
 
-class ScreenSaverScreen(Screen):
+class ScreenSaverScreen(SafeScreen):
     def __init__(self, **kwargs):
         
         super().__init__(**kwargs)
@@ -164,7 +164,7 @@ class HomeButtonScreensaver(IconTextButton):
         self.screensaver_screen.screensaver_time = self.config.get('screensaver', 50)
           # Reset screensaver time to saved value
 
-class DarkScreen(Screen):
+class DarkScreen(SafeScreen):
     """
     A dark screen that can be used as a screensaver.
     This screen is displayed when the screensaver is active.

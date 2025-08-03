@@ -14,10 +14,10 @@ import json
 import os
 
 from utils.config_loader import load_config, save_config, update_current_page
-from utils.layout import HeaderBar
+from utils.layout import HeaderBar, SafeScreen
 
 
-class VolumeScreen(Screen):
+class VolumeScreen(SafeScreen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.volume = load_config('config/settings.json', 'v3_json').get('volume', 50)

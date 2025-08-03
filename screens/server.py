@@ -2,7 +2,7 @@ from kivy.uix.screenmanager import Screen
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.label import Label
-from utils.layout import HeaderBar
+from utils.layout import HeaderBar, SafeScreen
 from utils.config_loader import load_config
 from utils.icons import IconTextButton
 from kivy.graphics import Line, Color, Rectangle
@@ -12,7 +12,7 @@ from utils.layout import SeparatorLine
 from utils.num_pad import NumberPadScreen
 
 
-class ServerScreen(Screen):
+class ServerScreen(SafeScreen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.config = load_config('config/settings.json', 'v3_json')

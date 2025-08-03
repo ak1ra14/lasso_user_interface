@@ -8,10 +8,10 @@ from kivy.uix.gridlayout import GridLayout
 from kivy.uix.anchorlayout import AnchorLayout
 from utils.icons import IconTextButton, CircularImageButton, PageIndicator
 from utils.config_loader import load_config, update_current_page
-from utils.layout import HeaderBar, Footer1Bar, Footer2Bar
+from utils.layout import HeaderBar, Footer1Bar, Footer2Bar, SafeScreen
 
 
-class MenuScreen1(Screen):
+class MenuScreen1(SafeScreen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.config = load_config('config/settings.json', 'v3_json')
@@ -193,7 +193,7 @@ class MenuScreen1(Screen):
             print("Switching to location screen")
             self.manager.current = 'location'
 
-class MenuScreen2(Screen):
+class MenuScreen2(SafeScreen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
