@@ -408,7 +408,7 @@ class RoundedButton(Button):
         if self._debounce:
             return  # Ignore if in debounce period
         self._debounce = True
-        Clock.schedule_once(self._reset_debounce, 0.3)  # Freeze for 0.3 seconds
+        Clock.schedule_once(self._reset_debounce, 1)  # Freeze for 0.3 seconds
         return super().on_release()
 
     def _reset_debounce(self, dt):
