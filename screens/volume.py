@@ -99,6 +99,7 @@ class ChangeVolume(IconTextButton):
 
     def on_press(self):
         freeze_ui(0.3)  # Freeze the UI for 0.3 seconds
+        App.get_running_app().play_sound()  # Play sound on button press
         if self.change == "increase":
             self._increase()
         elif self.change == "decrease":

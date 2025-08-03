@@ -166,8 +166,8 @@ class QwertyKeyboard(FloatLayout):
                     btn = RoundedButton(text='', sub_key=sub_key, image=f'images/shift.png', font_size=24, font_name='fonts/Roboto-Bold.ttf',
                                         background_color = (0.22, 0.45, 0.91, 1), size_hint_x=None, width=key_width*1.5,
                                         function='Shift',  shift_key='')
-                elif key == key == 'Japanese':
-                    btn = RoundedButton(text='', sub_key=sub_key, image=f'images/{key}.png', font_size=24, font_name='fonts/Roboto-Bold.ttf',
+                elif key == 'Japanese':
+                    btn = RoundedButton(text='', sub_key=sub_key, image=f'images/japanese.png', font_size=24, font_name='fonts/Roboto-Bold.ttf',
                                         background_color=(0.22, 0.45, 0.91, 1), size_hint_x=None, width=key_width*1.5,
                                         function='Japanese',  shift_key='')
                 elif key == 'Backspace':
