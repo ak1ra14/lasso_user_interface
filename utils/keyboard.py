@@ -335,6 +335,7 @@ class RoundedButton(Button):
         self.background_color = (0,0,0,0)
         self.long_press_event = None
         self.is_long_press = False
+        self._debounce = False  # Debounce flag to prevent multiple presses
 
         with self.canvas.before:
             self.rect_color = Color(*background_color)
@@ -402,6 +403,16 @@ class RoundedButton(Button):
     def trigger_long_press(self, dt):
         self.is_long_press = True
         # You can call a callback or set a flag here
+
+    def on_release(self):
+        if self._debounce:
+            return  # Ignore if in debounce period
+        self._debounce = True
+        Clock.schedule_once(self._reset_debounce, 0.3)  # Freeze for 0.3 seconds
+        return super().on_release()
+
+    def _reset_debounce(self, dt):
+        self._debounce = False
 
 class SeparatorLine(Widget):
     def __init__(self, line_color=(1, 1, 1, 1), pos=(0, 0), **kwargs):
