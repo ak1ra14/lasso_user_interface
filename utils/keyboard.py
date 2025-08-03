@@ -404,8 +404,8 @@ class RoundedButton(Button):
         self.is_long_press = True
         # You can call a callback or set a flag here
 
-    def on_release(self):
-        print(f"Button {self.text} released")
+    def on_press(self):
+        print(f"Button {self.text} pressed")
         freeze_ui(1)
 
 
