@@ -150,7 +150,7 @@ def set_system_volume(percent):
         set_system_volume_mac(percent)
 
     #raspberry pi
-def set_system_volume_raspberry_pi(percent):
+def set_system_volume_linux(percent):
     # Clamp percent between 0 and 100
     percent = max(0, min(100, percent))
     os.system(f"amixer sset 'Master' {percent}%")
