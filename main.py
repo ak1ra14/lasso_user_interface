@@ -1,7 +1,9 @@
-import os
+import os, sys
 os.environ["KIVY_AUDIO"] = "pygame"
+
 from kivy.config import Config
-Config.set('input', 'mouse', 'mouse,disable')
+if sys.platform.startswith('linux'):
+    Config.set('graphics', 'show_cursor', 0) 
 
 from kivy.app import App
 from kivy.uix.screenmanager import ScreenManager, Screen, NoTransition
