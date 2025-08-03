@@ -12,7 +12,7 @@ from kivy.properties import BooleanProperty
 from utils.layout import SeparatorLine
 from utils.layout import HeaderBar, SafeScreen
 from utils.config_loader import load_config, save_config, update_current_page
-from utils.freeze_screen import freeze_ui
+from utils.freeze_screen import freeze_ui   
 class AlertModeScreen(Screen):
     """
     Alert Mode Screen
@@ -111,6 +111,8 @@ class AlertModeButton(IconTextButton):
             self.color_instruction.rgba = (0.22, 0.45, 0.91, 1)  # Blue
 
     def on_press(self):
+        freeze_ui(0.3)  # Freeze UI for 0.3 seconds
+        App.get_running_app().play_sound()  # Play sound on button press
         if not self.active:
             self.active = True
             self.screen.modes = f"{self.mode}.json"
@@ -125,9 +127,7 @@ class AlertModeButton(IconTextButton):
                 if button != self:
                     button.active = False
                     button._update_active_color(button, False)
-        sound = SoundLoader.load('sound/tap.mp3')
-        if sound:
-            sound.play()
+
 
 
 class CustomSwitchAM(CustomSwitch):
