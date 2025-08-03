@@ -10,6 +10,7 @@ from kivy.uix.gridlayout import GridLayout
 from kivy.clock import Clock
 from kivy.core.audio import SoundLoader
 from kivy.app import App
+from utils.freeze_screen import freeze_ui
 import json
 import os
 
@@ -108,6 +109,8 @@ class ChangeTime(IconTextButton):
         self.sound = SoundLoader.load('sound/tap.wav')
 
     def on_press(self):
+        freeze_ui(0.3)  # Freeze the UI for 0.3 seconds
+        
         if self.change == "increase":
             self._increase()
         elif self.change == "decrease":
@@ -156,9 +159,8 @@ class HomeButtonScreensaver(IconTextButton):
 
     def on_press(self):
         super().on_press()
-        sound = SoundLoader.load('sound/tap.wav')
-        if sound:
-            sound.play()
+        App.get_running_app().play_sound()
+        # Navigate back to the menu screen
         self.config = load_config('config/settings.json', 'v3_json')
         self.screensaver_screen.screensaver_time_label.text = f"{self.config.get('screensaver', 50)}%"
         self.screensaver_screen.screensaver_time = self.config.get('screensaver', 50)

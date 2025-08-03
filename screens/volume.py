@@ -10,6 +10,7 @@ from kivy.uix.gridlayout import GridLayout
 from kivy.clock import Clock
 from kivy.core.audio import SoundLoader
 from kivy.app import App
+from utils.freeze_screen import freeze_ui
 import json
 import os
 
@@ -97,6 +98,7 @@ class ChangeVolume(IconTextButton):
         self.sound = SoundLoader.load('sound/beep.wav')
 
     def on_press(self):
+        freeze_ui(0.3)  # Freeze the UI for 0.3 seconds
         if self.change == "increase":
             self._increase()
         elif self.change == "decrease":
