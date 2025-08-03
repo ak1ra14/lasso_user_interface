@@ -8,7 +8,7 @@ from kivy.graphics import Color, RoundedRectangle, Ellipse, Line
 from kivy.properties import BooleanProperty
 from kivy.uix.floatlayout import FloatLayout
 from utils.icons import IconTextButton
-from utils.layout import SafeScreen
+from utils.layout import SafeScreen, freeze_ui
 from kivy.uix.image import Image
 from kivy.clock import Clock
 from kivy.uix.screenmanager import Screen
@@ -405,14 +405,8 @@ class RoundedButton(Button):
         # You can call a callback or set a flag here
 
     def on_release(self):
-        if self._debounce:
-            return  # Ignore if in debounce period
-        self._debounce = True
-        Clock.schedule_once(self._reset_debounce, 1)  # Freeze for 0.3 seconds
-        return super().on_release()
+        freeze_ui(0.3)
 
-    def _reset_debounce(self, dt):
-        self._debounce = False
 
 class SeparatorLine(Widget):
     def __init__(self, line_color=(1, 1, 1, 1), pos=(0, 0), **kwargs):

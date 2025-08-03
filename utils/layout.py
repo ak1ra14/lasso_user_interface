@@ -7,6 +7,8 @@ from kivy.uix.anchorlayout import AnchorLayout
 from utils.config_loader import load_config
 from kivy.uix.screenmanager import Screen
 from kivy.clock import Clock
+from kivy.app import App
+from kivy.uix.floatlayout import FloatLayout
 
 class HeaderBar(BoxLayout):
     def __init__(self, title="Language", icon_path="images/home.png", button_text="Home", button_screen="menu", padding=[50, 0, 50, 0], spacing=10, **kwargs):
@@ -88,3 +90,14 @@ class SafeScreen(Screen):
         if not self.touch_enabled:
             return True  # Swallow touch during transition
         return super().on_touch_down(touch)
+
+class UILockOverlay(FloatLayout):
+    pass  # No widgets, just intercepts all touches
+
+def freeze_ui(duration=0.3):
+    app = App.get_running_app()
+    if not hasattr(app, 'ui_lock_overlay'):
+        app.ui_lock_overlay = UILockOverlay(size_hint=(1, 1))
+    if app.root and app.ui_lock_overlay.parent is None:
+        app.root.add_widget(app.ui_lock_overlay)
+        Clock.schedule_once(lambda dt: app.root.remove_widget(app.ui_lock_overlay), duration)
