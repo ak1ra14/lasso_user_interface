@@ -72,6 +72,8 @@ class SeparatorLine(Widget):
 
 
 class SafeScreen(Screen):
+    """
+    A Screen that delays touch activation to prevent double touches during transitions."""
     touch_enabled = False
 
     def on_enter(self):

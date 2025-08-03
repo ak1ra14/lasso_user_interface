@@ -27,22 +27,7 @@ class ColoredLabel(Label):
         self.bg_rect.size = self.size
 
 
-class SingleClickButton(Button):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self._clicked = False
-
-    def on_release(self):
-        if not self._clicked:
-            self._clicked = True
-            # Place your single-click logic here, or call super().on_release()
-            super().on_release()
-            Clock.schedule_once(self._reset_click, 0.3)  # 300ms debounce
-
-    def _reset_click(self, dt):
-        self._clicked = False
-
-class IconTextButton(SingleClickButton):
+class IconTextButton(Button):
     """
     A custom button class that extends Kivy's Button.
     It includes properties for text and image source, and its layout

@@ -1,5 +1,5 @@
 import os, sys
-os.environ["KIVY_AUDIO"] = "pygame"
+# os.environ["KIVY_AUDIO"] = "pygame"
 
 from kivy.config import Config
 if sys.platform.startswith('linux'):
