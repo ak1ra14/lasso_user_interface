@@ -12,6 +12,7 @@ from kivy.properties import BooleanProperty
 from utils.layout import SeparatorLine
 from utils.layout import HeaderBar, SafeScreen
 from utils.config_loader import load_config, save_config, update_current_page
+from utils.freeze_screen import freeze_ui
 class AlertModeScreen(Screen):
     """
     Alert Mode Screen
@@ -144,6 +145,7 @@ class CustomSwitchAM(CustomSwitch):
 
     def toggle(self, instance, touch):
         if self.collide_point(*touch.pos):
+            freeze_ui(0.3)  # Freeze UI for 0.3 seconds
             self.active = not self.active
             # Toggle between 1 and 2
             self.no_beds = 2 if self.no_beds == 1 else 1
