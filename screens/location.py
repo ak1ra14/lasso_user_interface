@@ -6,7 +6,6 @@ from utils.icons import IconTextButton
 from utils.num_pad import NumberPadScreen
 from utils.keyboard import KeyboardScreen
 
-
 class LocationScreen(SafeScreen):
     def __init__(self, **kwargs):
         super(LocationScreen, self).__init__(**kwargs)
