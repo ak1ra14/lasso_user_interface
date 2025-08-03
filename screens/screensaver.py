@@ -145,6 +145,7 @@ class SaveButton(IconTextButton):
         This method is called when the save button is pressed.
         """
         # Save the current screensaver time to the config file
+        super().on_press()
         config = load_config('config/settings.json','v3_json')
         config['screensaver'] = self.screensaver_screen.screensaver_time
         save_config('config/settings.json', 'v3_json', data=config)

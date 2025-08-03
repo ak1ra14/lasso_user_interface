@@ -197,9 +197,7 @@ class CircularImageButton(Button):
         Override the on_press method to change the current screen.
         This method is called when the button is pressed.
         """
-        sound = SoundLoader.load('sound/tap.mp3')
-        if sound:
-            sound.play()
+        App.get_running_app().play_sound()  # Play sound on button press
         App.get_running_app().sm.current = self.screen_name  # Navigate to the screen
 
 
@@ -238,6 +236,7 @@ class CustomSwitch(FloatLayout):
     def toggle(self, instance, touch):
         if self.collide_point(*touch.pos):
             self.active = not self.active
+            App.get_running_app().play_sound()  # Play sound on toggle
             freeze_ui(0.3)  # Freeze UI for 0.3 seconds
             return True
         return False

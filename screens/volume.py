@@ -133,6 +133,7 @@ class SaveButton(IconTextButton):
         This method is called when the save button is pressed.
         """
         # Save the current volume to the config file
+        super().on_press()
         config = load_config('config/settings.json', 'v3_json')
         config['volume'] = self.volume_screen.volume
         save_config('config/settings.json', 'v3_json', data=config)
