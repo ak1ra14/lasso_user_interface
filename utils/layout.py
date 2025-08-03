@@ -9,6 +9,7 @@ from kivy.uix.screenmanager import Screen
 from kivy.clock import Clock
 from kivy.app import App
 from kivy.uix.floatlayout import FloatLayout
+from kivy.core.window import Window
 
 class HeaderBar(BoxLayout):
     def __init__(self, title="Language", icon_path="images/home.png", button_text="Home", button_screen="menu", padding=[50, 0, 50, 0], spacing=10, **kwargs):
