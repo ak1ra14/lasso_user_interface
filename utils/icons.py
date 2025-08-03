@@ -10,6 +10,8 @@ from kivy.app import App
 from kivy.core.audio import SoundLoader
 from utils.config_loader import load_config
 from kivy.properties import BooleanProperty
+from kivy.clock import Clock
+
 
 class ColoredLabel(Label):
     def __init__(self, **kwargs):
@@ -24,7 +26,23 @@ class ColoredLabel(Label):
         self.bg_rect.pos = self.pos
         self.bg_rect.size = self.size
 
-class IconTextButton(Button):
+
+class SingleClickButton(Button):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self._clicked = False
+
+    def on_release(self):
+        if not self._clicked:
+            self._clicked = True
+            # Place your single-click logic here, or call super().on_release()
+            super().on_release()
+            Clock.schedule_once(self._reset_click, 0.3)  # 300ms debounce
+
+    def _reset_click(self, dt):
+        self._clicked = False
+
+class IconTextButton(SingleClickButton):
     """
     A custom button class that extends Kivy's Button.
     It includes properties for text and image source, and its layout
