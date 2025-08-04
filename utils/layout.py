@@ -10,6 +10,7 @@ from kivy.clock import Clock
 from kivy.app import App
 from kivy.uix.floatlayout import FloatLayout
 from kivy.core.window import Window
+import math
 
 class HeaderBar(BoxLayout):
     def __init__(self, title="Language", icon_path="images/home.png", button_text="Home", button_screen="menu", padding=[50, 0, 50, 0], spacing=10, **kwargs):
@@ -75,27 +76,36 @@ class SeparatorLine(Widget):
 
 
 class LoadingCircle(Widget):
-    def __init__(self, size=100, color=(0.22, 0.45, 0.91, 1), **kwargs):
+    def __init__(self, size=80, dot_radius=8, dot_color=(0.22, 0.45, 0.91, 1), **kwargs):
         super().__init__(**kwargs)
         self.size_hint = (None, None)
         self.size = (size, size)
+        self.dot_radius = dot_radius
+        self.dot_color = dot_color
         self.angle = 0
-        self.color = color
+        self.num_dots = 8
+        self._dots = []
         with self.canvas:
-            self.color_instruction = Color(*self.color)
-            self.ellipse = Ellipse(pos=self.pos, size=(size, size), angle_start=0, angle_end=270)
-        self.bind(pos=self.update_graphics, size=self.update_graphics)
-        Clock.schedule_interval(self.animate, 1/60)
+            for i in range(self.num_dots):
+                Color(*self.dot_color)
+                dot = Ellipse(size=(self.dot_radius, self.dot_radius))
+                self._dots.append(dot)
+        self.bind(pos=self.update_dots, size=self.update_dots)
+        Clock.schedule_interval(self.animate, 1/30)
 
-    def update_graphics(self, *args):
-        self.ellipse.pos = self.pos
-        self.ellipse.size = self.size
+    def update_dots(self, *args):
+        cx, cy = self.center
+        r = (self.width - self.dot_radius) / 2
+        for i, dot in enumerate(self._dots):
+            angle = math.radians(self.angle + i * 360 / self.num_dots)
+            x = cx + r * math.cos(angle) - self.dot_radius / 2
+            y = cy + r * math.sin(angle) - self.dot_radius / 2
+            dot.pos = (x, y)
+            dot.size = (self.dot_radius, self.dot_radius)
 
     def animate(self, dt):
-        self.angle = (self.angle + 5) % 360
-        self.ellipse.angle_start = self.angle
-        self.ellipse.angle_end = self.angle + 270
-
+        self.angle = (self.angle + 8) % 360
+        self.update_dots()
 
 class SafeScreen(Screen):
     """
