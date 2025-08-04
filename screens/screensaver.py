@@ -30,14 +30,14 @@ class ScreenSaverScreen(SafeScreen):
             text=f"{self.screensaver_time}",
             font_size=120,
             font_name='fonts/Roboto-Bold.ttf',
-            size_hint_y=0.7,
+            size_hint_y=0.8,
         ))
         time.add_widget(self.screensaver_time_label)
         time.add_widget(Label(
             text="seconds",
             font_size=20,
             font_name='fonts/Roboto-Bold.ttf',
-            size_hint_y=0.3,
+            size_hint_y=0.2,
         ))
 
         buttons.add_widget(ChangeTime(icon_path="images/decrease_10.png",
