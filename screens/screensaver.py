@@ -28,7 +28,7 @@ class ScreenSaverScreen(SafeScreen):
         time = BoxLayout(orientation='vertical', spacing=30, size_hint_y=0.3, pos_hint={'center_x': 0.5, 'center_y': 0.5}, padding=[20,0,20,0])
         self.screensaver_time_label = (Label(
             text=f"{self.screensaver_time}",
-            font_size=90,
+            font_size=120,
             font_name='fonts/Roboto-Bold.ttf',
             size_hint_y=0.7,
         ))
