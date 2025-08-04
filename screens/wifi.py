@@ -30,6 +30,9 @@ class WifiLoadingScreen(SafeScreen):
     def on_pre_enter(self):
         # Start scanning in a background thread when the screen is shown
         update_current_page('wifi loading')
+        self.pre_enter_loading()
+
+    def pre_enter_loading(self):
         self.clear_widgets()
         self.add_widget(self.loading_circle)
         self.add_widget(self.scanning)
@@ -72,7 +75,7 @@ class WifiLoadingScreen(SafeScreen):
             icon_path ='images/wifi.png',
             size = (120,120),
             pos_hint={'center_x': 0.25, 'center_y': 0.55},
-            screen_name='wi-fi',
+            on_release=lambda x: threading.Thread(target=self.pre_enter_loading, daemon=True).start()  # Scan Wi-Fi on button press
         )
         connect_wifi = IconTextButton(
             text="Connect Wi-Fi",
