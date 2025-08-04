@@ -233,20 +233,22 @@ class MenuScreen2(SafeScreen):
         # Layer 1: Header
         header = BoxLayout(orientation='horizontal', size_hint_y=0.20, padding=0, spacing=40)
         # Left-aligned widget
-        left_layout = BoxLayout(orientation='horizontal', size_hint=(0.5,None),height = 100,spacing=10)
-        left_layout.add_widget(Image(source='images/soundeye.png', size=(100,100), size_hint_x=None))
-        self.header_detail = Label(
-            text=f"{update_text_language('version')}: {self.version} | {update_text_language('device_id')}: {self.device_id}",
-            font_size=15,
-            font_name='fonts/MPLUS1p-Regular.ttf',
-            size_hint_x=None,
-            width=300,  # Let label take remaining space
-            valign="top",  # Vertically center text
-        )
-        self.header_detail.bind(size=lambda inst, val: setattr(inst, 'text_size', val))
-        left_layout.add_widget(self.header_detail)
-        left_layout.add_widget(Widget())  # Spacer to fill remaining space
-        header.add_widget(left_layout)
+        # left_layout = BoxLayout(orientation='horizontal', size_hint=(0.5,None),height = 100,spacing=10)
+        header.add_widget(Image(source='images/soundeye.png', 
+                                size=(110,110), size_hint_x=None,
+                                ))
+        # self.header_detail = Label(
+        #     text=f"{update_text_language('version')}: {self.version} | {update_text_language('device_id')}: {self.device_id}",
+        #     font_size=15,
+        #     font_name='fonts/MPLUS1p-Regular.ttf',
+        #     size_hint_x=None,
+        #     width=300,  # Let label take remaining space
+        #     valign="top",  # Vertically center text
+        # )
+        # self.header_detail.bind(size=lambda inst, val: setattr(inst, 'text_size', val))
+        # left_layout.add_widget(self.header_detail)
+        # left_layout.add_widget(Widget())  # Spacer to fill remaining space
+        # header.add_widget(left_layout)
         header.add_widget(Widget(size_hint_x=1))  # Spacer
         # Spacer
         right_buttons = BoxLayout(orientation='horizontal', padding=0, spacing=20, size_hint_x=None, width=370)
@@ -339,4 +341,4 @@ class MenuScreen2(SafeScreen):
         self.monitor_button.label.text = update_text_language("monitor")
         self.power_button.label.text = update_text_language("power")
         self.footer2.update_language()
-        self.header_detail.text = f"{update_text_language('version')}: {self.version} | {update_text_language('device_id')}: {self.device_id}"
+        # self.header_detail.text = f"{update_text_language('version')}: {self.version} | {update_text_language('device_id')}: {self.device_id}"
