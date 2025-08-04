@@ -8,7 +8,7 @@ from kivy.uix.gridlayout import GridLayout
 from kivy.uix.anchorlayout import AnchorLayout
 from utils.icons import IconTextButton, CircularImageButton, PageIndicator
 from utils.config_loader import load_config, update_current_page, update_text_language
-from utils.layout import HeaderBar, Footer1Bar, Footer2Bar, SafeScreen , FooterBar
+from utils.layout import HeaderBar,  SafeScreen , FooterBar
 
 
 class MenuScreen1(SafeScreen):

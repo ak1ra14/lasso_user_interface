@@ -42,7 +42,8 @@ class FooterBar(BoxLayout):
         left_btn = CircularImageButton(
             image_path="images/left_arrow.png",
             diameter=80,
-            screen_name=screen_name
+            screen_name=screen_name,
+            halign='center'
         )
         self.left_label = Label(
             text=update_text_language("previous"),
@@ -76,7 +77,8 @@ class FooterBar(BoxLayout):
         right_btn = CircularImageButton(
             image_path="images/right_arrow.png",
             diameter=80,
-            screen_name=screen_name
+            screen_name=screen_name,
+            halign='center'
         )
         self.right_label = Label(
             text=update_text_language("next"),
@@ -103,47 +105,6 @@ class FooterBar(BoxLayout):
         self.left_label.text = update_text_language("previous")
         self.details.text = f"{update_text_language('version')}: {load_config('config/V3.json').get('version', 'N/A')} | {update_text_language('device_id')}: {load_config('config/V3.json').get('sensor_ID', 'N/A')}"
         self.right_label.text = update_text_language("next")
-
-class Footer1Bar(BoxLayout):
-    def __init__(self, screen_name,current_page, **kwargs):
-        super().__init__(orientation='horizontal', size_hint_y=0.15, padding=0, spacing=0, **kwargs)
-        self.add_widget(CircularImageButton(
-            image_path="images/left_arrow.png",
-            diameter=80,
-            screen_name=screen_name  # Navigate to menu2 screen
-        ))
-        self.add_widget(Widget(size_hint_x=1))
-        self.add_widget(CircularImageButton(
-            image_path="images/right_arrow.png",
-            diameter=80,
-            screen_name=screen_name  # Navigate to menu2 screen
-        ))
-
-
-class Footer2Bar(BoxLayout):
-    def __init__(self, **kwargs):
-        super().__init__(orientation='horizontal', size_hint_y=0.05, padding=0, spacing=10)
-        self.previous = Label(text=update_text_language("previous"), 
-                         size_hint_x=None, width=100, halign='left',
-                         font_name='fonts/MPLUS1p-Regular.ttf')
-        self.previous.bind(size=lambda inst, val: setattr(inst, 'text_size', val))
-        self.add_widget(self.previous)
-        self.add_widget(Widget(size_hint_x=1))  # Spacer
-        self.details = Label(text=f"{update_text_language('version')}: {load_config('config/V3.json').get('version', 'N/A')} | {update_text_language('device_id')}: {load_config('config/V3.json').get('sensor_ID', 'N/A')}",
-                              size_hint_x =1, font_name='fonts/MPLUS1p-Regular.ttf') 
-        self.add_widget(self.details)
-        self.add_widget(Widget(size_hint_x=1))  # Spacer
-        self.next = Label(text=update_text_language("next"), size_hint_x=None, width=100, halign='right', font_name='fonts/MPLUS1p-Regular.ttf')
-        self.next.bind(size=lambda inst, val: setattr(inst, 'text_size', val))
-        self.add_widget(self.next)
-
-    def update_language(self):
-        """
-        Update the language of the footer.
-        """
-        self.previous.text = update_text_language("previous")
-        self.details.text = f"{update_text_language('version')}: {load_config('config/V3.json').get('version', 'N/A')} | {update_text_language('device_id')}: {load_config('config/V3.json').get('sensor_ID', 'N/A')}"
-        self.next.text = update_text_language("next")
 
 class SeparatorLine(Widget):
     def __init__(self, points=[50, 300, 950, 300], **kwargs):
