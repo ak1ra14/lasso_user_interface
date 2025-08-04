@@ -72,7 +72,7 @@ class WifiLoadingScreen(SafeScreen):
             icon_path ='images/wifi.png',
             size = (120,120),
             pos_hint={'center_x': 0.25, 'center_y': 0.55},
-            screen_name='wifi loading',
+            screen_name='wi-fi',
         )
         connect_wifi = IconTextButton(
             text="Connect Wi-Fi",
