@@ -1,7 +1,7 @@
 {
     "version": "SG-S1-20250630",
     "sensor_ID": "ABC123",
-    "language": "en",
+    "language": "jp",
     "location": "Room edhwsf4tedxtfe",
     "volume": 100,
     "ack_enable": "no",

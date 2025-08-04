@@ -65,7 +65,7 @@ class LanguageButton(IconTextButton):
 
 
     def predefined_color(self):
-        if load_config('config/settings.json').get('current_language') == self.language:
+        if load_config('config/settings.json','v3_json').get('language') == self.language:
             self.color_instruction.rgba = (0.2, 0.8, 0.2, 1)  # Green
         else:
             self.color_instruction.rgba = (0.22, 0.45, 0.91, 1)  # Blue
@@ -81,10 +81,10 @@ class LanguageButton(IconTextButton):
         App.get_running_app().play_sound()  # Play sound on button press
         if not self.active:
             self.active = True
-            config = load_config('config/settings.json')
-            config['current_language'] = self.language
+            config = load_config('config/settings.json', 'v3_json')  
+            config['language'] = self.language
             App.get_running_app().language = self.language
-            save_config('config/settings.json', data=config)
+            save_config('config/V3.json', data=config)
             for button in self.parent.parent.buttons:
                 if button != self:
                     button.active = False

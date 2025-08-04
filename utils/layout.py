@@ -51,17 +51,17 @@ class Footer1Bar(BoxLayout):
 
 class Footer2Bar(BoxLayout):
     def __init__(self, **kwargs):
-        super().__init__(orientation='horizontal', size_hint_y=0.03, padding=0, spacing=10)
+        super().__init__(orientation='horizontal', size_hint_y=0.05, padding=0, spacing=10)
         self.previous = Label(text=update_text_language("previous"), 
                          size_hint_x=None, width=100, halign='left',
-                         font_family='fonts/MPLUS1p-Regular.ttf')
+                         font_name='fonts/MPLUS1p-Regular.ttf')
         self.previous.bind(size=lambda inst, val: setattr(inst, 'text_size', val))
         self.add_widget(self.previous)
         self.details = Label(text=f"{update_text_language('version')}: {load_config('config/V3.json').get('version', 'N/A')} | {update_text_language('device_id')}: {load_config('config/V3.json').get('sensor_ID', 'N/A')}",
-                              size_hint_x =1, font_family='fonts/MPLUS1p-Regular.ttf') 
+                              size_hint_x =1, font_name='fonts/MPLUS1p-Regular.ttf') 
         self.details.bind(size=lambda inst, val: setattr(inst, 'text_size', val))
         self.add_widget(self.details)
-        self.next = Label(text=update_text_language("next"), size_hint_x=None, width=100, halign='right', font_family='fonts/MPLUS1p-Regular.ttf')
+        self.next = Label(text=update_text_language("next"), size_hint_x=None, width=100, halign='right', font_name='fonts/MPLUS1p-Regular.ttf')
         self.next.bind(size=lambda inst, val: setattr(inst, 'text_size', val))
         self.add_widget(self.next)
 

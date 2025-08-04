@@ -37,9 +37,9 @@ class MyApp(App):
         self.sound = SoundLoader.load('sound/tap.mp3')  # Load sound once
         self.en_dictionary = load_config('languages/en.json')
         self.jp_dictionary = load_config('languages/jp.json')
-        self.language = load_config('config/settings.json').get('current_language', 'en')
         # Set the default volume to config setting
         self.config = load_config('config/settings.json','v3_json')
+        self.language = self.config.get('language', 'en')
         set_system_volume(self.config.get('volume', 50))
         self.sm.add_widget(MonitorScreen(name='monitor'))
         self.sm.add_widget(MenuScreen1(name='menu'))
