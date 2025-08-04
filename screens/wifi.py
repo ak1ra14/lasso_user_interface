@@ -27,7 +27,7 @@ class WifiLoadingScreen(SafeScreen):
         self.add_widget(self.scanning)
         self.wifi_list = []
 
-    def on_pre_enter(self):
+    def on_pre_enter(self, instance):
         # Start scanning in a background thread when the screen is shown
         update_current_page('wifi loading')
         self.clear_widgets()
