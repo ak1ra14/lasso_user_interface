@@ -342,8 +342,6 @@ def connect_wifi(ssid, password):
         print("Unsupported platform")
         return False
             
-
-
 class SelectableButton(Button):
     """
     A button that can be selected or deselected.

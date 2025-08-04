@@ -1,5 +1,6 @@
 import json
 import os
+from kivy.app import App
 
 def load_config(file_path, variable_name=None):
     with open(file_path, "r") as f:
@@ -33,6 +34,7 @@ def save_config(file_path, variable_name=None, data=None):
             json.dump(data, f, indent=4)
             return
         
+
 def update_current_page(page_name):
     """
     Update the current page in the config file.
@@ -41,3 +43,16 @@ def update_current_page(page_name):
     config['current_page'] = page_name
     save_config('config/settings.json', data=config)
     print(f"Current page updated to: {page_name}")
+    
+        
+def update_text_language(variable_name=None):
+    """
+    Update the text language of the application.
+    This function should be called when the language is changed.
+    """
+    app = App.get_running_app()
+    if app.language == 'en':
+        return app.en_dictionary.get(variable_name, variable_name)
+    elif app.language == 'jp':
+        return app.jp_dictionary.get(variable_name, variable_name)
+        

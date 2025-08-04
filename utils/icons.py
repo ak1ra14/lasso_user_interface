@@ -34,9 +34,10 @@ class IconTextButton(Button):
     It includes properties for text and image source, and its layout
     is defined entirely in Python.
     """
-    def __init__(self, icon_path = None, text = None, font_size = 20, size=(190,190), radius=[20,], screen_name=None, config = False, pos_hint = None, **kwargs):
+    def __init__(self, icon_path = None, text = "", font_size = 20, size=(190,190), radius=[20,], screen_name=None, config = False, pos_hint = None, **kwargs):
         super().__init__(**kwargs)
         self.config = config  # Store the config status
+        self.label_text=text
         if 'size_hint' not in kwargs:
             self.size_hint = (None, None)
         self.size = size
@@ -59,7 +60,7 @@ class IconTextButton(Button):
         layout.size = self.size
         layout.pos = self.pos
         self.bind(pos=layout.setter('pos'), size=layout.setter('size'))
-        if text is None:
+        if self.label_text is None: # If no label text is provided, we only show the icon
             self.image = Image(
             source=icon_path,
             size_hint=(0.6,0.6),
@@ -67,9 +68,9 @@ class IconTextButton(Button):
             )
         elif icon_path is None: #for server button 
             label = Label(
-                text=text,
+                text=self.label_text,
                 font_size= font_size,  # Adjust font size based on button height
-                font_name='fonts/Roboto-Bold.ttf',
+                font_name='fonts/MPLUS1p-Regular.ttf',
                 color=(1, 1, 1, 1),
                 size_hint=(0.9, 0.9),
                 pos_hint={'center_x': 0.5, 'center_y': 0.5},
@@ -79,8 +80,8 @@ class IconTextButton(Button):
             label.bind(size=lambda inst, val: setattr(inst, 'text_size', val))
             layout.add_widget(label)
             self.add_widget(layout)
-            return 
-        else:
+            return
+        else:  # If both icon and text are provided, we show both
             self.image = Image(
                 source=icon_path,
                 size_hint=(0.45,0.45),
@@ -88,22 +89,22 @@ class IconTextButton(Button):
             )
         layout.add_widget(self.image)
         if self.config:
-            label = Label(
-                text=text,
+            self.label = Label(
+                text=self.label_text,
                 font_size= self.size[1] * 0.1,  # Adjust font size based on button height
-                font_name='fonts/Roboto-Bold.ttf',  # Path to your bold font file
+                font_name='fonts/MPLUS1p-Regular.ttf',  # Path to your bold font file
                 color=(1, 1, 1, 1),
                 size_hint=(0.7, 0.10),
                 pos_hint={'center_x': 0.5, 'center_y': 0.33},
                 halign='center',
                 valign='middle'
             )
-            label.bind(size=lambda inst, val: setattr(inst, 'text_size', val))
+            self.label.bind(size=lambda inst, val: setattr(inst, 'text_size', val))
 
             self.status = Label(
                 text= str(self.config),
                 font_size= self.size[1] * 0.1 -3,  # Adjust font size based on button height
-                font_name='fonts/Roboto-Regular.ttf',  # Path to your bold font file
+                font_name='fonts/MPLUS1p-Regular.ttf',  # Path to your bold font file
                 color=(1, 1, 1, 1),
                 size_hint=(0.9, 0.1),
                 pos_hint={'center_x': 0.5, 'center_y': 0.15},
@@ -113,16 +114,16 @@ class IconTextButton(Button):
                 max_lines=1,
             )
             self.status.bind(size=lambda inst, val: setattr(inst, 'text_size', val))
-            layout.add_widget(label)
+            layout.add_widget(self.label)
             layout.add_widget(self.status)
 
         else:
             font_size = self.size[1] * 0.1 + 5  # Adjust font size based on button height
-            if text:
-                label = Label(
-                    text=text,
+            if self.label_text:
+                self.label = Label(
+                    text=self.label_text,
                     font_size= font_size,
-                    font_name='fonts/Roboto-Bold.ttf',  # Path to your bold font file
+                    font_name='fonts/MPLUS1p-Regular.ttf',  # Path to your bold font file
                     color=(1, 1, 1, 1),
                     size_hint=(0.7, 0.3),
                     pos_hint={'center_x': 0.5, 'center_y': 0.25},
@@ -130,7 +131,7 @@ class IconTextButton(Button):
                     valign='middle'
                 )
                 #label.bind(size=lambda inst, val: setattr(inst, 'text_size', val))
-                layout.add_widget(label)
+                layout.add_widget(self.label)
         self.add_widget(layout)
 
     def _update_rect(self, instance, value):
@@ -257,7 +258,7 @@ class ToggleButton(BoxLayout):
             size_hint=(None, None),
             size=(text_size_l_r[0], 30),
             font_size=20,
-            font_name='fonts/Roboto-Bold.ttf',
+            font_name='fonts/MPLUS1p-Regular.ttf',
             halign='right',
             valign='middle',
         )
@@ -268,7 +269,7 @@ class ToggleButton(BoxLayout):
             color=(1, 1, 1, 1),
             size_hint=(None, None),
             size=(text_size_l_r[1], 30),
-            font_name='fonts/Roboto-Bold.ttf',
+            font_name='fonts/MPLUS1p-Regular.ttf',
             font_size=20,
             halign='left',
             valign='middle',

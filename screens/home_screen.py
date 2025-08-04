@@ -7,7 +7,7 @@ from kivy.uix.widget import Widget
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.anchorlayout import AnchorLayout
 from utils.icons import IconTextButton, CircularImageButton, PageIndicator
-from utils.config_loader import load_config, update_current_page
+from utils.config_loader import load_config, update_current_page, update_text_language
 from utils.layout import HeaderBar, Footer1Bar, Footer2Bar, SafeScreen
 
 
@@ -41,24 +41,28 @@ class MenuScreen1(SafeScreen):
         # Right-aligned buttons in a horizontal BoxLayout
         right_buttons = BoxLayout(orientation='horizontal', padding=0, spacing=20, size_hint_x=None, width=370)
 
-        right_buttons.add_widget(IconTextButton(
+        self.language_button = IconTextButton(
             icon_path='images/language.png',
-            text="Language",
+            text=update_text_language("language"),
             size=(110, 110),
             screen_name='language'  # Navigate to language screen
-        ))
-        right_buttons.add_widget(IconTextButton(
+        )
+        right_buttons.add_widget(self.language_button)
+        self.monitor_button = IconTextButton(
             icon_path='images/monitor.png',
-            text="Monitor",
+            text=update_text_language("monitor"),
             size=(110, 110),
             screen_name='monitor',  # Navigate to monitor screen
-        ))
-        right_buttons.add_widget(IconTextButton(
+        )
+        right_buttons.add_widget(self.monitor_button)
+        self.power_button = IconTextButton(
             icon_path='images/power.png',
-            text="Power",
+            text=update_text_language("power"),
             size=(110, 110),
             screen_name='power'  # Navigate to power screen
-        ))
+        )
+        right_buttons.add_widget(self.power_button)
+        
         right_buttons.bind(minimum_width=right_buttons.setter('width'))  # Let width fit content
 
 
@@ -66,16 +70,16 @@ class MenuScreen1(SafeScreen):
 
         # Layer 2: Middle content (e.g., 4 buttons)
         content = BoxLayout(orientation='horizontal', spacing=50, size_hint_y=0.35)
-        content_names = ["Location", "Volume", "Mode", "Alerts"]
+        self.content_names = ["Location", "Volume", "Mode", "Alerts"]
         for i in range(4):
-            content_name = content_names[i].lower()
+            content_name = self.content_names[i].lower()
             content_path = content_name
             if content_name == "mode":
                 mode = self.check_mode()
                 content_path = self.check_mode_for_image(mode)
             self.content_buttons[content_name] = IconTextButton(
                 icon_path=f'images/{content_path}.png',
-                text=content_names[i],
+                text=update_text_language(content_name),
                 config=self.config_status[i],
                 size=(202, 202),
                 # Do NOT set screen_name here for dynamic navigation!
@@ -94,8 +98,10 @@ class MenuScreen1(SafeScreen):
         self.main_layout.add_widget(Widget(size_hint_y=None, height=30))  # Spacer with 20px height
 
         #footer
-        self.main_layout.add_widget(Footer1Bar(screen_name='menu2',current_page=1))  # Pass screen name for navigation
-        self.main_layout.add_widget(Footer2Bar())
+        self.footer1 = Footer1Bar(screen_name='menu2',current_page=1)  # Pass screen name for navigation
+        self.main_layout.add_widget(self.footer1)
+        self.footer2 = Footer2Bar()
+        self.main_layout.add_widget(self.footer2)
 
 
         page_indicator = PageIndicator(num_pages=2, current_page=1, size_hint=(None, None), width=200, height=80)
@@ -193,6 +199,15 @@ class MenuScreen1(SafeScreen):
             print("Switching to location screen")
             self.manager.current = 'location'
 
+    def update_language(self):
+        for content_name, button in self.content_buttons.items():
+            button.label.text = update_text_language(content_name)
+        self.language_button.label.text = update_text_language("language")
+        self.monitor_button.label.text = update_text_language("monitor")
+        self.power_button.label.text = update_text_language("power")
+        self.footer2.update_language()
+
+
 class MenuScreen2(SafeScreen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -213,7 +228,6 @@ class MenuScreen2(SafeScreen):
         self.add_widget(self.main_layout)
 
         
-
     def build_ui(self):
         self.main_layout = BoxLayout(orientation='vertical', padding= [30, 30, 30, 10], spacing=10)
         # Layer 1: Header
@@ -222,8 +236,9 @@ class MenuScreen2(SafeScreen):
         left_layout = BoxLayout(orientation='horizontal', size_hint=(0.5,None),height = 100,spacing=10)
         left_layout.add_widget(Image(source='images/soundeye.png', size=(100,100), size_hint_x=None))
         left_layout.add_widget(Label(
-            text=f"Version: {self.version} | Device ID: {self.device_id}",
+            text=f"{update_text_language('version')}: {self.version} | {update_text_language('device_id')}: {self.device_id}",
             font_size=15,
+            font_family='fonts/MPLUS1p-Regular.ttf',
             size_hint_x=None,
             width=300,  # Let label take remaining space
             valign="top",  # Vertically center text
@@ -233,24 +248,27 @@ class MenuScreen2(SafeScreen):
         header.add_widget(Widget(size_hint_x=1))  # Spacer
         # Spacer
         right_buttons = BoxLayout(orientation='horizontal', padding=0, spacing=20, size_hint_x=None, width=370)
-        right_buttons.add_widget(IconTextButton(
+        self.language_button = IconTextButton(
             icon_path='images/language.png',
-            text="Language",
-            size=(110,110),
+            text=update_text_language("language"),
+            size=(110, 110),
             screen_name='language'  # Navigate to language screen
-        ))
-        right_buttons.add_widget(IconTextButton(
+        )
+        right_buttons.add_widget(self.language_button)
+        self.monitor_button = IconTextButton(
             icon_path='images/monitor.png',
-            text="Monitor",
+            text=update_text_language("monitor"),
             size=(110, 110),
             screen_name='monitor',  # Navigate to monitor screen
-        ))
-        right_buttons.add_widget(IconTextButton(
+        )
+        right_buttons.add_widget(self.monitor_button)
+        self.power_button = IconTextButton(
             icon_path='images/power.png',
-            text="Power",
+            text=update_text_language("power"),
             size=(110, 110),
             screen_name='power'  # Navigate to power screen
-        ))
+        )
+        right_buttons.add_widget(self.power_button)
         right_buttons.bind(minimum_width=right_buttons.setter('width'))
 
         header.add_widget(right_buttons)
@@ -258,13 +276,13 @@ class MenuScreen2(SafeScreen):
         # Layer 2: Middle content (e.g., 4 buttons)
                 # Layer 2: Middle content (e.g., 4 buttons)
         content = BoxLayout(orientation='horizontal', spacing=50, size_hint_y=0.35)
-        content_names = ["Screensaver", "Wi-Fi", "Time Zone", "Servers"]
-        image_path = ["screen_saver", "wifi", "timezone", "servers"]
+        content_names = ["Screensaver", "Wi-Fi", "TimeZone", "Servers"]
+        image_path = ["screensaver", "wifi", "timezone", "servers"]
         for i in range(4):
             content_name = content_names[i].lower()
             self.content_buttons[content_name] = IconTextButton(
                 icon_path=f'images/{image_path[i]}.png',  # Placeholder for icons
-                text=content_names[i],
+                text=update_text_language(content_name),
                 config=self.config_status[i],  # Pass config name for loading status
                 size=(202, 202),
                 screen_name=content_names[i].lower(),  # Navigate to respective screen
@@ -278,8 +296,10 @@ class MenuScreen2(SafeScreen):
         self.main_layout.add_widget(Widget(size_hint_y=None, height=60))  # Spacer with 40px height
         self.main_layout.add_widget(content)
         self.main_layout.add_widget(Widget(size_hint_y=None, height=30))  # Spacer with 20px height
-        self.main_layout.add_widget(Footer1Bar(screen_name='menu',current_page=2))  # Pass screen name for navigation
-        self.main_layout.add_widget(Footer2Bar())
+        self.footer1 = Footer1Bar(screen_name='menu', current_page=2)  # Pass screen name for navigation
+        self.main_layout.add_widget(self.footer1)
+        self.footer2 = Footer2Bar()
+        self.main_layout.add_widget(self.footer2)
 
         # Page indicator
         page_indicator = PageIndicator(num_pages=2, current_page=2, size_hint=(None, None), width=200, height=80)
@@ -307,5 +327,13 @@ class MenuScreen2(SafeScreen):
         # Example: Assuming you have labels for each config status
         self.content_buttons['screensaver'].status.text = self.screen_saver
         self.content_buttons['wi-fi'].status.text = self.wifi_ssid
-        self.content_buttons['time zone'].status.text = self.timezone
+        self.content_buttons['timezone'].status.text = self.timezone
         self.content_buttons['servers'].status.text = self.region_address
+
+    def update_language(self):
+        for content_name, button in self.content_buttons.items():
+            button.label.text = update_text_language(content_name)
+        self.language_button.label.text = update_text_language("language")
+        self.monitor_button.label.text = update_text_language("monitor")
+        self.power_button.label.text = update_text_language("power")
+        self.footer2.update_language()

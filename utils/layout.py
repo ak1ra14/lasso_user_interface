@@ -7,9 +7,7 @@ from kivy.uix.anchorlayout import AnchorLayout
 from utils.config_loader import load_config
 from kivy.uix.screenmanager import Screen
 from kivy.clock import Clock
-from kivy.app import App
-from kivy.uix.floatlayout import FloatLayout
-from kivy.core.window import Window
+from utils.config_loader import update_text_language
 import math
 
 class HeaderBar(BoxLayout):
@@ -54,14 +52,29 @@ class Footer1Bar(BoxLayout):
 class Footer2Bar(BoxLayout):
     def __init__(self, **kwargs):
         super().__init__(orientation='horizontal', size_hint_y=0.03, padding=0, spacing=10)
-        previous = Label(text="   Previous", size_hint_x=None, width=100, halign='left')
+        previous = Label(text=update_text_language("previous"), 
+                         size_hint_x=None, width=100, halign='left',
+                         font_family='fonts/MPLUS1p-Regular.ttf')
         previous.bind(size=lambda inst, val: setattr(inst, 'text_size', val))
         self.add_widget(previous)
-        self.add_widget(Label(text=f"Version: {load_config('config/V3.json').get('version', 'N/A')} | Device ID: {load_config('config/V3.json').get('sensor_ID', 'N/A')}",size_hint_x =1) )
-        next = Label(text="Next      ", size_hint_x=None, width=100, halign='right')
+        self.add_widget(Label(text=f"{update_text_language('version')}: {load_config('config/V3.json').get('version', 'N/A')} | {update_text_language('device_id')}: {load_config('config/V3.json').get('sensor_ID', 'N/A')}",
+                              size_hint_x =1, font_family='fonts/MPLUS1p-Regular.ttf') )
+        next = Label(text=update_text_language("next"), size_hint_x=None, width=100, halign='right', font_family='fonts/MPLUS1p-Regular.ttf')
         next.bind(size=lambda inst, val: setattr(inst, 'text_size', val))
         self.add_widget(next)
 
+    def update_language(self):
+        """
+        Update the language of the footer.
+        """
+        for child in self.children:
+            if isinstance(child, Label):
+                if child.text == update_text_language("previous"):
+                    child.text = update_text_language("previous")
+                elif child.text.startswith(update_text_language("version")):
+                    child.text = f"{update_text_language('version')}: {load_config('config/V3.json').get('version', 'N/A')} | {update_text_language('device_id')}: {load_config('config/V3.json').get('sensor_ID', 'N/A')}"
+                elif child.text == update_text_language("next"):
+                    child.text = update_text_language("next")
 
 class SeparatorLine(Widget):
     def __init__(self, points=[50, 300, 950, 300], **kwargs):
