@@ -75,7 +75,7 @@ class WifiLoadingScreen(SafeScreen):
             icon_path ='images/wifi.png',
             size = (120,120),
             pos_hint={'center_x': 0.25, 'center_y': 0.55},
-            on_release=lambda x: threading.Thread(target=self.pre_enter_loading, daemon=True).start()  # Scan Wi-Fi on button press
+            on_release=lambda x: self.pre_enter_loading()  # Re-scan Wi-Fi
         )
         connect_wifi = IconTextButton(
             text="Connect Wi-Fi",
