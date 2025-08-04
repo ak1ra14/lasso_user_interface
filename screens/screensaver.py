@@ -25,13 +25,13 @@ class ScreenSaverScreen(SafeScreen):
         header = HeaderBar(title="Screensaver", icon_path="images/home.png", button_text="Home", button_screen="menu2")
         buttons = BoxLayout(orientation='horizontal', spacing=15, size_hint_y=0.3, pos_hint={'center_x': 0.5, 'center_y': 0.5}, padding=[50,0,50,0])  # Only left and right padding
 
-        time = BoxLayout(orientation='vertical', spacing=30, size_hint_y=0.3, pos_hint={'center_x': 0.5, 'center_y': 0.5}, padding=[40,0,20,0])
+        time = BoxLayout(orientation='vertical', spacing=30, size_hint_y=0.3, pos_hint={'center_x': 0.5, 'center_y': 0.5}, padding=[50,0,50,0])
         self.screensaver_time_label = (Label(
             text=f"{self.screensaver_time}",
             font_size=120,
             font_name='fonts/Roboto-Bold.ttf',
             size_hint_y=0.8,
-            valign='top',
+            valign='middle',
         ))
         time.add_widget(self.screensaver_time_label)
         time.add_widget(Widget(size_hint_y=0.1))  # Spacer
