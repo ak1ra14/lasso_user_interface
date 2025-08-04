@@ -25,24 +25,34 @@ class ScreenSaverScreen(SafeScreen):
         self.screensaver_time = load_config('config/V3.json').get('screensaver', 60)
         header = HeaderBar(title="Screensaver", icon_path="images/home.png", button_text="Home", button_screen="menu2")
         buttons = BoxLayout(orientation='horizontal', spacing=15, size_hint_y=0.3, pos_hint={'center_x': 0.5, 'center_y': 0.5}, padding=[50,0,50,0])  # Only left and right padding
-
-        time = BoxLayout(orientation='vertical', spacing=30, pos_hint={'center_x': 0.5, 'center_y': 0.5}, padding=[50,0,50,0])
+        float_layout = FloatLayout(
+            size_hint=(1, 1))
+        #time = BoxLayout(orientation='vertical', spacing=30, pos_hint={'center_x': 0.5, 'center_y': 0.5}, padding=[50,0,50,0])
         self.screensaver_time_label = (Label(
             text=f"{self.screensaver_time}",
             font_size=120,
             font_name='fonts/Roboto-Bold.ttf',
             size_hint_y=0.8,
             valign='middle',
+            pos_hint={'center_x': 0.5, 'center_y': 0.5},
         ))
-        time.add_widget(self.screensaver_time_label)
-        time.add_widget(Widget(size_hint_y=0.1))  # Spacer
-        time.add_widget(Label(
+        float_layout.add_widget(self.screensaver_time_label)
+        float_layout.add_widget(Label(
             text="seconds",
             font_size=20,
             font_name='fonts/Roboto-Bold.ttf',
-            size_hint_y=0.1,
             valign='bottom',
+            pos_hint={'center_x': 0.5, 'center_y': 0.45},
         ))
+        #time.add_widget(self.screensaver_time_label)
+        #time.add_widget(Widget(size_hint_y=0.1))  # Spacer
+        #time.add_widget(Label(
+        #    text="seconds",
+        #    font_size=20,
+        #    font_name='fonts/Roboto-Bold.ttf',
+        #     size_hint_y=0.1,
+        #     valign='bottom',
+        # ))
 
         buttons.add_widget(ChangeTime(icon_path="images/decrease_10.png",
                                         screensaver_time_label=self.screensaver_time_label,
@@ -83,18 +93,17 @@ class ScreenSaverScreen(SafeScreen):
         #     height=120,
         #     padding=[0, 20, 0, 60]  # Padding for the anchor layout
         # )
-        save_anchor = FloatLayout(
-            size_hint=(1, 1))
-        save_anchor.add_widget(SaveButton(
+
+        float_layout.add_widget(SaveButton(
             icon_path="images/save.png",
             screensaver_screen=self,  # Pass the screen instance
             text="Save",
             size_hint=(None, None),
             size=(120, 120),
-            pos_hint={'center_x': 0.5, 'center_y': 0.3}
+            pos_hint={'center_x': 0.5, 'center_y': 0.2}
         ))
 
-        self.add_widget(save_anchor)
+        self.add_widget(float_layout)
 
     def on_pre_enter(self):
         """
