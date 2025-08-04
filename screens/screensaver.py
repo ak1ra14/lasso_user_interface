@@ -34,7 +34,7 @@ class ScreenSaverScreen(SafeScreen):
             font_name='fonts/Roboto-Bold.ttf',
             size_hint_y=0.8,
             valign='middle',
-            pos_hint={'center_x': 0.5, 'center_y': 0.55},
+            pos_hint={'center_x': 0.5, 'center_y': 0.52},
         ))
         float_layout.add_widget(self.screensaver_time_label)
         float_layout.add_widget(Label(
