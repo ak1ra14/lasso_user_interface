@@ -68,7 +68,7 @@ class ScreenSaverScreen(SafeScreen):
                                         by=10, height=50))
         screensaver = BoxLayout(orientation='vertical', spacing=30, size_hint_y=0.3, pos_hint={'center_x': 0.5, 'center_y': 0.5}, padding=[20,0,20,0])
 
-        screensaver.add_widget(time)
+        # screensaver.add_widget(time)
 
         buttons.add_widget(screensaver)
         buttons.add_widget(ChangeTime(icon_path="images/increase.png",
