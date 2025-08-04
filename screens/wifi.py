@@ -210,13 +210,15 @@ class WifiPasswordScreen(KeyboardScreen):
 class WifiConnectingScreen(Screen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        self.scanning = LoadingCircle(pos_hint={'center_x': 0.5, 'center_y': 0.6}, size=120, dot_color=(0.5, 0, 0.5, 1))
         self.add_widget(Label(
             text="Connecting to Wi-Fi...",
             font_size=40,
-            pos_hint={'center_x': 0.5, 'center_y': 0.5},
+            pos_hint={'center_x': 0.5, 'center_y': 0.4},
             size_hint=(None, None),
             size=(400, 100)
         ))
+        self.add_widget(self.scanning)
 
 class WifiConnectedScreen(SafeScreen):
     def __init__(self, **kwargs):
