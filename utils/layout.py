@@ -44,7 +44,7 @@ class FooterBar(BoxLayout):
             diameter=80,
             screen_name=screen_name
         )
-        left_label = Label(
+        self.left_label = Label(
             text=update_text_language("previous"),
             font_name='fonts/MPLUS1p-Regular.ttf',
             font_size=18,
@@ -53,14 +53,14 @@ class FooterBar(BoxLayout):
             size_hint_y=None,
             height=30
         )
-        left_label.bind(size=lambda inst, val: setattr(inst, 'text_size', val))
+        self.left_label.bind(size=lambda inst, val: setattr(inst, 'text_size', val))
         left_col.add_widget(left_btn)
-        left_col.add_widget(left_label)
+        left_col.add_widget(self.left_label)
 
         # Center details
         center_col = BoxLayout(orientation='vertical', size_hint_x=1, spacing=5)
         center_col.add_widget(Widget(size_hint_y=0.15))  # Spacer
-        details = Label(
+        self.details = Label(
             text=f"{update_text_language('version')}: {load_config('config/V3.json').get('version', 'N/A')} | {update_text_language('device_id')}: {load_config('config/V3.json').get('sensor_ID', 'N/A')}",
             font_name='fonts/MPLUS1p-Regular.ttf',
             font_size=16,
@@ -68,8 +68,8 @@ class FooterBar(BoxLayout):
             halign='center',
             valign='middle'
         )
-        details.bind(size=lambda inst, val: setattr(inst, 'text_size', val))
-        center_col.add_widget(details)
+        self.details.bind(size=lambda inst, val: setattr(inst, 'text_size', val))
+        center_col.add_widget(self.details)
 
         # Right button + label
         right_col = BoxLayout(orientation='vertical', size_hint_x=None, width=120, spacing=5)
@@ -78,7 +78,7 @@ class FooterBar(BoxLayout):
             diameter=80,
             screen_name=screen_name
         )
-        right_label = Label(
+        self.right_label = Label(
             text=update_text_language("next"),
             font_name='fonts/MPLUS1p-Regular.ttf',
             font_size=18,
@@ -87,15 +87,22 @@ class FooterBar(BoxLayout):
             size_hint_y=None,
             height=30
         )
-        right_label.bind(size=lambda inst, val: setattr(inst, 'text_size', val))
+        self.right_label.bind(size=lambda inst, val: setattr(inst, 'text_size', val))
         right_col.add_widget(right_btn)
-        right_col.add_widget(right_label)
+        right_col.add_widget(self.right_label)
 
         # Add all columns to the horizontal layout
         self.add_widget(left_col)
         self.add_widget(center_col)
         self.add_widget(right_col)
 
+    def update_language(self):
+        """
+        Update the language of the footer.
+        """
+        self.left_label.text = update_text_language("previous")
+        self.details.text = f"{update_text_language('version')}: {load_config('config/V3.json').get('version', 'N/A')} | {update_text_language('device_id')}: {load_config('config/V3.json').get('sensor_ID', 'N/A')}"
+        self.right_label.text = update_text_language("next")
 
 class Footer1Bar(BoxLayout):
     def __init__(self, screen_name,current_page, **kwargs):

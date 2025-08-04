@@ -98,10 +98,8 @@ class MenuScreen1(SafeScreen):
         self.main_layout.add_widget(Widget(size_hint_y=None, height=30))  # Spacer with 20px height
 
         #footer
-        self.footer1 = Footer1Bar(screen_name='menu2',current_page=1)  # Pass screen name for navigation
-        self.main_layout.add_widget(self.footer1)
-        self.footer2 = Footer2Bar()
-        self.main_layout.add_widget(self.footer2)
+        self.footer = FooterBar(screen_name='menu2')
+        self.main_layout.add_widget(self.footer)
 
 
         page_indicator = PageIndicator(num_pages=2, current_page=1, size_hint=(None, None), width=200, height=80)
@@ -205,7 +203,7 @@ class MenuScreen1(SafeScreen):
         self.language_button.label.text = update_text_language("language")
         self.monitor_button.label.text = update_text_language("monitor")
         self.power_button.label.text = update_text_language("power")
-        self.footer2.update_language()
+        self.footer.update_language()
 
 
 class MenuScreen2(SafeScreen):
@@ -326,5 +324,4 @@ class MenuScreen2(SafeScreen):
         self.language_button.label.text = update_text_language("language")
         self.monitor_button.label.text = update_text_language("monitor")
         self.power_button.label.text = update_text_language("power")
-        self.footer2.update_language()
-        # self.header_detail.text = f"{update_text_language('version')}: {self.version} | {update_text_language('device_id')}: {self.device_id}"
+        self.footer.update_language()
