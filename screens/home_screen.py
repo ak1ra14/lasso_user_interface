@@ -8,7 +8,7 @@ from kivy.uix.gridlayout import GridLayout
 from kivy.uix.anchorlayout import AnchorLayout
 from utils.icons import IconTextButton, CircularImageButton, PageIndicator
 from utils.config_loader import load_config, update_current_page, update_text_language
-from utils.layout import HeaderBar, Footer1Bar, Footer2Bar, SafeScreen
+from utils.layout import HeaderBar, Footer1Bar, Footer2Bar, SafeScreen , FooterBar
 
 
 class MenuScreen1(SafeScreen):
@@ -233,22 +233,10 @@ class MenuScreen2(SafeScreen):
         # Layer 1: Header
         header = BoxLayout(orientation='horizontal', size_hint_y=0.20, padding=0, spacing=40)
         # Left-aligned widget
-        # left_layout = BoxLayout(orientation='horizontal', size_hint=(0.5,None),height = 100,spacing=10)
         header.add_widget(Image(source='images/soundeye.png', 
                                 size=(110,110), size_hint_x=None,
                                 ))
-        # self.header_detail = Label(
-        #     text=f"{update_text_language('version')}: {self.version} | {update_text_language('device_id')}: {self.device_id}",
-        #     font_size=15,
-        #     font_name='fonts/MPLUS1p-Regular.ttf',
-        #     size_hint_x=None,
-        #     width=300,  # Let label take remaining space
-        #     valign="top",  # Vertically center text
-        # )
-        # self.header_detail.bind(size=lambda inst, val: setattr(inst, 'text_size', val))
-        # left_layout.add_widget(self.header_detail)
-        # left_layout.add_widget(Widget())  # Spacer to fill remaining space
-        # header.add_widget(left_layout)
+
         header.add_widget(Widget(size_hint_x=1))  # Spacer
         # Spacer
         right_buttons = BoxLayout(orientation='horizontal', padding=0, spacing=20, size_hint_x=None, width=370)
@@ -300,10 +288,8 @@ class MenuScreen2(SafeScreen):
         self.main_layout.add_widget(Widget(size_hint_y=None, height=60))  # Spacer with 40px height
         self.main_layout.add_widget(content)
         self.main_layout.add_widget(Widget(size_hint_y=None, height=30))  # Spacer with 20px height
-        self.footer1 = Footer1Bar(screen_name='menu', current_page=2)  # Pass screen name for navigation
-        self.main_layout.add_widget(self.footer1)
-        self.footer2 = Footer2Bar()
-        self.main_layout.add_widget(self.footer2)
+        self.footer = FooterBar(screen_name='menu')  # Pass screen name for navigation
+        self.main_layout.add_widget(self.footer)
 
         # Page indicator
         page_indicator = PageIndicator(num_pages=2, current_page=2, size_hint=(None, None), width=200, height=80)
