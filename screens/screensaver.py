@@ -34,6 +34,7 @@ class ScreenSaverScreen(SafeScreen):
             valign='top',
         ))
         time.add_widget(self.screensaver_time_label)
+        time.add_widget(Widget(size_hint_y=0.1))  # Spacer
         time.add_widget(Label(
             text="seconds",
             font_size=20,
