@@ -1,7 +1,7 @@
 import sys
 import subprocess
 import threading
-from utils.layout import HeaderBar, SafeScreen
+from utils.layout import HeaderBar, SafeScreen, LoadingCircle
 from kivy.uix.image import Image
 from kivy.app import App
 from kivy.uix.screenmanager import Screen
@@ -22,12 +22,14 @@ class WifiLoadingScreen(SafeScreen):
         self.selected_wifi = self.config.get('wifi_ssid', {})
         self.header = HeaderBar(title="Wi-Fi SSID", button_screen="menu2")
         self.add_widget(self.header)
-        self.add_widget(Label(text="Scanning WiFi...", size_hint=(1, 0.1), pos_hint={'center_x': 0.5, 'center_y': 0.5}))
+        self.add_widget(Label(text="Scanning WiFi...", font_size=30, size_hint=(1, 0.2), pos_hint={'center_x': 0.5, 'center_y': 0.5}))
         self.wifi_list = []
 
     def on_pre_enter(self):
         # Start scanning in a background thread when the screen is shown
         update_current_page('wifi loading')
+        self.loading_circle = LoadingCircle(size_hint=(None, None), size=(100, 100), pos_hint={'center_x': 0.5, 'center_y': 0.5})
+        self.add_widget(self.loading_circle)
         threading.Thread(target=self.scan_wifi, daemon=True).start()
 
     def scan_wifi(self):
@@ -38,6 +40,8 @@ class WifiLoadingScreen(SafeScreen):
     def show_results(self, wifi_list):
         self.clear_widgets()
         self.add_widget(self.header)
+        if hasattr(self, 'loading_circle'):
+            self.remove_widget(self.loading_circle)
         list_box = GridLayout(cols=1, size=(465, 800), size_hint=(None,None), pos_hint=(None, None),)
         for wifi in wifi_list:
             button = SelectableButton(text=wifi, font_size=40,

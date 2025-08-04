@@ -1,7 +1,7 @@
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
 from kivy.uix.widget import Widget
-from kivy.graphics import Color, Line
+from kivy.graphics import Color, Line, Ellipse
 from utils.icons import IconTextButton, PageIndicator, CircularImageButton, PageIndicatorWidget
 from kivy.uix.anchorlayout import AnchorLayout
 from utils.config_loader import load_config
@@ -72,6 +72,29 @@ class SeparatorLine(Widget):
     def on_size(self, *args):
         # Optionally update line position if widget size changes
         self.line.points = [self.x, self.center_y, self.right, self.center_y]
+
+
+class LoadingCircle(Widget):
+    def __init__(self, size=100, color=(0.22, 0.45, 0.91, 1), **kwargs):
+        super().__init__(**kwargs)
+        self.size_hint = (None, None)
+        self.size = (size, size)
+        self.angle = 0
+        self.color = color
+        with self.canvas:
+            self.color_instruction = Color(*self.color)
+            self.ellipse = Ellipse(pos=self.pos, size=(size, size), angle_start=0, angle_end=270)
+        self.bind(pos=self.update_graphics, size=self.update_graphics)
+        Clock.schedule_interval(self.animate, 1/60)
+
+    def update_graphics(self, *args):
+        self.ellipse.pos = self.pos
+        self.ellipse.size = self.size
+
+    def animate(self, dt):
+        self.angle = (self.angle + 5) % 360
+        self.ellipse.angle_start = self.angle
+        self.ellipse.angle_end = self.angle + 270
 
 
 class SafeScreen(Screen):
