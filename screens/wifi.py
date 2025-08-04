@@ -21,17 +21,18 @@ class WifiLoadingScreen(SafeScreen):
         self.config = load_config("config/settings.json", "v3_json")
         self.selected_wifi = self.config.get('wifi_ssid', {})
         self.header = HeaderBar(title="Wi-Fi SSID", button_screen="menu2")
-        self.loading_circle = LoadingCircle(pos_hint={'center_x': 0.5, 'center_y': 0.4}, size=120,dot_color=(0.5,0,0.5,1))
+        self.loading_circle = LoadingCircle(pos_hint={'center_x': 0.5, 'center_y': 0.6}, size=120,dot_color=(0.5,0,0.5,1))
         self.add_widget(self.header)
-        self.add_widget(Label(text="Scanning WiFi...", font_size=30, size_hint=(1, 0.2), pos_hint={'center_x': 0.5, 'center_y': 0.5}))
+        self.scanning = Label(text="Scanning WiFi...", font_size=30, size_hint=(1, 0.2), pos_hint={'center_x': 0.5, 'center_y': 0.4})
+        self.add_widget(self.scanning)
         self.wifi_list = []
 
     def on_pre_enter(self):
         # Start scanning in a background thread when the screen is shown
         update_current_page('wifi loading')
         self.clear_widgets()
-        self.add_widget(self.header)
         self.add_widget(self.loading_circle)
+        self.add_widget(self.scanning)
         threading.Thread(target=self.scan_wifi, daemon=True).start()
 
     def scan_wifi(self):
