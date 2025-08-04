@@ -11,6 +11,7 @@ from kivy.clock import Clock
 from kivy.core.audio import SoundLoader
 from kivy.app import App
 from utils.freeze_screen import freeze_ui
+from kivy.uix.floatlayout import FloatLayout
 import json
 import os
 
@@ -75,19 +76,22 @@ class ScreenSaverScreen(SafeScreen):
                                         by=60, height=50))
         self.add_widget(header)
         self.add_widget(buttons)
-        save_anchor = AnchorLayout(
-            anchor_x='center',
-            anchor_y='bottom',
-            size_hint=(1, None),
-            height=120,
-            padding=[0, 20, 0, 40]  # Padding for the anchor layout
-        )
+        # save_anchor = AnchorLayout(
+        #     anchor_x='center',
+        #     anchor_y='bottom',
+        #     size_hint=(1, None),
+        #     height=120,
+        #     padding=[0, 20, 0, 60]  # Padding for the anchor layout
+        # )
+        save_anchor = FloatLayout(
+            size_hint=(1, 1))
         save_anchor.add_widget(SaveButton(
             icon_path="images/save.png",
             screensaver_screen=self,  # Pass the screen instance
             text="Save",
             size_hint=(None, None),
-            size=(120, 120)
+            size=(120, 120),
+            pos_hint={'center_x': 0.5, 'center_y': 0.3}
         ))
 
         self.add_widget(save_anchor)
