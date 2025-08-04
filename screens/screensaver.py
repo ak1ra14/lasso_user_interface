@@ -38,7 +38,7 @@ class ScreenSaverScreen(SafeScreen):
             text="seconds",
             font_size=20,
             font_name='fonts/Roboto-Bold.ttf',
-            size_hint_y=0.2,
+            size_hint_y=0.1,
             valign='bottom',
         ))
 
