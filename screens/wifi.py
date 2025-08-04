@@ -28,7 +28,7 @@ class WifiLoadingScreen(SafeScreen):
     def on_pre_enter(self):
         # Start scanning in a background thread when the screen is shown
         update_current_page('wifi loading')
-        self.loading_circle = LoadingCircle(size_hint=(None, None), size=(100, 100), pos_hint={'center_x': 0.5, 'center_y': 0.5})
+        self.loading_circle = LoadingCircle()
         self.add_widget(self.loading_circle)
         threading.Thread(target=self.scan_wifi, daemon=True).start()
 
