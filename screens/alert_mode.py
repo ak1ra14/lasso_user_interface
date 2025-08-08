@@ -46,6 +46,7 @@ class AlertModeScreen(Screen):
         self.toggle_button = ToggleButton(
             text_left=update_text_language("one_bed"),
             text_right=update_text_language("two_bed"),
+            text_size_l_r=(100, 130),
             size_hint_y=None,
             switch=CustomSwitchAM(parent=self),
             pos=(130, 345)
