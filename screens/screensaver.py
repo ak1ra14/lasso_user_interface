@@ -179,7 +179,7 @@ class HomeButtonScreensaver(IconTextButton):
         App.get_running_app().play_sound()
         # Navigate back to the menu screen
         self.config = load_config('config/settings.json', 'v3_json')
-        self.screensaver_screen.screensaver_time_label.text = f"{self.config.get('screensaver', 50)}%"
+        self.screensaver_screen.screensaver_time_label.text = f"{self.config.get('screensaver', 50)}s"
         self.screensaver_screen.screensaver_time = self.config.get('screensaver', 50)
           # Reset screensaver time to saved value
 

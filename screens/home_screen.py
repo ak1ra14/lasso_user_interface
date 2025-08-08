@@ -215,7 +215,7 @@ class MenuScreen2(SafeScreen):
         self.device_id = config.get('sensor_ID', 'N/A')
         self.version = config.get('version', 'N/A')
         screen_saver = config.get('screensaver', 160)
-        self.screen_saver = f"{screen_saver} s"
+        self.screen_saver = f"{screen_saver} {update_text_language('second')}"
         self.wifi_ssid = config.get('wifi_ssid', 'N/A')
         self.timezone = config.get('timezone', 'N/A')
         self.region_address = config.get('region_address', 'N/A')
@@ -298,7 +298,7 @@ class MenuScreen2(SafeScreen):
 
     def on_pre_enter(self):
         self.config = load_config('config/settings.json', 'v3_json')
-        self.screen_saver = f"{self.config.get('screensaver', 160)} s"
+        self.screen_saver = f"{self.config.get('screensaver', 160)} {update_text_language('second')}"
         self.wifi_ssid = self.config.get('wifi_ssid', 'N/A')
         self.timezone = self.config.get('timezone', 'N/A')
         self.region_address = self.config.get('region_address', 'N/A')

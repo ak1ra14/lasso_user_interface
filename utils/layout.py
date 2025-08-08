@@ -11,27 +11,34 @@ from utils.config_loader import update_text_language
 import math
 
 class HeaderBar(BoxLayout):
-    def __init__(self, title="Language", icon_path="images/home.png", button_text="Home", button_screen="menu", padding=[50, 0, 50, 0], spacing=10, **kwargs):
+    def __init__(self, title="Language", icon_path="images/home.png", button_text="home", button_screen="menu", padding=[50, 0, 50, 0], spacing=10, **kwargs):
         super().__init__(orientation='horizontal', size_hint_y=0.30, pos_hint={'top': 1}, padding=padding, spacing=spacing, **kwargs)
-        title = (Label(
-            text=title,
+        self.button_text = button_text
+        self.title = title
+        self.title_label = (Label(
+            text=update_text_language(self.title),
             font_size=70,
-            font_name='fonts/Roboto-Bold.ttf',
+            font_name='fonts/MPLUS1p-Bold.ttf',
             halign='left',
             valign='middle',
         ))
-        title.bind(size=lambda inst, val: setattr(inst, 'text_size', val))
-        self.add_widget(title)
+        self.title_label.bind(size=lambda inst, val: setattr(inst, 'text_size', val))
+        self.add_widget(self.title_label)
         self.add_widget(Widget(size_hint_x=1))  # Spacer
-        self.add_widget(IconTextButton(
+        self.top_right_button = IconTextButton(
             icon_path=icon_path,
-            text=button_text,
+            text=update_text_language(button_text),
             size_hint_y=None,
             size=(110, 110),
             pos_hint={'center_x': 0.5, 'center_y': 0.5},
             height=50,
             screen_name=button_screen
-        ))
+        )
+        self.add_widget(self.top_right_button)
+
+    def update_language(self):
+        self.title_label.text = update_text_language(self.title)
+        self.top_right_button.label.text = update_text_language(self.button_text)
 
 class FooterBar(BoxLayout):
     def __init__(self, screen_name, **kwargs):

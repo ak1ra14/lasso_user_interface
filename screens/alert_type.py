@@ -11,7 +11,7 @@ from kivy.core.audio import SoundLoader
 from utils.layout import SeparatorLine 
 from utils.layout import HeaderBar, SafeScreen
 from utils.icons import ToggleButton, CustomSwitch
-from utils.config_loader import load_config, save_config, update_current_page
+from utils.config_loader import load_config, save_config, update_current_page, update_text_language
 class AlertTypeScreen(SafeScreen):
     def __init__(self, **kwargs):
         super(AlertTypeScreen, self).__init__(**kwargs)
@@ -23,13 +23,13 @@ class AlertTypeScreen(SafeScreen):
         self.attach_video_fall = self.fall_json.get("attach_video", 1)
         self.alert_checking_bed = self.bed_json.get("alert_checking", None)
         self.alert_checking_fall = self.fall_json.get("alert_checking", None)
-        header = HeaderBar(title="Alert Type", icon_path="images/home.png", button_text="Home", button_screen="menu")
+        self.header = HeaderBar(title="alerts", icon_path="images/home.png", button_text="home", button_screen="menu")
         self.buttons = []
-        self.add_widget(header)
+        self.add_widget(self.header)
 
         ack_button_text = 1 if self.ack_enable == "yes" else 0
         ack_button = ToggleButton(
-            text_right="Auto-acknowledgement alert",
+            text_right="auto_acknowledgement_alert",
             size_hint_y=None,
             height=50,
             switch = AlertTypeButton(ack_button_text),
@@ -45,7 +45,7 @@ class AlertTypeScreen(SafeScreen):
             pos = (70, 260)
         )
         y_axis = [220, 175, 130, 85, 40]
-        bed_types = ["Alert with video", "Sit up","Bed exit","Sit-to-Stand","Fall besides bed"]
+        bed_types = ["alert_with_video", "sit_up","bed_exit","sit_to_stand","fall_besides_bed"]
         for i, bed_type in enumerate(bed_types):
             if i == 0:
                 value = self.attach_video_bed 
@@ -72,7 +72,7 @@ class AlertTypeScreen(SafeScreen):
             size=(50,50),
             pos = (420, 265)
         )
-        for i, bed_type in enumerate(["Alert without video","Sit-to-Stand","Fall"]):
+        for i, bed_type in enumerate(["alert_without_video","sit_to_stand","fall"]):
             if i == 0:
                 value = self.attach_video_bed 
             else:
@@ -89,7 +89,7 @@ class AlertTypeScreen(SafeScreen):
             self.buttons.append(button)
 
         float_layout = FloatLayout(size_hint=(1, 1))
-        save_button = SaveButtonAT(
+        self.save_button = SaveButtonAT(
             icon_path="images/save.png",
             text="Save",
             size_hint=(None, None),
@@ -99,7 +99,7 @@ class AlertTypeScreen(SafeScreen):
             AT_screen=self,
             screen_name="menu"
         )
-        float_layout.add_widget(save_button)
+        float_layout.add_widget(self.save_button)
         self.add_widget(float_layout)
         self.add_widget(partition)
         self.add_widget(image)
@@ -130,6 +130,9 @@ class AlertTypeScreen(SafeScreen):
         for i in range(len(self.buttons)):
             self.buttons[i].switch.active = status[i]
             self.buttons[i].switch.update_graphics()
+            self.buttons[i].update_language()
+        self.header.update_language()
+        self.save_button.label.text = update_text_language('save')
 
 
 class AlertTypeButton(CustomSwitch):

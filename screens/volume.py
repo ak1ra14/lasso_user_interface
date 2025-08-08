@@ -14,7 +14,7 @@ from kivy.uix.floatlayout import FloatLayout
 from utils.freeze_screen import freeze_ui
 import os, sys
 
-from utils.config_loader import load_config, save_config, update_current_page
+from utils.config_loader import load_config, save_config, update_current_page, update_text_language
 from utils.layout import HeaderBar, SafeScreen
 
 
@@ -22,7 +22,7 @@ class VolumeScreen(SafeScreen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.volume = load_config('config/settings.json', 'v3_json').get('volume', 50)
-        header = HeaderBar(title="Volume", icon_path="images/home.png", button_text="Home", button_screen="menu")
+        self.header = HeaderBar(title='volume', icon_path="images/home.png", button_text="home", button_screen="menu")
         buttons = BoxLayout(orientation='horizontal', spacing=15, size_hint_y=0.3, pos_hint={'center_x': 0.5, 'center_y': 0.5}, padding=[50,0,50,0])  # Only left and right padding
 
         self.volume_label = (Label(
@@ -62,17 +62,18 @@ class VolumeScreen(SafeScreen):
                                          volume_screen=self,  # Pass the screen instance
                                         pos_hint={'center_x': 0.5, 'center_y': 0.5},
                                           by=10, height=50))
-        self.add_widget(header)
+        self.add_widget(self.header)
         self.add_widget(buttons)
         float_layout = FloatLayout(size_hint=(1, 1))
-        float_layout.add_widget(SaveButton(
+        self.save_button = SaveButton(
             icon_path="images/save.png",
             volume_screen = self,  # Pass the screen instance
-            text="Save",
+            text=update_text_language('save'),
             size_hint=(None, None),
             size=(120, 120),
             pos_hint={'center_x': 0.5, 'center_y': 0.2}
-        ))
+        )
+        float_layout.add_widget(self.save_button)
         self.add_widget(float_layout)
 
 
@@ -80,6 +81,8 @@ class VolumeScreen(SafeScreen):
         update_current_page('volume')
         self.volume = load_config('config/settings.json', 'v3_json').get('volume', 50)
         self.volume_label.text = f"{self.volume}%"
+        self.header.update_language()
+        self.save_button.label.text = update_text_language('save')
 
 
 class ChangeVolume(IconTextButton):

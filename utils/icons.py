@@ -8,7 +8,7 @@ from kivy.uix.widget import Widget
 from kivy.uix.anchorlayout import AnchorLayout
 from kivy.app import App
 from kivy.core.audio import SoundLoader
-from utils.config_loader import load_config
+from utils.config_loader import load_config, update_text_language
 from kivy.properties import BooleanProperty
 from kivy.clock import Clock
 from utils.freeze_screen import freeze_ui
@@ -91,7 +91,7 @@ class IconTextButton(Button):
         if self.config:
             self.label = Label(
                 text=self.label_text,
-                font_size= self.size[1] * 0.1,  # Adjust font size based on button height
+                font_size= self.size[1] * 0.1 - 5 if len(self.label_text) > 5 else self.size[1]*0.1 - 2,  # Adjust font size based on button height
                 font_name='fonts/MPLUS1p-Regular.ttf',  # Path to your bold font file
                 color=(1, 1, 1, 1),
                 size_hint=(0.7, 0.10),
@@ -253,7 +253,7 @@ class ToggleButton(BoxLayout):
         self.text_left = text_left
 
         self.one_label = Label(
-            text=text_left,
+            text=update_text_language(self.text_left),
             color=(1, 1, 1, 1),
             size_hint=(None, None),
             size=(text_size_l_r[0], 30),
@@ -265,7 +265,7 @@ class ToggleButton(BoxLayout):
         self.one_label.bind(size=lambda inst, val: setattr(inst, 'text_size', val))
         self.switch = switch if switch else CustomSwitch(size_hint=(None, None), size=(60 * 0.75, 30 * 0.75))
         self.two_label = Label(
-            text=text_right,
+            text=update_text_language(self.text_right),
             color=(1, 1, 1, 1),
             size_hint=(None, None),
             size=(text_size_l_r[1], 30),
@@ -274,12 +274,17 @@ class ToggleButton(BoxLayout):
             halign='left',
             valign='middle',
         )
+        self.two_label.bind(size=lambda inst, val: setattr(inst, 'text_size', val))
         #call back function to set text size
         self.two_label.text_size = self.two_label.size
 
         self.add_widget(self.one_label)
         self.add_widget(self.switch)
         self.add_widget(self.two_label)
+    
+    def update_language(self):
+        self.one_label.text = update_text_language(self.text_left)
+        self.two_label.text = update_text_language(self.text_right)
 
 
 class PageIndicatorWidget(Widget):
