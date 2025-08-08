@@ -59,7 +59,7 @@ class TimezoneScreen(SafeScreen):
         self.save_button = TZSaveButton(text = update_current_page("save"), icon_path="images/save.png", 
                                      tz_screen=self,
                                      screen_name='menu2',
-                                     pos_hint={'center_x': 0.5, 'center_y': 0.4},
+                                     pos_hint={'center_x': 0.8, 'center_y': 0.4},
                                      size_hint=(None, None), size=(120, 120))
 
         main.add_widget(Widget(size_hint_y=1))  # Spacer
