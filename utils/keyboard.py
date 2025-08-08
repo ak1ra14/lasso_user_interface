@@ -15,16 +15,21 @@ from kivy.clock import Clock
 from kivy.uix.screenmanager import Screen
 import mozcpy
 from kivy.app import App
+from utils.config_loader import load_config, update_text_language
 
 class KeyboardScreen(SafeScreen):
     def __init__(self, title, **kwargs):
         super().__init__(**kwargs)
-        self.keyboard = QwertyKeyboard(title=title, enter_callback=self.press_enter)
+        self.title = title
+        self.keyboard = QwertyKeyboard(title=update_text_language(self.title), enter_callback=self.press_enter)
         self.add_widget(self.keyboard)
     
     def press_enter(self, instance):
         # Your save logic here
         print("Enter pressed from screen!")
+    
+    def on_pre_enter(self):
+        self.keyboard.title = update_text_language(self.title)
 
 class QwertyKeyboard(FloatLayout):
     shift_activate = BooleanProperty(False)
@@ -52,7 +57,7 @@ class QwertyKeyboard(FloatLayout):
             font_size=40,
             size_hint_y=0.2,
             size_hint_x=1,
-            font_name = 'fonts/Roboto-Bold.ttf',
+            font_name = 'fonts/MPLUS1p-Bold.ttf',
             halign='left',
             valign='middle',
             pos = (20, 480),
