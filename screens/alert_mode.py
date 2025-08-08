@@ -13,6 +13,8 @@ from utils.layout import SeparatorLine
 from utils.layout import HeaderBar, SafeScreen
 from utils.config_loader import load_config, save_config, update_current_page, update_text_language
 from utils.freeze_screen import freeze_ui   
+
+
 class AlertModeScreen(Screen):
     """
     Alert Mode Screen
@@ -129,8 +131,6 @@ class AlertModeButton(IconTextButton):
                 if button != self:
                     button.active = False
                     button._update_active_color(button, False)
-
-
 
 class CustomSwitchAM(CustomSwitch):
     """
