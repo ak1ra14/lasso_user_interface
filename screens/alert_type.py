@@ -57,7 +57,7 @@ class AlertTypeScreen(SafeScreen):
                 height=50,
                 pos=(50, y_axis[i]),
                 switch=AlertTypeButton(value),
-                text_size_l_r=(0, 150)
+                text_size_l_r=(0, 180)
             )
             self.add_widget(button)
             self.buttons.append(button)
