@@ -47,7 +47,7 @@ class MyApp(App):
         self.sm.add_widget(LanguageScreen(name='language'))
         self.sm.add_widget(PowerScreen(name='power'))
         self.sm.add_widget(ScreenSaverScreen(name='screensaver'))       
-        self.sm.add_widget(TimezoneScreen(name='time zone'))
+        self.sm.add_widget(TimezoneScreen(name='timezone'))
         self.sm.add_widget(VolumeScreen(name='volume'))
         self.sm.add_widget(AlertModeScreen(name='mode'))
         self.sm.add_widget(AlertTypeScreen(name='alerts'))

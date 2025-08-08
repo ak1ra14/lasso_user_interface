@@ -7,7 +7,7 @@ from utils.config_loader import load_config
 from utils.icons import IconTextButton
 from kivy.graphics import Line, Color, Rectangle
 from utils.keyboard import KeyboardScreen
-from utils.config_loader import save_config, update_current_page
+from utils.config_loader import save_config, update_current_page, update_text_language
 from utils.layout import SeparatorLine
 from utils.num_pad import NumberPadScreen
 
@@ -20,13 +20,12 @@ class ServerScreen(SafeScreen):
         self.build_ui()
 
     def build_ui(self):
-        self.header = HeaderBar(title="Servers", icon_path="images/home.png", button_text="Home", button_screen="menu2")
+        self.header = HeaderBar(title="servers", icon_path="images/home.png", button_text="home", button_screen="menu2")
     
         self.main_layout = FloatLayout(size_hint=(1, 1))
         self.main_layout.add_widget(self.header)
 
-        self.main_layout.add_widget(Label(text="Region", font_size=40, size_hint_y=None, height=40, pos_hint={'center_x': 0.152, 'center_y': 0.7}, font_name='fonts/Roboto-Bold.ttf'))
-        self.main_layout.add_widget(Label(text="Server",  font_size=40, size_hint_y=None, height=40, pos_hint={'center_x': 0.147, 'center_y': 0.64}, font_name='fonts/Roboto-Bold.ttf'))
+        self.main_layout.add_widget(Label(text="Region \nServer", font_size=40, size_hint_y=None, height=40, pos_hint={'center_x': 0.152, 'center_y': 0.7}, font_name='fonts/Roboto-Bold.ttf'))
 
         self.buttons['region_address'] = EditSetting( status = self.config.get('region_address'), screen_name = 'region server', pos_hint={'center_x': 0.20, 'center_y': 0.55})
 
@@ -38,8 +37,7 @@ class ServerScreen(SafeScreen):
         self.buttons['mqtt_topic'] = EditSetting( status = self.config.get('mqtt_topic'), screen_name = 'mqtt topic', pos_hint={'center_x': 0.50, 'center_y': 0.25})
 
 
-        self.main_layout.add_widget(Label(text="Alert", font_size=40, size_hint_y=None, height=40, pos_hint={'center_x': 0.735, 'center_y': 0.7}, font_name='fonts/Roboto-Bold.ttf',halign='left'))
-        self.main_layout.add_widget(Label(text="Lights",  font_size=40, size_hint_y=None, height=40, pos_hint={'center_x': 0.75, 'center_y': 0.64}, font_name='fonts/Roboto-Bold.ttf',halign='left'))
+        self.main_layout.add_widget(Label(text="Alert\nLights", font_size=40, size_hint_y=None, height=40, pos_hint={'center_x': 0.735, 'center_y': 0.7}, font_name='fonts/Roboto-Bold.ttf',halign='left'))
         self.buttons['alert_lights_ip1'] = EditSetting( status = self.config.get('alert_lights_ip1'), screen_name = 'alert lights 1', pos_hint={'center_x': 0.80, 'center_y': 0.55})
         self.buttons['alert_lights_ip2'] = EditSetting( status = self.config.get('alert_lights_ip2'), screen_name = 'alert lights 2', pos_hint={'center_x': 0.80, 'center_y': 0.30})
 
@@ -64,6 +62,13 @@ class ServerScreen(SafeScreen):
             button.status = self.config.get(key, '')
             button.label.text = button.status
 
+    def update_language(self):
+        self.header.update_language()
+        for key, button in self.buttons.items():
+            button.label.text = update_text_language(key.replace('_', ' '))
+            button.button.text = update_text_language('edit')
+            button.label.bind(size=lambda inst, val: setattr(inst, 'text_size', (inst.width, None)))
+
 class EditSetting(FloatLayout):
     def __init__(self, status, screen_name,**kwargs):
         super().__init__(**kwargs)
@@ -73,7 +78,7 @@ class EditSetting(FloatLayout):
 
     def build_ui(self):
         self.button = IconTextButton(
-            text="EDIT",
+            text=update_text_language("edit"),
             font_size=20,
             radius=[10,],
             size_hint=(None, None),
@@ -88,7 +93,7 @@ class EditSetting(FloatLayout):
             height=30,
             width = 200,
             pos_hint = {'center_x': 0.5, 'center_y': 0.42},
-            font_family='fonts/Roboto-Bold.ttf',
+            font_family='fonts/MPLUS1p-Bold.ttf',
             shorten=True,
             shorten_from='right',
             max_lines=1,

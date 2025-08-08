@@ -15,7 +15,7 @@ from kivy.uix.floatlayout import FloatLayout
 import json
 import os
 
-from utils.config_loader import load_config, save_config, update_current_page
+from utils.config_loader import load_config, save_config, update_current_page, update_text_language
 from utils.layout import HeaderBar, SafeScreen
 
 class ScreenSaverScreen(SafeScreen):
@@ -23,7 +23,7 @@ class ScreenSaverScreen(SafeScreen):
         
         super().__init__(**kwargs)
         self.screensaver_time = load_config('config/V3.json').get('screensaver', 60)
-        header = HeaderBar(title="Screensaver", icon_path="images/home.png", button_text="Home", button_screen="menu2")
+        self.header = HeaderBar(title="screensaver", icon_path="images/home.png", button_text="home", button_screen="menu2")
         buttons = BoxLayout(orientation='horizontal', spacing=15, size_hint_y=0.3, pos_hint={'center_x': 0.5, 'center_y': 0.5}, padding=[50,0,50,0])  # Only left and right padding
         float_layout = FloatLayout(
             size_hint=(1, 1))
@@ -37,22 +37,14 @@ class ScreenSaverScreen(SafeScreen):
             pos_hint={'center_x': 0.5, 'center_y': 0.52},
         ))
         float_layout.add_widget(self.screensaver_time_label)
-        float_layout.add_widget(Label(
-            text="seconds",
+        self.second = Label(
+            text= update_text_language("second"),
             font_size=20,
-            font_name='fonts/Roboto-Bold.ttf',
+            font_name='fonts/MPLUS1p-Regular.ttf',
             valign='bottom',
             pos_hint={'center_x': 0.5, 'center_y': 0.4},
-        ))
-        #time.add_widget(self.screensaver_time_label)
-        #time.add_widget(Widget(size_hint_y=0.1))  # Spacer
-        #time.add_widget(Label(
-        #    text="seconds",
-        #    font_size=20,
-        #    font_name='fonts/Roboto-Bold.ttf',
-        #     size_hint_y=0.1,
-        #     valign='bottom',
-        # ))
+        )
+        float_layout.add_widget(self.second)
 
         buttons.add_widget(ChangeTime(icon_path="images/decrease_10.png",
                                         screensaver_time_label=self.screensaver_time_label,
@@ -84,24 +76,18 @@ class ScreenSaverScreen(SafeScreen):
                                         screensaver_screen=self,  # Pass the screen instance
                                         pos_hint={'center_x': 0.5, 'center_y': 0.5},
                                         by=60, height=50))
-        self.add_widget(header)
+        self.add_widget(self.header)
         self.add_widget(buttons)
-        # save_anchor = AnchorLayout(
-        #     anchor_x='center',
-        #     anchor_y='bottom',
-        #     size_hint=(1, None),
-        #     height=120,
-        #     padding=[0, 20, 0, 60]  # Padding for the anchor layout
-        # )
 
-        float_layout.add_widget(SaveButton(
+        self.save_button = SaveButton(
             icon_path="images/save.png",
             screensaver_screen=self,  # Pass the screen instance
-            text="Save",
+            text=update_text_language("save"),  
             size_hint=(None, None),
             size=(120, 120),
             pos_hint={'center_x': 0.5, 'center_y': 0.2}
-        ))
+        )
+        self.add_widget(self.save_button)
 
         self.add_widget(float_layout)
 
@@ -113,6 +99,12 @@ class ScreenSaverScreen(SafeScreen):
         update_current_page('screensaver')
         self.screensaver_time = load_config('config/V3.json').get('screensaver', 60)
         self.screensaver_time_label.text = f"{self.screensaver_time}"
+
+    def update_language(self):
+        self.header.update_language()
+        self.save_button.label.text = update_text_language("save")
+        self.second.text = update_text_language("second")
+
 
 class ChangeTime(IconTextButton):
     def __init__(self, by=1, screensaver_time_label=None, change="increase", screensaver_screen=None, size=(120, 120), **kwargs):

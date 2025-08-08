@@ -5,7 +5,7 @@ from kivy.uix.widget import Widget
 from utils.icons import IconTextButton
 from kivy.uix.button import Button
 from kivy.uix.scrollview import ScrollView
-from utils.config_loader import load_config, save_config, update_current_page
+from utils.config_loader import load_config, save_config, update_current_page, update_text_language
 from kivy.uix.gridlayout import GridLayout
 from kivy.app import App
 from kivy.uix.button import Button
@@ -22,7 +22,7 @@ class TimezoneScreen(SafeScreen):
         super().__init__(**kwargs)
         self.selected_timezone = load_config('config/settings.json', 'v3_json').get('timezone', '')
         self.timezone_list = []
-        header = HeaderBar(title="Timezone", icon_path="images/home.png", button_text="Home", button_screen="menu2")
+        header = HeaderBar(title="timezone", icon_path="images/home.png", button_text="home", button_screen="menu2")
 
         ##main layout
         main = BoxLayout(orientation='horizontal', size_hint=(1,0.75),
@@ -55,14 +55,15 @@ class TimezoneScreen(SafeScreen):
         scroll.add_widget(list_box)
 
         main.add_widget(scroll)
-        
-        main.add_widget(TZSaveButton(text = "Save", icon_path="images/save.png", 
+
+        self.save_button = TZSaveButton(text = update_current_page("save"), icon_path="images/save.png", 
                                      tz_screen=self,
                                      screen_name='menu2',
                                      pos_hint={'center_x': 0.5, 'center_y': 0.4},
-                                     size_hint=(None, None), size=(120, 120)))
+                                     size_hint=(None, None), size=(120, 120))
 
         main.add_widget(Widget(size_hint_y=1))  # Spacer
+        self.add_widget(self.save_button)
         self.add_widget(header)
         self.add_widget(main)  # Optional: add a spacer below if you want space at the bottom
 
@@ -78,6 +79,14 @@ class TimezoneScreen(SafeScreen):
 
     def on_pre_enter(self):
         update_current_page('timezone')
+        self.save_button.label_text = update_text_language('save')
+
+    def update_language(self):
+        """
+        Update the language of the screen elements.
+        """
+        self.header.update_language()
+        self.save_button.label.text = update_text_language('save')
 
 class SelectableButton(Button):
     """

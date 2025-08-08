@@ -90,11 +90,12 @@ class LocationScreen(SafeScreen):
         self.bed_config = load_config("config/settings.json", "bed_json")
         self.build_ui()
         self.bed_no = self.bed_config.get("nbeds", [1, [' ']])[0]
-    
 
+    
 class Bed1Screen(KeyboardScreen):
     def __init__(self, **kwargs):
-        super(Bed1Screen, self).__init__(title="bed_1",**kwargs)
+        super(Bed1Screen, self).__init__(title='bed_1', **kwargs)
+        self.title = 'bed_1'
         self.config = load_config("config/settings.json", "bed_json")
         self.text = self.config.get("nbeds", [1, [' ']])[1][0]
 
@@ -113,11 +114,13 @@ class Bed1Screen(KeyboardScreen):
         update_current_page('bed1')
         self.config = load_config("config/settings.json", "bed_json")
         self.keyboard.text_input.text = self.config.get("nbeds", [1, ['Bed 1']])[1][0]
+
         
 
 class Bed2Screen(KeyboardScreen):
     def __init__(self, **kwargs):
         super().__init__(title="bed_2", **kwargs)
+        self.title = 'bed_2'
         self.config = load_config("config/settings.json", "bed_json")
         # self.text = self.config.get("nbeds", [1, [' ']])[1][1]
 
@@ -133,14 +136,14 @@ class Bed2Screen(KeyboardScreen):
         Override the on_pre_enter method to set the keyboard title.
         """
         super().on_pre_enter()
-        update_current_page('bed2')
-        self.keyboard.title = "Bed Location 2"
+        self.keyboard.title = update_text_language('bed_2')
         self.config = load_config("config/settings.json", "bed_json")
         self.keyboard.text_input.text = self.config.get("nbeds", [2, [1, 2]])[1][1]
 
 class DeviceKeyboardScreen(KeyboardScreen):
     def __init__(self, **kwargs):
         super().__init__(title="device_location", **kwargs)
+        self.title = 'device_location'
         self.config = load_config("config/settings.json", "v3_json")
         self.text = self.config.get('location', 'Room 1')
     
@@ -157,6 +160,5 @@ class DeviceKeyboardScreen(KeyboardScreen):
         """
         super().on_pre_enter()
         update_current_page('device_keyboard')
-        self.keyboard.title = "Device Location"
         self.config = load_config("config/settings.json", "v3_json")
         self.keyboard.text_input.text = self.config.get("location", "Room 1")

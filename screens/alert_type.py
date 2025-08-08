@@ -91,7 +91,7 @@ class AlertTypeScreen(SafeScreen):
         float_layout = FloatLayout(size_hint=(1, 1))
         self.save_button = SaveButtonAT(
             icon_path="images/save.png",
-            text="Save",
+            text=update_text_language('save'),
             size_hint=(None, None),
             size=(120, 120),
             pos_hint = None,

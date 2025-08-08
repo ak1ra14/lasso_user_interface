@@ -21,16 +21,16 @@ class KeyboardScreen(SafeScreen):
     def __init__(self, title, **kwargs):
         super().__init__(**kwargs)
         self.title = title
-        self.keyboard = QwertyKeyboard(title=update_text_language(self.title), enter_callback=self.press_enter)
+        self.keyboard = QwertyKeyboard(title=self.title, enter_callback=self.press_enter)
         self.add_widget(self.keyboard)
     
     def press_enter(self, instance):
         # Your save logic here
         print("Enter pressed from screen!")
-    
-    def on_pre_enter(self):
-        self.keyboard.title = update_text_language(self.title)
 
+    def update_language(self):
+        self.keyboard.label.text = update_text_language(self.title)
+        
 class QwertyKeyboard(FloatLayout):
     shift_activate = BooleanProperty(False)
     MAX_CHARS = 100  # Maximum characters allowed in the text input
@@ -43,7 +43,7 @@ class QwertyKeyboard(FloatLayout):
         self.language_mode = 'english'  # Default language mode
         self.kanji_converter = mozcpy.Converter()  # Initialize the converter
         self.converting = False  # Flag to indicate if the text is being converted
-
+        self.title = title
 
         ###layout for the keyboard screen
         self.main_layout = BoxLayout(
@@ -52,8 +52,8 @@ class QwertyKeyboard(FloatLayout):
             size_hint=(1, 1), 
             pos_hint={'center_x': 0.5, 'center_y': 0.53},
         )
-        label = Label(
-            text=title,
+        self.label = Label(
+            text=update_text_language(self.title),
             font_size=40,
             size_hint_y=0.2,
             size_hint_x=1,
@@ -62,7 +62,7 @@ class QwertyKeyboard(FloatLayout):
             valign='middle',
             pos = (20, 480),
         )
-        label.bind(size=lambda instance, value: setattr(instance, 'text_size', value))
+        self.label.bind(size=lambda instance, value: setattr(instance, 'text_size', value))
         self.text_input = TextInput(font_size=32, size_hint_y=0.15,
                                     background_color=(0, 0, 0, 0),   # transparent background
                                     foreground_color=(1, 1, 0, 1),
@@ -78,7 +78,7 @@ class QwertyKeyboard(FloatLayout):
             size_hint=(0.6, 0.05),
             pos  = (20,440),
         )
-        self.add_widget(label)
+        self.add_widget(self.label)
         self.add_widget(self.text_input)
         self.add_widget(partition)
 
@@ -125,7 +125,7 @@ class QwertyKeyboard(FloatLayout):
 
         overlay = FloatLayout(size_hint=(1, 1))
         home_button = IconTextButton(
-            text='Home',
+            text='home',
             icon_path='images/home.png',
             size_hint=(None, None),
             size=(110, 110),
@@ -328,6 +328,7 @@ class QwertyKeyboard(FloatLayout):
     def limit_text_length(self, instance, value):
         if len(value) > self.MAX_CHARS:
             instance.text = value[:self.MAX_CHARS]
+
 
 class RoundedButton(Button):
     def __init__(self, text = None,sub_key = None, shift_key = None,function = None, image = None, background_color = (0.2, 0.2, 0.2, 1), font_name='fonts/Roboto-Regular.ttf', **kwargs):
