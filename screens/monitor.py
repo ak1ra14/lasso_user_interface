@@ -22,7 +22,7 @@ class MonitorScreen(SafeScreen):
             font_size=20,
             color=(0, 0, 0, 1),  # Black text
             size_hint=(None, None),
-            size=(250, 40),
+            size=(300, 40),
             font_name='fonts/MPLUS1p-Regular.ttf',
             pos_hint={'left': 1, 'top': 1},
             bg_color=(1,1,1,1)  # RGBA

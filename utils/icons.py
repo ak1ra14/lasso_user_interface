@@ -60,7 +60,7 @@ class IconTextButton(Button):
         layout.size = self.size
         layout.pos = self.pos
         self.bind(pos=layout.setter('pos'), size=layout.setter('size'))
-        if self.label_text is None: # If no label text is provided, we only show the icon
+        if self.label_text is "": # If no label text is provided, we only show the icon
             self.image = Image(
             source=icon_path,
             size_hint=(0.6,0.6),
