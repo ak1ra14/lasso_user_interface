@@ -244,7 +244,7 @@ class CustomSwitch(FloatLayout):
 
 
 class ToggleButton(BoxLayout):
-    def __init__(self, text_left="", text_right="", text_size_l_r=(75, 112), switch=None, **kwargs):
+    def __init__(self, text_left="", text_right="", text_size_l_r=(75, 130), switch=None, **kwargs):
         super().__init__(orientation='horizontal', spacing=7.5, padding=7.5, **kwargs)
         self.size_hint = (None, None)
         self.size = (400 * 0.75, 60 * 0.75)  # 3/4 of original size

@@ -17,7 +17,7 @@ class LanguageScreen(SafeScreen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.buttons = []
-        header = HeaderBar(title="Language", icon_path="images/home.png", button_text="Home", button_screen="menu")
+        self.header = HeaderBar(title="Language", icon_path="images/home.png", button_text="Home", button_screen="menu")
         main_layout = BoxLayout(orientation='horizontal', spacing=80, size_hint_y=0.3, pos_hint={'center_x': 0.5, 'center_y': 0.5}, padding=[80,0,80,0])  # Only left and right padding
         main_layout.add_widget(Widget())
         en_button = LanguageButton(icon_path="images/english.png", text="English", language='en', height=50)
@@ -27,7 +27,7 @@ class LanguageScreen(SafeScreen):
         main_layout.add_widget(jp_button)
         self.buttons.append(jp_button)
         main_layout.add_widget(Widget())
-        self.add_widget(header)
+        self.add_widget(self.header)
         self.add_widget(main_layout)
 
     def go_to_main(self, instance):
@@ -45,6 +45,7 @@ class LanguageScreen(SafeScreen):
         """
         # You can add any setup code here if needed
         update_current_page('language')
+        self.header.update_language()
 
 class LanguageButton(IconTextButton):
     active = BooleanProperty(False)
