@@ -23,8 +23,8 @@ class NumberPadScreen(SafeScreen):
         left = BoxLayout(orientation='vertical', spacing=5, pos_hint={'x':0.2, 'y':0.10}, size_hint=(0.6, 0.8))
 
         # IP Input Header
-        self.label = Label(text=update_text_language(self.title), markup=True, font_size=50,
-                           font_family='fonts/MPLUS1p-Regular.ttf',
+        self.label = Label(text=update_text_language(self.title), markup=True, font_size=45,
+                           font_name='fonts/MPLUS1p-Regular.ttf',
                            size_hint_y=None, height=50, halign='left')
         self.label.bind(size=self.label.setter('text_size'))
         left.add_widget(self.label)
@@ -32,7 +32,7 @@ class NumberPadScreen(SafeScreen):
                                   background_color=(0, 0, 0, 0),
                                   foreground_color=(1, 1, 0, 1),  # Yellow
                                   cursor_color=(1, 1, 1, 1),
-                                  font_family='fonts/MPLUS1p-Regular.ttf',
+                                  font_name='fonts/MPLUS1p-Regular.ttf',
                                   size_hint_y=None, height=60,
                                   halign='left')
         self.input.bind(focus=self.set_cursor_at_end)
