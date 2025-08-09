@@ -28,7 +28,7 @@ class ServerScreen(SafeScreen):
         self.region_server = Label(text=update_text_language("region_server"), font_size=35, size_hint=(None, None), height=40,pos=(50, 450),
                                     font_name='fonts/MPLUS1p-Bold.ttf', halign='left')
 
-        self.buttons['region_address'] = EditSetting( status = self.config.get('region_address'), screen_name = 'region server', pos=(50, 400))
+        self.buttons['region_address'] = EditSetting( status = self.config.get('region_address'), screen_name = 'region server', size_hint=(None, None), pos=(50, 400))
         self.main_layout.add_widget(self.region_server)
         self.mqtt = Label(text=update_text_language('mqtt'), font_size=40, size_hint_y=None, height=40, pos_hint={'center_x': 0.446, 'center_y': 0.7}, font_name='fonts/MPLUS1p-Bold.ttf'
                             , halign='left')
