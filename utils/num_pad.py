@@ -7,7 +7,7 @@ from kivy.uix.widget import Widget
 from kivy.uix.anchorlayout import AnchorLayout
 from kivy.uix.textinput import TextInput
 from kivy.uix.floatlayout import FloatLayout
-from utils.config_loader import load_config
+from utils.config_loader import update_text_language
 from utils.icons import IconTextButton
 from kivy.graphics import Color, RoundedRectangle, Line
 from utils.keyboard import SeparatorLine
@@ -23,8 +23,8 @@ class NumberPadScreen(SafeScreen):
         left = BoxLayout(orientation='vertical', spacing=5, pos_hint={'x':0.2, 'y':0.10}, size_hint=(0.6, 0.8))
 
         # IP Input Header
-        self.label = Label(text=self.title, markup=True, font_size=50,
-                           font_family='fonts/Roboto-Bold.ttf',
+        self.label = Label(text=update_text_language(self.title), markup=True, font_size=50,
+                           font_family='fonts/MPLUS1p-Regular.ttf',
                            size_hint_y=None, height=50, halign='left')
         self.label.bind(size=self.label.setter('text_size'))
         left.add_widget(self.label)
@@ -32,7 +32,7 @@ class NumberPadScreen(SafeScreen):
                                   background_color=(0, 0, 0, 0),
                                   foreground_color=(1, 1, 0, 1),  # Yellow
                                   cursor_color=(1, 1, 1, 1),
-                                  font_family='fonts/Roboto-Bold.ttf',
+                                  font_family='fonts/MPLUS1p-Regular.ttf',
                                   size_hint_y=None, height=60,
                                   halign='left')
         self.input.bind(focus=self.set_cursor_at_end)
@@ -60,18 +60,20 @@ class NumberPadScreen(SafeScreen):
 
         # === Right side (action buttons) ===
         right = FloatLayout(size_hint=(1,1))
-        right.add_widget(IconTextButton(text="Home", font_size=18,
+        self.home_button = IconTextButton(text=update_text_language("home"), font_size=18,
                                         icon_path="images/home.png",
                                         screen_name=screen_name,
                                 size_hint=(None, None), size = (120,120),
                                 pos_hint = None,
                                 pos = (875,450)
-                             ))
-        right.add_widget(IconTextButton(text="Save", font_size=18,
+                             )
+        self.save_button = IconTextButton(text=update_text_language("save"), font_size=18,
                                 icon_path="images/save.png",
                                 on_press = self.on_save,
                                 size_hint=(None, None), size=(120, 120),
-                                 pos=(720, 200)))
+                                 pos=(720, 200))
+        right.add_widget(self.home_button)
+        right.add_widget(self.save_button)
         right.bind(pos=self.setter('pos'))
         right.bind(size=self.setter('size'))
         right.add_widget(Widget())  # Spacer
@@ -96,6 +98,13 @@ class NumberPadScreen(SafeScreen):
         else:
             self.input.text += key
 
+    def update_language(self):
+        """
+        Update the language of the screen elements.
+        """
+        self.label.text = update_text_language(self.title)
+        self.home_button.label.text = update_text_language('home')
+        self.save_button.label.text = update_text_language('save')
 
 class RoundedButton(Button):
     def __init__(self, radius=20, **kwargs):

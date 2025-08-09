@@ -25,19 +25,23 @@ class ServerScreen(SafeScreen):
         self.main_layout = FloatLayout(size_hint=(1, 1))
         self.main_layout.add_widget(self.header)
 
-        self.main_layout.add_widget(Label(text="Region \nServer", font_size=40, size_hint_y=None, height=40, pos_hint={'center_x': 0.152, 'center_y': 0.7}, font_name='fonts/Roboto-Bold.ttf'))
+        self.region_server = Label(text=update_text_language("region_server"), font_size=40, size_hint_y=None, height=40, pos_hint={'center_x': 0.152, 'center_y': 0.7}, font_name='fonts/MPLUS1p-Bold.ttf')
 
         self.buttons['region_address'] = EditSetting( status = self.config.get('region_address'), screen_name = 'region server', pos_hint={'center_x': 0.20, 'center_y': 0.55})
-
-        self.main_layout.add_widget(Label(text="MQTT", font_size=40, size_hint_y=None, height=40, pos_hint={'center_x': 0.446, 'center_y': 0.7}, font_name='fonts/Roboto-Bold.ttf'))
-        self.main_layout.add_widget(Label(text="MQTT Broker IP", font_size=25, size_hint_y=None, height=40, pos_hint={'center_x': 0.48, 'center_y': 0.62}, font_name='fonts/Roboto-Bold.ttf'))
-        self.main_layout.add_widget(Label(text="MQTT Topic", font_size=25, size_hint_y=None, height=40, pos_hint={'center_x': 0.457, 'center_y': 0.32}, font_name='fonts/Roboto-Bold.ttf',halign='left'))
+        self.main_layout.add_widget(self.region_server)
+        self.mqtt = Label(text=update_text_language('mqtt'), font_size=40, size_hint_y=None, height=40, pos_hint={'center_x': 0.446, 'center_y': 0.7}, font_name='fonts/MPLUS1p-Bold.ttf')
+        self.main_layout.add_widget(self.mqtt)
+        self.mqtt_broker_ip = Label(text=update_text_language('mqtt_broker_ip'), font_size=25, size_hint_y=None, height=40, pos_hint={'center_x': 0.48, 'center_y': 0.62}, font_name='fonts/MPLUS1p-Bold.ttf')
+        self.main_layout.add_widget(self.mqtt_broker_ip)
+        self.mqtt_topic = Label(text=update_text_language('mqtt_topic'), font_size=25, size_hint_y=None, height=40, pos_hint={'center_x': 0.457, 'center_y': 0.32}, font_name='fonts/MPLUS1p-Bold.ttf',halign='left')
+        self.main_layout.add_widget(self.mqtt_topic)
 
         self.buttons['mqtt_address'] = EditSetting( status = self.config.get('mqtt_address'), screen_name = 'mqtt broker ip', pos_hint={'center_x': 0.50, 'center_y': 0.55})
         self.buttons['mqtt_topic'] = EditSetting( status = self.config.get('mqtt_topic'), screen_name = 'mqtt topic', pos_hint={'center_x': 0.50, 'center_y': 0.25})
 
 
-        self.main_layout.add_widget(Label(text="Alert\nLights", font_size=40, size_hint_y=None, height=40, pos_hint={'center_x': 0.735, 'center_y': 0.7}, font_name='fonts/Roboto-Bold.ttf',halign='left'))
+        self.alert_lights = Label(text=update_text_language("alert_lights"), font_size=40, size_hint_y=None, height=40, pos_hint={'center_x': 0.735, 'center_y': 0.7}, font_name='fonts/MPLUS1p-Bold.ttf',halign='left')
+        self.main_layout.add_widget(self.alert_lights)
         self.buttons['alert_lights_ip1'] = EditSetting( status = self.config.get('alert_lights_ip1'), screen_name = 'alert lights 1', pos_hint={'center_x': 0.80, 'center_y': 0.55})
         self.buttons['alert_lights_ip2'] = EditSetting( status = self.config.get('alert_lights_ip2'), screen_name = 'alert lights 2', pos_hint={'center_x': 0.80, 'center_y': 0.30})
 
@@ -65,9 +69,14 @@ class ServerScreen(SafeScreen):
     def update_language(self):
         self.header.update_language()
         for key, button in self.buttons.items():
-            button.label.text = update_text_language(key.replace('_', ' '))
+            button.label.text = update_text_language(key)
             button.button.text = update_text_language('edit')
             button.label.bind(size=lambda inst, val: setattr(inst, 'text_size', (inst.width, None)))
+        self.region_server.text = update_text_language("region_server")
+        self.mqtt.text = update_text_language('mqtt')
+        self.mqtt_broker_ip.text = update_text_language('mqtt_broker_ip')
+        self.mqtt_topic.text = update_text_language('mqtt_topic')
+        self.alert_lights.text = update_text_language("alert_lights")
 
 class EditSetting(FloatLayout):
     def __init__(self, status, screen_name,**kwargs):
@@ -125,7 +134,7 @@ class EditSetting(FloatLayout):
 
 class RegionServerScreen(NumberPadScreen):
     def __init__(self, **kwargs):
-        super().__init__(title="Region Server IP", **kwargs)
+        super().__init__(title="region_address", **kwargs)
         self.config = load_config("config/settings.json", "v3_json")
         self.text = self.config.get('region_address', '')
 
@@ -143,11 +152,11 @@ class RegionServerScreen(NumberPadScreen):
         update_current_page('region_server')
         self.config = load_config("config/settings.json", "v3_json")
         self.input.text = self.config.get("region_address", "")
-
+    
 
 class MQTTBrokerIPScreen(NumberPadScreen):
     def __init__(self, **kwargs):
-        super().__init__(title="MQTT Broker IP", **kwargs)
+        super().__init__(title="mqtt_broker_ip", **kwargs)
         self.config = load_config("config/settings.json", "v3_json")
         self.text = self.config.get('mqtt_address', '')
 
@@ -168,7 +177,7 @@ class MQTTBrokerIPScreen(NumberPadScreen):
 
 class AlertLight1Screen(NumberPadScreen):
     def __init__(self, **kwargs):
-        super().__init__(title="Alert Light 1 IP", **kwargs)
+        super().__init__(title="alert_lights_ip1", **kwargs)
         self.config = load_config("config/settings.json", "v3_json")
         self.text = self.config.get('alert_lights_ip1', '')
 
@@ -190,7 +199,7 @@ class AlertLight1Screen(NumberPadScreen):
 
 class AlertLight2Screen(NumberPadScreen):
     def __init__(self, **kwargs):
-        super().__init__(title="Alert Light 2 IP", **kwargs)
+        super().__init__(title="alert_lights_ip2", **kwargs)
         self.config = load_config("config/settings.json", "v3_json")
         self.text = self.config.get('alert_lights_ip2', '')
 
@@ -212,7 +221,7 @@ class AlertLight2Screen(NumberPadScreen):
 
 class MQTTTopicKeyboardScreen(KeyboardScreen):
     def __init__(self, **kwargs):
-        super().__init__(title="MQTT Topic", **kwargs)
+        super().__init__(title="mqtt_topic", **kwargs)
         self.config = load_config("config/settings.json", "v3_json")
         self.text = self.config.get('mqtt_topic', '')
 

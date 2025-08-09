@@ -22,7 +22,7 @@ class TimezoneScreen(SafeScreen):
         super().__init__(**kwargs)
         self.selected_timezone = load_config('config/settings.json', 'v3_json').get('timezone', '')
         self.timezone_list = []
-        header = HeaderBar(title="timezone", icon_path="images/home.png", button_text="home", button_screen="menu2")
+        self.header = HeaderBar(title="timezone", icon_path="images/home.png", button_text="home", button_screen="menu2")
 
         ##main layout
         main = BoxLayout(orientation='horizontal', size_hint=(1,0.75),
@@ -44,7 +44,6 @@ class TimezoneScreen(SafeScreen):
                             bar_width=35, 
                             bar_color=(0.2, 0.6, 0.8, 1),  # Active bar color (blue)
                             bar_inactive_color=(0.7, 0.7, 0.7, 1),  # Inactive bar color (gray)
-                            pos_hint={'center_x': 0.3, 'center_y': 0.5},
                             size=(500,300),
                             do_scroll_x=False)
         with scroll.canvas.before:
@@ -57,15 +56,15 @@ class TimezoneScreen(SafeScreen):
 
         main.add_widget(scroll)
 
-        self.save_button = TZSaveButton(text = update_current_page("save"), icon_path="images/save.png", 
+        self.save_button = TZSaveButton(text = update_text_language("save"), icon_path="images/save.png", 
                                      tz_screen=self,
                                      screen_name='menu2',
-                                     pos_hint={'center_x': 0.8, 'center_y': 0.4},
+                                     pos_hint={'center_x': 0.9, 'center_y': 0.4},
                                      size_hint=(None, None), size=(120, 120))
 
         main.add_widget(Widget(size_hint_y=1))  # Spacer
         self.add_widget(self.save_button)
-        self.add_widget(header)
+        self.add_widget(self.header)
         self.add_widget(main)  # Optional: add a spacer below if you want space at the bottom
 
     def select_timezone(self, btn):
@@ -80,7 +79,6 @@ class TimezoneScreen(SafeScreen):
 
     def on_pre_enter(self):
         update_current_page('timezone')
-        self.save_button.label_text = update_text_language('save')
 
     def update_language(self):
         """
@@ -148,6 +146,7 @@ class TZSaveButton(IconTextButton):
         config = load_config('config/settings.json', 'v3_json')
         config['timezone'] = self.tz_screen.selected_timezone
         save_config('config/settings.json', 'v3_json', data=config)
+
 
 
         
