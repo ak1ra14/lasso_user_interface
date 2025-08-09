@@ -67,7 +67,7 @@ class IconTextButton(Button):
             pos_hint={'center_x': 0.5, 'center_y': 0.50}  # Center image vertically
             )
         elif icon_path is None: #for server button 
-            label = Label(
+            self.label = Label(
                 text=self.label_text,
                 font_size= font_size,  # Adjust font size based on button height
                 font_name='fonts/MPLUS1p-Regular.ttf',
@@ -77,8 +77,8 @@ class IconTextButton(Button):
                 halign='center',
                 valign='middle'
             )
-            label.bind(size=lambda inst, val: setattr(inst, 'text_size', val))
-            layout.add_widget(label)
+            self.label.bind(size=lambda inst, val: setattr(inst, 'text_size', val))
+            layout.add_widget(self.label)
             self.add_widget(layout)
             return
         else:  # If both icon and text are provided, we show both

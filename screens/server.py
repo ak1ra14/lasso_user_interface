@@ -25,7 +25,7 @@ class ServerScreen(SafeScreen):
         self.main_layout = FloatLayout(size_hint=(1, 1))
         self.main_layout.add_widget(self.header)
 
-        self.region_server = Label(text=update_text_language("region_server"), font_size=40, size_hint_y=None, height=40, pos_hint={'center_x': 0.152, 'center_y': 0.7}, font_name='fonts/MPLUS1p-Bold.ttf')
+        self.region_server = Label(text=update_text_language("region_server"), font_size=35, size_hint_y=None, height=40, pos_hint={'center_x': 0.157, 'center_y': 0.7}, font_name='fonts/MPLUS1p-Bold.ttf')
 
         self.buttons['region_address'] = EditSetting( status = self.config.get('region_address'), screen_name = 'region server', pos_hint={'center_x': 0.20, 'center_y': 0.55})
         self.main_layout.add_widget(self.region_server)
@@ -40,7 +40,7 @@ class ServerScreen(SafeScreen):
         self.buttons['mqtt_topic'] = EditSetting( status = self.config.get('mqtt_topic'), screen_name = 'mqtt topic', pos_hint={'center_x': 0.50, 'center_y': 0.25})
 
 
-        self.alert_lights = Label(text=update_text_language("alert_lights"), font_size=40, size_hint_y=None, height=40, pos_hint={'center_x': 0.735, 'center_y': 0.7}, font_name='fonts/MPLUS1p-Bold.ttf',halign='left')
+        self.alert_lights = Label(text=update_text_language("alert_lights"), font_size=35, size_hint_y=None, height=40, pos_hint={'center_x': 0.740, 'center_y': 0.7}, font_name='fonts/MPLUS1p-Bold.ttf',halign='left')
         self.main_layout.add_widget(self.alert_lights)
         self.buttons['alert_lights_ip1'] = EditSetting( status = self.config.get('alert_lights_ip1'), screen_name = 'alert lights 1', pos_hint={'center_x': 0.80, 'center_y': 0.55})
         self.buttons['alert_lights_ip2'] = EditSetting( status = self.config.get('alert_lights_ip2'), screen_name = 'alert lights 2', pos_hint={'center_x': 0.80, 'center_y': 0.30})
@@ -70,8 +70,9 @@ class ServerScreen(SafeScreen):
         self.header.update_language()
         for key, button in self.buttons.items():
             button.label.text = update_text_language(key)
-            button.button.text = update_text_language('edit')
+            button.button.label.text = update_text_language('edit')
             button.label.bind(size=lambda inst, val: setattr(inst, 'text_size', (inst.width, None)))
+            button.button.bind(text=lambda inst, val: setattr(inst, 'text', update_text_language('edit')))
         self.region_server.text = update_text_language("region_server")
         self.mqtt.text = update_text_language('mqtt')
         self.mqtt_broker_ip.text = update_text_language('mqtt_broker_ip')
