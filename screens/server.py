@@ -25,10 +25,10 @@ class ServerScreen(SafeScreen):
         self.main_layout = FloatLayout(size_hint=(1, 1))
         self.main_layout.add_widget(self.header)
 
-        self.region_server = Label(text=update_text_language("region_server"), font_size=35, size_hint=(None, None), height=40,pos=(50, 450),
-                                    font_name='fonts/MPLUS1p-Bold.ttf', halign='left')
+        self.region_server = Label(text=update_text_language("region_server"), font_size=35, height=40,pos_hint={'center_x': 0.13 if App.get_running_app().language == 'en' else 0.17, 'center_y': 0.68},font_name='fonts/MPLUS1p-Bold.ttf', halign='left')
 
-        self.buttons['region_address'] = EditSetting( status = self.config.get('region_address'), screen_name = 'region server', size_hint=(None, None), pos=(300, 400))
+        self.buttons['region_address'] = EditSetting( status = self.config.get('region_address'), screen_name = 'region server', pos_hint={'center_x': 0.20, 'center_y': 0.55},
+                                                     )
         self.main_layout.add_widget(self.region_server)
         self.mqtt = Label(text=update_text_language('mqtt'), font_size=40, size_hint_y=None, height=40, pos_hint={'center_x': 0.446, 'center_y': 0.7}, font_name='fonts/MPLUS1p-Bold.ttf'
                             , halign='left')
