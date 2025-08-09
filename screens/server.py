@@ -28,7 +28,7 @@ class ServerScreen(SafeScreen):
         #self.region_server = Label(text=update_text_language("region_server"), font_size=35, height=40,pos_hint={'center_x': 0.13 if App.get_running_app().language == 'en' else 0.17, 'center_y': 0.68},font_name='fonts/MPLUS1p-Bold.ttf', halign='left')
         self.region_server = Label(text=update_text_language("region_server"), font_size=35, height=40,
                                    size_hint=(None, None), size=(300, 40),
-                                    pos=(6, 380) if App.get_running_app().language == 'en' else (33, 380),  # Absolute positioning
+                                    pos=(5, 385) if App.get_running_app().language == 'en' else (30, 385),  # Absolute positioning
                                    font_name='fonts/MPLUS1p-Bold.ttf', halign='left')
 
         self.buttons['region_address'] = EditSetting( status = self.config.get('region_address'), screen_name = 'region server', pos_hint={'center_x': 0.20, 'center_y': 0.55},
@@ -46,7 +46,10 @@ class ServerScreen(SafeScreen):
         self.buttons['mqtt_topic'] = EditSetting( status = self.config.get('mqtt_topic'), screen_name = 'mqtt topic', pos_hint={'center_x': 0.50, 'center_y': 0.25})
 
 
-        self.alert_lights = Label(text=update_text_language("alert_lights"), font_size=35, size_hint_y=None, height=40, pos_hint={'center_x': 0.739 if App.get_running_app().language == 'en' else 0.745, 'center_y': 0.7}, font_name='fonts/MPLUS1p-Bold.ttf',halign='left')
+        self.alert_lights = Label(text=update_text_language("alert_lights"), font_size=35, size_hint_y=None, height=40,
+                                   size_hint=(None, None), size=(300, 40),
+                                   pos=(700, 385) if App.get_running_app().language == 'en' else (725, 385),  # Absolute positioning
+                                   font_name='fonts/MPLUS1p-Bold.ttf', halign='left')
         self.main_layout.add_widget(self.alert_lights)
         self.buttons['alert_lights_ip1'] = EditSetting( status = self.config.get('alert_lights_ip1'), screen_name = 'alert lights 1', pos_hint={'center_x': 0.80, 'center_y': 0.55})
         self.buttons['alert_lights_ip2'] = EditSetting( status = self.config.get('alert_lights_ip2'), screen_name = 'alert lights 2', pos_hint={'center_x': 0.80, 'center_y': 0.30})
