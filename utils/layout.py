@@ -17,11 +17,11 @@ class HeaderBar(BoxLayout):
         self.title = title
         self.title_label = (Label(
             text=update_text_language(self.title),
-            font_size=70,
+            font_size=60,
             font_name='fonts/MPLUS1p-Bold.ttf',
             halign='left',
             valign='middle',
-            size_hint_x = 0.7,
+            size_hint_x = 1,
      ))
         self.title_label.bind(size=lambda inst, val: setattr(inst, 'text_size', val))
         self.add_widget(self.title_label)
