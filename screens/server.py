@@ -48,7 +48,7 @@ class ServerScreen(SafeScreen):
 
         self.alert_lights = Label(text=update_text_language("alert_lights"), font_size=35, size_hint_y=None, height=40,
                                    size_hint=(None, None), size=(300, 40),
-                                   pos=(700, 385) if App.get_running_app().language == 'en' else (725, 385),  # Absolute positioning
+                                   pos=(600, 385) if App.get_running_app().language == 'en' else (625, 385),  # Absolute positioning
                                    font_name='fonts/MPLUS1p-Bold.ttf', halign='left')
         self.main_layout.add_widget(self.alert_lights)
         self.buttons['alert_lights_ip1'] = EditSetting( status = self.config.get('alert_lights_ip1'), screen_name = 'alert lights 1', pos_hint={'center_x': 0.80, 'center_y': 0.55})
