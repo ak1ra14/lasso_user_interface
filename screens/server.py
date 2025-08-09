@@ -22,11 +22,10 @@ class ServerScreen(SafeScreen):
 
     def build_ui(self):
         self.header = HeaderBar(title="servers", icon_path="images/home.png", button_text="home", button_screen="menu2")
-    
         self.main_layout = FloatLayout(size_hint=(1, 1))
         self.main_layout.add_widget(self.header)
 
-        self.region_server = Label(text=update_text_language("region_server"), font_size=35, size_hint_y=None, height=40,pos=(50, 450),
+        self.region_server = Label(text=update_text_language("region_server"), font_size=35, size_hint=(None, None), height=40,pos=(50, 450),
                                     font_name='fonts/MPLUS1p-Bold.ttf', halign='left')
 
         self.buttons['region_address'] = EditSetting( status = self.config.get('region_address'), screen_name = 'region server', pos_hint={'center_x': 0.20, 'center_y': 0.55},
