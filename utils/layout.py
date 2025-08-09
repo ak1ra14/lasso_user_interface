@@ -17,7 +17,7 @@ class HeaderBar(BoxLayout):
         self.title = title
         self.title_label = (Label(
             text=update_text_language(self.title),
-            font_size=60,
+            font_size=70,
             font_name='fonts/MPLUS1p-Bold.ttf',
             halign='left',
             valign='middle',
