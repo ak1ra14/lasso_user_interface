@@ -34,10 +34,15 @@ class ServerScreen(SafeScreen):
         self.buttons['region_address'] = EditSetting( status = self.config.get('region_address'), screen_name = 'region server', pos_hint={'center_x': 0.20, 'center_y': 0.55},
                                                      )
         self.main_layout.add_widget(self.region_server)
-        self.mqtt = Label(text=update_text_language('mqtt'), font_size=40, size_hint_y=None, height=40, pos_hint={'center_x': 0.446, 'center_y': 0.7}, font_name='fonts/MPLUS1p-Bold.ttf'
-                            , halign='left')
+        self.mqtt = Label(text=update_text_language('mqtt'), font_size=40, size_hint_y=None, height=40, 
+                          size_hint=(None, None), size=(300, 40),
+                            pos=(200, 385) , # Absolute positioning
+                          font_name='fonts/MPLUS1p-Bold.ttf' , halign='left')
         self.main_layout.add_widget(self.mqtt)
-        self.mqtt_broker_ip = Label(text=update_text_language('mqtt_broker_ip'), font_size=25, size_hint_y=None, height=40, pos_hint={'center_x': 0.48, 'center_y': 0.62}, font_name='fonts/MPLUS1p-Bold.ttf', halign='left')
+        self.mqtt_broker_ip = Label(text=update_text_language('mqtt_broker_ip'), font_size=25, size_hint_y=None, height=40,
+                                     size_hint=(None, None), size=(300, 40),
+                                     pos=(200, 350) if App.get_running_app().language == 'en' else (220, 350),  # Absolute positioning
+                                     font_name='fonts/MPLUS1p-Bold.ttf', halign='left')
         self.main_layout.add_widget(self.mqtt_broker_ip)
         self.mqtt_topic = Label(text=update_text_language('mqtt_topic'), font_size=25, size_hint_y=None, height=40, 
                                 size_hint=(None, None), size=(300, 40),
@@ -51,7 +56,7 @@ class ServerScreen(SafeScreen):
 
         self.alert_lights = Label(text=update_text_language("alert_lights"), font_size=35, size_hint_y=None, height=40,
                                    size_hint=(None, None), size=(300, 40),
-                                   pos=(605, 385) if App.get_running_app().language == 'en' else (625, 385),  # Absolute positioning
+                                   pos=(605, 385) if App.get_running_app().language == 'en' else (623, 385),  # Absolute positioning
                                    font_name='fonts/MPLUS1p-Bold.ttf', halign='left')
         self.main_layout.add_widget(self.alert_lights)
         self.buttons['alert_lights_ip1'] = EditSetting( status = self.config.get('alert_lights_ip1'), screen_name = 'alert lights 1', pos_hint={'center_x': 0.80, 'center_y': 0.55})
