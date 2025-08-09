@@ -41,7 +41,7 @@ class ServerScreen(SafeScreen):
         self.main_layout.add_widget(self.mqtt_broker_ip)
         self.mqtt_topic = Label(text=update_text_language('mqtt_topic'), font_size=25, size_hint_y=None, height=40, 
                                 size_hint=(None, None), size=(300, 40),
-                                pos=(350, 385) if App.get_running_app().language == 'en' else (375, 385),  # Absolute positioning
+                                pos=(340, 185) if App.get_running_app().language == 'en' else (360, 185),  # Absolute positioning
                                 font_name='fonts/MPLUS1p-Bold.ttf',halign='left')
         self.main_layout.add_widget(self.mqtt_topic)
 
