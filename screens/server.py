@@ -84,7 +84,6 @@ class ServerScreen(SafeScreen):
         self.mqtt_broker_ip.text = update_text_language('mqtt_broker_ip')
         self.mqtt_topic.text = update_text_language('mqtt_topic')
         self.alert_lights.text = update_text_language("alert_lights")
-        self.buttons['region_address'].pos_hint = {'center_x': 0.13 if App.get_running_app().language == 'en' else 0.17, 'center_y': 0.68}
 
 class EditSetting(FloatLayout):
     def __init__(self, status, screen_name,**kwargs):
