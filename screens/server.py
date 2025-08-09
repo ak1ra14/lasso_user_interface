@@ -28,7 +28,7 @@ class ServerScreen(SafeScreen):
         #self.region_server = Label(text=update_text_language("region_server"), font_size=35, height=40,pos_hint={'center_x': 0.13 if App.get_running_app().language == 'en' else 0.17, 'center_y': 0.68},font_name='fonts/MPLUS1p-Bold.ttf', halign='left')
         self.region_server = Label(text=update_text_language("region_server"), font_size=35, height=40,
                                    size_hint=(None, None), size=(300, 40),
-                                    pos=(30, 400) if App.get_running_app().language == 'en' else (35, 450),  # Absolute positioning
+                                    pos=(30, 400) if App.get_running_app().language == 'en' else (35, 400),  # Absolute positioning
                                    font_name='fonts/MPLUS1p-Bold.ttf', halign='left')
 
         self.buttons['region_address'] = EditSetting( status = self.config.get('region_address'), screen_name = 'region server', pos_hint={'center_x': 0.20, 'center_y': 0.55},
@@ -84,8 +84,8 @@ class ServerScreen(SafeScreen):
         self.mqtt_broker_ip.text = update_text_language('mqtt_broker_ip')
         self.mqtt_topic.text = update_text_language('mqtt_topic')
         self.alert_lights.text = update_text_language("alert_lights")
-        self.buttons['region_address'].pos = (30, 400) if App.get_running_app().language == 'en' else (35, 450)
-
+        self.buttons['region_address'].pos = (30, 400) if App.get_running_app().language == 'en' else (35, 400)
+        self.buttons['region_address'].bind(pos=lambda inst, val: setattr(inst.label, 'text_size', (inst.label.width, None)))
 class EditSetting(FloatLayout):
     def __init__(self, status, screen_name,**kwargs):
         super().__init__(**kwargs)
