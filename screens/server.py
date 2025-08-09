@@ -73,19 +73,20 @@ class ServerScreen(SafeScreen):
             button.label.text = button.status
 
     def update_language(self):
-        self.header.update_language()
-        for key, button in self.buttons.items():
-            button.label.text = update_text_language(key)
-            button.button.label.text = update_text_language('edit')
-            button.label.bind(size=lambda inst, val: setattr(inst, 'text_size', (inst.width, None)))
-            button.button.bind(text=lambda inst, val: setattr(inst, 'text', update_text_language('edit')))
-        self.region_server.text = update_text_language("region_server")
-        self.mqtt.text = update_text_language('mqtt')
-        self.mqtt_broker_ip.text = update_text_language('mqtt_broker_ip')
-        self.mqtt_topic.text = update_text_language('mqtt_topic')
-        self.alert_lights.text = update_text_language("alert_lights")
-        self.buttons['region_address'].pos = (25, 400) if App.get_running_app().language == 'en' else (35, 400)
-        self.buttons['region_address'].bind(pos=lambda inst, val: setattr(inst.label, 'text_size', (inst.label.width, None)))
+        self.clear_widgets()
+        self.build_ui()
+        # self.header.update_language()
+        # for key, button in self.buttons.items():
+        #     button.label.text = update_text_language(key)
+        #     button.button.label.text = update_text_language('edit')
+        #     button.label.bind(size=lambda inst, val: setattr(inst, 'text_size', (inst.width, None)))
+        #     button.button.bind(text=lambda inst, val: setattr(inst, 'text', update_text_language('edit')))
+        # self.region_server.text = update_text_language("region_server")
+        # self.mqtt.text = update_text_language('mqtt')
+        # self.mqtt_broker_ip.text = update_text_language('mqtt_broker_ip')
+        # self.mqtt_topic.text = update_text_language('mqtt_topic')
+        # self.alert_lights.text = update_text_language("alert_lights")
+
 class EditSetting(FloatLayout):
     def __init__(self, status, screen_name,**kwargs):
         super().__init__(**kwargs)
