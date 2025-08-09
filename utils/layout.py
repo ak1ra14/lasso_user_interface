@@ -21,8 +21,8 @@ class HeaderBar(BoxLayout):
             font_name='fonts/MPLUS1p-Bold.ttf',
             halign='left',
             valign='middle',
-            width = 800
-        ))
+            size_hint_x = 0.7,
+     ))
         self.title_label.bind(size=lambda inst, val: setattr(inst, 'text_size', val))
         self.add_widget(self.title_label)
         self.add_widget(Widget(size_hint_x=1))  # Spacer
