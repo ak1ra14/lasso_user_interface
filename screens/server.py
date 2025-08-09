@@ -26,7 +26,7 @@ class ServerScreen(SafeScreen):
         self.main_layout = FloatLayout(size_hint=(1, 1))
         self.main_layout.add_widget(self.header)
 
-        self.region_server = Label(text=update_text_language("region_server"), font_size=35, size_hint_y=None, height=40, pos_hint={'center_x': 0.16 if App.get_running_app().language == 'en' else 0.17, 'center_y': 0.68},
+        self.region_server = Label(text=update_text_language("region_server"), font_size=35, size_hint_y=None, height=40, pos_hint={'center_x': 0.13 if App.get_running_app().language == 'en' else 0.17, 'center_y': 0.68},
                                     font_name='fonts/MPLUS1p-Bold.ttf', halign='left')
 
         self.buttons['region_address'] = EditSetting( status = self.config.get('region_address'), screen_name = 'region server', pos_hint={'center_x': 0.20, 'center_y': 0.55},
@@ -82,6 +82,7 @@ class ServerScreen(SafeScreen):
         self.mqtt_broker_ip.text = update_text_language('mqtt_broker_ip')
         self.mqtt_topic.text = update_text_language('mqtt_topic')
         self.alert_lights.text = update_text_language("alert_lights")
+        self.buttons['region_address'].pos_hint = {'center_x': 0.13 if App.get_running_app().language == 'en' else 0.17, 'center_y': 0.68}
 
 class EditSetting(FloatLayout):
     def __init__(self, status, screen_name,**kwargs):
