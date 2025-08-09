@@ -28,7 +28,7 @@ class ServerScreen(SafeScreen):
         #self.region_server = Label(text=update_text_language("region_server"), font_size=35, height=40,pos_hint={'center_x': 0.13 if App.get_running_app().language == 'en' else 0.17, 'center_y': 0.68},font_name='fonts/MPLUS1p-Bold.ttf', halign='left')
         self.region_server = Label(text=update_text_language("region_server"), font_size=35, height=40,
                                    size_hint=(None, None), size=(300, 40),
-                                    pos=(10, 400) if App.get_running_app().language == 'en' else (35, 400),  # Absolute positioning
+                                    pos=(10, 250) if App.get_running_app().language == 'en' else (35, 400),  # Absolute positioning
                                    font_name='fonts/MPLUS1p-Bold.ttf', halign='left')
 
         self.buttons['region_address'] = EditSetting( status = self.config.get('region_address'), screen_name = 'region server', pos_hint={'center_x': 0.20, 'center_y': 0.55},
