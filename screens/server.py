@@ -26,13 +26,16 @@ class ServerScreen(SafeScreen):
         self.main_layout = FloatLayout(size_hint=(1, 1))
         self.main_layout.add_widget(self.header)
 
-        self.region_server = Label(text=update_text_language("region_server"), font_size=35, size_hint_y=None, height=40, pos_hint={'center_x': 0.16 if App.get_running_app().language == 'en' else 0.17, 'center_y': 0.68}, font_name='fonts/MPLUS1p-Bold.ttf')
+        self.region_server = Label(text=update_text_language("region_server"), font_size=35, size_hint_y=None, height=40, pos_hint={'center_x': 0.16 if App.get_running_app().language == 'en' else 0.17, 'center_y': 0.68},
+                                    font_name='fonts/MPLUS1p-Bold.ttf', halign='left')
 
-        self.buttons['region_address'] = EditSetting( status = self.config.get('region_address'), screen_name = 'region server', pos_hint={'center_x': 0.20, 'center_y': 0.55})
+        self.buttons['region_address'] = EditSetting( status = self.config.get('region_address'), screen_name = 'region server', pos_hint={'center_x': 0.20, 'center_y': 0.55},
+                                                     halign='left')
         self.main_layout.add_widget(self.region_server)
-        self.mqtt = Label(text=update_text_language('mqtt'), font_size=40, size_hint_y=None, height=40, pos_hint={'center_x': 0.446, 'center_y': 0.7}, font_name='fonts/MPLUS1p-Bold.ttf')
+        self.mqtt = Label(text=update_text_language('mqtt'), font_size=40, size_hint_y=None, height=40, pos_hint={'center_x': 0.446, 'center_y': 0.7}, font_name='fonts/MPLUS1p-Bold.ttf'
+                            , halign='left')
         self.main_layout.add_widget(self.mqtt)
-        self.mqtt_broker_ip = Label(text=update_text_language('mqtt_broker_ip'), font_size=25, size_hint_y=None, height=40, pos_hint={'center_x': 0.48, 'center_y': 0.62}, font_name='fonts/MPLUS1p-Bold.ttf')
+        self.mqtt_broker_ip = Label(text=update_text_language('mqtt_broker_ip'), font_size=25, size_hint_y=None, height=40, pos_hint={'center_x': 0.48, 'center_y': 0.62}, font_name='fonts/MPLUS1p-Bold.ttf', halign='left')
         self.main_layout.add_widget(self.mqtt_broker_ip)
         self.mqtt_topic = Label(text=update_text_language('mqtt_topic'), font_size=25, size_hint_y=None, height=40, pos_hint={'center_x': 0.457, 'center_y': 0.32}, font_name='fonts/MPLUS1p-Bold.ttf',halign='left')
         self.main_layout.add_widget(self.mqtt_topic)
