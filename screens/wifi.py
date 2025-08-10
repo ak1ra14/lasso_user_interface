@@ -71,14 +71,14 @@ class WifiLoadingScreen(SafeScreen):
         scroll.bind(pos=lambda instance, value: setattr(rect, 'pos', value))
         scroll.bind(size=lambda instance, value: setattr(rect, 'size', value))
 
-        self.scan_wifi = IconTextButton(
+        self.scan_wifi_button = IconTextButton(
             text=update_text_language("scan_wifi"),
             icon_path ='images/wifi.png',
             size = (120,120),
             pos_hint={'center_x': 0.25, 'center_y': 0.55},
             on_release=lambda x: self.pre_enter_loading()  # Re-scan Wi-Fi
         )
-        self.connect_wifi = IconTextButton(
+        self.connect_wifi_button = IconTextButton(
             text=update_text_language("connect_wifi"),
             icon_path ='images/connection.png',
             size = (120,120),
@@ -88,8 +88,8 @@ class WifiLoadingScreen(SafeScreen):
                 
         scroll.add_widget(list_box)
         self.add_widget(scroll)
-        self.add_widget(self.scan_wifi)
-        self.add_widget(self.connect_wifi)
+        self.add_widget(self.scan_wifi_button)
+        self.add_widget(self.connect_wifi_button)
 
     def select_wifi(self, btn):
         for b in self.wifi_list:
@@ -121,9 +121,9 @@ class WifiLoadingScreen(SafeScreen):
         """
         self.header.update_language()
         self.scanning.text = update_text_language('scanning_wifi')
-        self.scan_wifi.label.text = update_text_language("scan_wifi")
-        self.connect_wifi.label.text = update_text_language("connect_wifi")
-        
+        self.scan_wifi_button.label.text = update_text_language("scan_wifi")
+        self.connect_wifi_button.label.text = update_text_language("connect_wifi")
+
 def get_available_wifi():
     '''
     Get a list of available Wi-Fi networks based on the platform.
