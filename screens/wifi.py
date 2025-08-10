@@ -11,7 +11,7 @@ from kivy.uix.gridlayout import GridLayout
 from kivy.uix.scrollview import ScrollView
 from kivy.graphics import Color, Rectangle
 from kivy.uix.button import Button
-from utils.config_loader import load_config, save_config, update_current_page
+from utils.config_loader import load_config, save_config, update_current_page, update_text_language
 from utils.icons import IconTextButton
 from utils.keyboard import KeyboardScreen
 
@@ -23,7 +23,8 @@ class WifiLoadingScreen(SafeScreen):
         self.header = HeaderBar(title="Wi-Fi SSID", button_screen="menu2")
         self.loading_circle = LoadingCircle(pos_hint={'center_x': 0.5, 'center_y': 0.6}, size=120,dot_color=(0.5,0,0.5,1))
         self.add_widget(self.header)
-        self.scanning = Label(text="Scanning WiFi...", font_size=30, size_hint=(1, 0.2), pos_hint={'center_x': 0.5, 'center_y': 0.4})
+        self.scanning = Label(text=update_text_language('scanning_wifi'), font_size=30, size_hint=(1, 0.2), 
+                              pos_hint={'center_x': 0.5, 'center_y': 0.4}, font_family='fonts/MPLUS1p-Regular.ttf')
         self.add_widget(self.scanning)
         self.wifi_list = []
 
@@ -51,7 +52,7 @@ class WifiLoadingScreen(SafeScreen):
         list_box = GridLayout(cols=1, size=(465, 800), size_hint=(None,None), pos_hint=(None, None),)
         for wifi in wifi_list:
             button = SelectableButton(text=wifi, font_size=40,
-                                                font_family='fonts/Roboto-Bold.ttf', size_hint_y=None, 
+                                                font_family='fonts/MPLUS1p-Bold.ttf', size_hint_y=None, 
                                                 height=55, selection=self)
             list_box.add_widget(button)
             self.wifi_list.append(button)
@@ -70,15 +71,15 @@ class WifiLoadingScreen(SafeScreen):
         scroll.bind(pos=lambda instance, value: setattr(rect, 'pos', value))
         scroll.bind(size=lambda instance, value: setattr(rect, 'size', value))
 
-        scan_wifi = IconTextButton(
-            text="Scan Wi-Fi",
+        self.scan_wifi = IconTextButton(
+            text=update_text_language("scan_wifi"),
             icon_path ='images/wifi.png',
             size = (120,120),
             pos_hint={'center_x': 0.25, 'center_y': 0.55},
             on_release=lambda x: self.pre_enter_loading()  # Re-scan Wi-Fi
         )
-        connect_wifi = IconTextButton(
-            text="Connect Wi-Fi",
+        self.connect_wifi = IconTextButton(
+            text=update_text_language("connect_wifi"),
             icon_path ='images/connection.png',
             size = (120,120),
             pos_hint={'center_x': 0.25, 'center_y': 0.25},
@@ -87,8 +88,8 @@ class WifiLoadingScreen(SafeScreen):
                 
         scroll.add_widget(list_box)
         self.add_widget(scroll)
-        self.add_widget(scan_wifi)
-        self.add_widget(connect_wifi)
+        self.add_widget(self.scan_wifi)
+        self.add_widget(self.connect_wifi)
 
     def select_wifi(self, btn):
         for b in self.wifi_list:
@@ -113,6 +114,15 @@ class WifiLoadingScreen(SafeScreen):
         App.get_running_app().sm.current = 'wifi password'
         wifi_password_screen = App.get_running_app().sm.get_screen('wifi password')
         wifi_password_screen.wifi_name = self.selected_wifi
+
+    def update_language(self):
+        """
+        Update the language of the widgets in this screen.
+        """
+        self.header.update_language()
+        self.scanning.text = update_text_language('scanning_wifi')
+        self.scan_wifi.label.text = update_text_language("scan_wifi")
+        self.connect_wifi.label.text = update_text_language("connect_wifi")
         
 def get_available_wifi():
     '''
@@ -153,7 +163,7 @@ def get_available_wifi():
 
 
 class WifiPasswordScreen(KeyboardScreen):
-    def __init__(self, title = "Wi-Fi Password", wifi_name = None, **kwargs):
+    def __init__(self, title = 'wifi_password', wifi_name = None, **kwargs):
         super().__init__(**kwargs, title=title)
         self.wifi_name = wifi_name
         self.wifi_scan_button = IconTextButton(
@@ -210,18 +220,28 @@ class WifiPasswordScreen(KeyboardScreen):
     def on_pre_enter(self):
         update_current_page('wifi password')
 
+    def update_language(self):
+        return super().update_language()
+
 class WifiConnectingScreen(Screen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.scanning = LoadingCircle(pos_hint={'center_x': 0.5, 'center_y': 0.6}, size=120, dot_color=(0.5, 0, 0.5, 1))
-        self.add_widget(Label(
-            text="Connecting to Wi-Fi...",
+        self.label = Label(
+            text= update_text_language('connecting'),
             font_size=40,
             pos_hint={'center_x': 0.5, 'center_y': 0.4},
             size_hint=(None, None),
             size=(400, 100)
-        ))
+        )
+        self.add_widget(self.label)
         self.add_widget(self.scanning)
+
+    def update_language(self):
+        """
+        Update the language of the widgets in this screen.
+        """
+        self.label.text = update_text_language('connecting')
 
 class WifiConnectedScreen(SafeScreen):
     def __init__(self, **kwargs):
@@ -234,14 +254,15 @@ class WifiConnectedScreen(SafeScreen):
             pos_hint={'center_x': 0.5, 'center_y': 0.6}
         ))
 
-        self.add_widget(Label(
-            text="Successfully connected to ",
+        self.connection_successful_label = Label(
+            text=update_text_language('connection_successful'),
             font_size=40,
             pos_hint={'center_x': 0.5, 'center_y': 0.43},
             size_hint=(None, None),
             size=(400, 100),
             font_family='fonts/MPLUS1p-Regular.ttf'
-        ))
+        )
+        self.add_widget(self.connection_successful_label)
         self.label = Label(
             text='temporary',
             font_size=60,
@@ -258,6 +279,13 @@ class WifiConnectedScreen(SafeScreen):
         wifi_name = App.get_running_app().sm.get_screen('wifi password').wifi_name
         self.label.text = wifi_name if wifi_name else "Unknown Network"
 
+    def update_language(self):
+        """
+        Update the language of the widgets in this screen.
+        """
+        self.connection_successful_label.text = update_text_language('connection_successful')
+
+
 class WifiErrorScreen(SafeScreen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -268,14 +296,15 @@ class WifiErrorScreen(SafeScreen):
             size=(400, 400),
             pos_hint={'center_x': 0.5, 'center_y': 0.7}
         ))
-        self.add_widget(Label(
-            text="Failed to connect to",
+        self.connection_failed = Label(
+            text=update_text_language("connection_failed"),
             font_size=40,
             pos_hint={'center_x': 0.5, 'center_y': 0.5},
             size_hint=(None, None),
             size=(400, 100),
             font_family='fonts/MPLUS1p-Regular.ttf'
-        ))
+        )
+        self.add_widget(self.connection_failed)
         self.label = Label(
             text="temporary",
             font_size=60,
@@ -285,21 +314,29 @@ class WifiErrorScreen(SafeScreen):
             size=(400, 100),
             font_family='fonts/MPLUS1p-Regular.ttf'
         )
-        self.add_widget(IconTextButton(
-            text="Try again",
+        self.retry_button = IconTextButton(
+            text=update_text_language("try_again"),
             size=(300,80),
             font_size=30,
             pos_hint={'center_x': 0.5, 'center_y': 0.25},
             screen_name='wifi password',
             font_family='fonts/MPLUS1p-Regular.ttf'
-        ))  
+        )
 
         self.add_widget(self.label)
-    
+        self.add_widget(self.retry_button)
+
     def on_pre_enter(self):
         update_current_page('wifi error')
         wifi_name = App.get_running_app().sm.get_screen('wifi password').wifi_name
         self.label.text = wifi_name if wifi_name else "Unknown Network"
+
+    def update_language(self):
+        """
+        Update the language of the widgets in this screen.
+        """
+        self.retry_button.label.text = update_text_language("try_again")
+        self.connection_failed.text = update_text_language("connection_failed")
 
 def connect_wifi_linux(ssid, password):
     try:
