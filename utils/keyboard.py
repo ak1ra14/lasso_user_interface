@@ -30,7 +30,7 @@ class KeyboardScreen(SafeScreen):
 
     def update_language(self):
         self.keyboard.label.text = update_text_language(self.title)
-        self.home_button.label.text = update_text_language("home")
+        self.keyboard.home_button.label.text = update_text_language("home")
         
 class QwertyKeyboard(FloatLayout):
     shift_activate = BooleanProperty(False)
