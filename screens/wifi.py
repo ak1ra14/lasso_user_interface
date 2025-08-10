@@ -121,8 +121,10 @@ class WifiLoadingScreen(SafeScreen):
         """
         self.header.update_language()
         self.scanning.text = update_text_language('scanning_wifi')
-        self.scan_wifi_button.label.text = update_text_language("scan_wifi")
-        self.connect_wifi_button.label.text = update_text_language("connect_wifi")
+        if hasattr(self, 'scan_wifi_button'):
+            self.scan_wifi_button.label.text = update_text_language("scan_wifi")
+        if hasattr(self, 'connect_wifi_button'):
+            self.connect_wifi_button.label.text = update_text_language("connect_wifi")
 
 def get_available_wifi():
     '''
