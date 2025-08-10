@@ -30,6 +30,7 @@ class KeyboardScreen(SafeScreen):
 
     def update_language(self):
         self.keyboard.label.text = update_text_language(self.title)
+        self.home_button.label.text = update_text_language("home")
         
 class QwertyKeyboard(FloatLayout):
     shift_activate = BooleanProperty(False)
@@ -124,15 +125,15 @@ class QwertyKeyboard(FloatLayout):
         self.add_widget(self.main_layout)
 
         overlay = FloatLayout(size_hint=(1, 1))
-        home_button = IconTextButton(
-            text='home',
+        self.home_button = IconTextButton(
+            text=update_text_language("home"),
             icon_path='images/home.png',
             size_hint=(None, None),
             size=(110, 110),
             pos_hint={'top': 0.95, 'right': 0.97},
             screen_name='menu',
         )
-        overlay.add_widget(home_button)
+        overlay.add_widget(self.home_button)
         self.add_widget(overlay)  # Add overlay last so it's on top
     
     def build_qwerty_keyboard(self):
