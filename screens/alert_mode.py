@@ -84,6 +84,12 @@ class AlertModeScreen(Screen):
         for i in range(len(self.buttons)):
             self.buttons[i].label.text = update_text_language(self.icon_images[i])
         self.toggle_button.update_language()
+
+    def update_language(self):
+        """
+        Update the language of the screen elements.
+        """
+        self.toggle_button.update_language()
         
 class AlertModeButton(IconTextButton):
     """
