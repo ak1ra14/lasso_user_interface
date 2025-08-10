@@ -52,7 +52,7 @@ class WifiLoadingScreen(SafeScreen):
         list_box = GridLayout(cols=1, size=(465, 800), size_hint=(None,None), pos_hint=(None, None),)
         for wifi in wifi_list:
             button = SelectableButton(text=wifi, font_size=40,
-                                                font_name='fonts/MPLUS1p-Bold.ttf', size_hint_y=None, 
+                                                font_name='fonts/MPLUS1p-Regular.ttf', size_hint_y=None, 
                                                 height=55, selection=self)
             list_box.add_widget(button)
             self.wifi_list.append(button)
@@ -234,6 +234,7 @@ class WifiConnectingScreen(Screen):
             font_size=40,
             pos_hint={'center_x': 0.5, 'center_y': 0.4},
             size_hint=(None, None),
+            font_name='fonts/MPLUS1p-Bold.ttf',
             size=(400, 100)
         )
         self.add_widget(self.label)
@@ -299,7 +300,7 @@ class WifiErrorScreen(SafeScreen):
             pos_hint={'center_x': 0.5, 'center_y': 0.7}
         ))
         self.connection_failed = Label(
-            text=update_text_language("connection_failed"),
+            text=update_text_language("connection_fail"),
             font_size=40,
             pos_hint={'center_x': 0.5, 'center_y': 0.5},
             size_hint=(None, None),
@@ -338,7 +339,7 @@ class WifiErrorScreen(SafeScreen):
         Update the language of the widgets in this screen.
         """
         self.retry_button.label.text = update_text_language("try_again")
-        self.connection_failed.text = update_text_language("connection_failed")
+        self.connection_failed.text = update_text_language("connection_fail")
 
 def connect_wifi_linux(ssid, password):
     try:
