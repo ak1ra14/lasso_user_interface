@@ -46,8 +46,8 @@ class AlertModeScreen(Screen):
         main_layout.add_widget(Widget())
         toggle_layout = FloatLayout(size_hint_y=None, height=60, pos_hint={'center_x': 0.5, 'center_y': 0.25})
         self.toggle_button = ToggleButton(
-            text_left=update_text_language("one_bed"),
-            text_right=update_text_language("two_bed"),
+            text_left="one_bed",
+            text_right="two_bed",
             text_size_l_r=(100, 130),
             size_hint_y=None,
             switch=CustomSwitchAM(parent=self),
@@ -80,15 +80,15 @@ class AlertModeScreen(Screen):
         self.toggle_button.switch.no_beds = self.no_beds
         self.toggle_button.switch.active = True if self.no_beds == 2 else False
         self.toggle_button.switch.update_graphics()
-        self.header.update_language()
-        for i in range(len(self.buttons)):
-            self.buttons[i].label.text = update_text_language(self.icon_images[i])
-        self.toggle_button.update_language()
+
 
     def update_language(self):
         """
         Update the language of the screen elements.
         """
+        self.header.update_language()
+        for i in range(len(self.buttons)):
+            self.buttons[i].label.text = update_text_language(self.icon_images[i])
         self.toggle_button.update_language()
         
 class AlertModeButton(IconTextButton):
