@@ -27,7 +27,7 @@ class TimezoneScreen(SafeScreen):
         ##main layout
         main = BoxLayout(orientation='horizontal', size_hint=(1,0.75),
                           padding=[50, 50, 50, 0], spacing=100, 
-                          pos_hint={'center_x': 0.3, 'center_y': 0.5})
+                          pos_hint={'center_x': 0.4, 'center_y': 0.5})
         main.bind(minimum_height=main.setter('height'))  # Ensure height is set correctly
         main.bind(minimum_width=main.setter('width'))  # Ensure width is set correctly
         main.add_widget(Widget(size_hint_y=1))  # Spacer
@@ -59,7 +59,7 @@ class TimezoneScreen(SafeScreen):
         self.save_button = TZSaveButton(text = update_text_language("save"), icon_path="images/save.png", 
                                      tz_screen=self,
                                      screen_name='menu2',
-                                     pos_hint={'center_x': 0.9, 'center_y': 0.4},
+                                     pos_hint={'center_x': 0.75, 'center_y': 0.4},
                                      size_hint=(None, None), size=(120, 120))
 
         main.add_widget(Widget(size_hint_y=1))  # Spacer
