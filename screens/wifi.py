@@ -24,7 +24,7 @@ class WifiLoadingScreen(SafeScreen):
         self.loading_circle = LoadingCircle(pos_hint={'center_x': 0.5, 'center_y': 0.6}, size=120,dot_color=(0.5,0,0.5,1))
         self.add_widget(self.header)
         self.scanning = Label(text=update_text_language('scanning_wifi'), font_size=30, size_hint=(1, 0.2), 
-                              pos_hint={'center_x': 0.5, 'center_y': 0.4}, font_family='fonts/MPLUS1p-Regular.ttf')
+                              pos_hint={'center_x': 0.5, 'center_y': 0.4}, font_name='fonts/MPLUS1p-Regular.ttf')
         self.add_widget(self.scanning)
         self.wifi_list = []
 
@@ -52,7 +52,7 @@ class WifiLoadingScreen(SafeScreen):
         list_box = GridLayout(cols=1, size=(465, 800), size_hint=(None,None), pos_hint=(None, None),)
         for wifi in wifi_list:
             button = SelectableButton(text=wifi, font_size=40,
-                                                font_family='fonts/MPLUS1p-Bold.ttf', size_hint_y=None, 
+                                                font_name='fonts/MPLUS1p-Bold.ttf', size_hint_y=None, 
                                                 height=55, selection=self)
             list_box.add_widget(button)
             self.wifi_list.append(button)
@@ -262,7 +262,7 @@ class WifiConnectedScreen(SafeScreen):
             pos_hint={'center_x': 0.5, 'center_y': 0.43},
             size_hint=(None, None),
             size=(400, 100),
-            font_family='fonts/MPLUS1p-Regular.ttf'
+            font_name='fonts/MPLUS1p-Regular.ttf'
         )
         self.add_widget(self.connection_successful_label)
         self.label = Label(
@@ -272,7 +272,7 @@ class WifiConnectedScreen(SafeScreen):
             pos_hint={'center_x': 0.5, 'center_y': 0.3},
             size_hint=(None, None),
             size=(400, 100),
-            font_family='fonts/MPLUS1p-Regular.ttf'
+            font_name='fonts/MPLUS1p-Regular.ttf'
         )
         self.add_widget(self.label)
 
@@ -304,7 +304,7 @@ class WifiErrorScreen(SafeScreen):
             pos_hint={'center_x': 0.5, 'center_y': 0.5},
             size_hint=(None, None),
             size=(400, 100),
-            font_family='fonts/MPLUS1p-Regular.ttf'
+            font_name='fonts/MPLUS1p-Regular.ttf'
         )
         self.add_widget(self.connection_failed)
         self.label = Label(
@@ -314,7 +314,7 @@ class WifiErrorScreen(SafeScreen):
             pos_hint={'center_x': 0.5, 'center_y': 0.4},
             size_hint=(None, None),
             size=(400, 100),
-            font_family='fonts/MPLUS1p-Regular.ttf'
+            font_name='fonts/MPLUS1p-Regular.ttf'
         )
         self.retry_button = IconTextButton(
             text=update_text_language("try_again"),
@@ -322,7 +322,7 @@ class WifiErrorScreen(SafeScreen):
             font_size=30,
             pos_hint={'center_x': 0.5, 'center_y': 0.25},
             screen_name='wifi password',
-            font_family='fonts/MPLUS1p-Regular.ttf'
+            font_name='fonts/MPLUS1p-Regular.ttf'
         )
 
         self.add_widget(self.label)
