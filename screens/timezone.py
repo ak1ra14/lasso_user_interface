@@ -27,7 +27,7 @@ class TimezoneScreen(SafeScreen):
         ##main layout
         main = BoxLayout(orientation='horizontal', size_hint=(1,0.75),
                           padding=[50, 50, 50, 0], spacing=100, 
-                          pos_hint={'center_x': 0.5, 'center_y': 0.5})
+                          pos_hint={'center_x': 0.3, 'center_y': 0.5})
         main.bind(minimum_height=main.setter('height'))  # Ensure height is set correctly
         main.bind(minimum_width=main.setter('width'))  # Ensure width is set correctly
         main.add_widget(Widget(size_hint_y=1))  # Spacer
