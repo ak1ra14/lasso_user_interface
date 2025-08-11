@@ -160,7 +160,11 @@ class IconTextButton(Button):
         if self.screen_name and not self.has_custom_handler():
             App.get_running_app().sm.current = self.screen_name
 
-
+    def _reset_color(self, dt):
+        """Reset the color of the button after a delay."""
+        with self.canvas:
+            self.color_instruction.rgba = (0.22, 0.45, 0.91, 1)
+            
     def has_custom_handler(self):
         # Check if more than one handler is bound to on_press (the default and a custom one)
         return len(self.get_property_observers('on_press')) > 1
