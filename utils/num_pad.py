@@ -34,7 +34,7 @@ class NumberPadScreen(SafeScreen):
                                   cursor_color=(1, 1, 1, 1),
                                   font_name='fonts/MPLUS1p-Regular.ttf',
                                   size_hint_y=None, height=55,
-                                  sixe_hint_x=None,
+                                  size_hint_x=None,
                                   width=200,
                                   halign='left')
         self.input.bind(focus=self.set_cursor_at_end)
