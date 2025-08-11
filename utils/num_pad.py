@@ -33,7 +33,7 @@ class NumberPadScreen(SafeScreen):
                                   foreground_color=(1, 1, 0, 1),  # Yellow
                                   cursor_color=(1, 1, 1, 1),
                                   font_name='fonts/MPLUS1p-Regular.ttf',
-                                  size_hint_y=None, height=60,
+                                  size_hint_y=None, height=65,
                                   size_hint_x=None,
                                   width=400,
                                   halign='left')
