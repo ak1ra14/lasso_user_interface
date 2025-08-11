@@ -41,6 +41,8 @@ class MyApp(App):
         self.config = load_config('config/settings.json','v3_json')
         self.language = self.config.get('language', 'en')
         set_system_volume(self.config.get('volume', 50))
+
+        
         self.sm.add_widget(MonitorScreen(name='monitor'))
         self.sm.add_widget(MenuScreen1(name='menu'))
         self.sm.add_widget(MenuScreen2(name='menu2'))
