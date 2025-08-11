@@ -25,7 +25,7 @@ class NumberPadScreen(SafeScreen):
         # IP Input Header
         self.label = Label(text=update_text_language(self.title), markup=True, font_size=45,
                            font_name='fonts/MPLUS1p-Regular.ttf',
-                           size_hint_y=None, height=50, halign='left')
+                           size_hint_y=None, height=55, halign='left')
         self.label.bind(size=self.label.setter('text_size'))
         left.add_widget(self.label)
         self.input = TextInput(text='192.168.0.171', multiline=False, font_size=40,
@@ -34,6 +34,7 @@ class NumberPadScreen(SafeScreen):
                                   cursor_color=(1, 1, 1, 1),
                                   font_name='fonts/MPLUS1p-Regular.ttf',
                                   size_hint_y=None, height=60,
+                                  width=400,
                                   halign='left')
         self.input.bind(focus=self.set_cursor_at_end)
         left.add_widget(self.input)
