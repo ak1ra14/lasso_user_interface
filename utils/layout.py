@@ -81,7 +81,7 @@ class FooterBar(BoxLayout):
         center_col.add_widget(self.details)
 
         # Right button + label
-        right_col = BoxLayout(orientation='vertical', size_hint_x=None, width=800, spacing=5)
+        right_col = BoxLayout(orientation='vertical', size_hint_x=None, width=80, spacing=5)
         right_btn = CircularImageButton(
             image_path="images/right_arrow.png",
             diameter=80,
