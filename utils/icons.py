@@ -153,9 +153,15 @@ class IconTextButton(Button):
 
     def on_press(self):
         App.get_running_app().play_sound()  # Play sound on button press
+        with self.canvas:
+            self.color_instruction.rgba = (0.6, 0.6, 0.6, 1)
         # Only navigate if screen_name is set and no custom handler is bound
         if self.screen_name and not self.has_custom_handler():
             App.get_running_app().sm.current = self.screen_name
+
+    def on_release(self):
+        with self.canvas:
+            self.color_instruction.rgba = (0.22, 0.45, 0.91, 1)
 
     def has_custom_handler(self):
         # Check if more than one handler is bound to on_press (the default and a custom one)
