@@ -28,14 +28,14 @@ class NumberPadScreen(SafeScreen):
                            size_hint_y=None, height=55, halign='left')
         self.label.bind(size=self.label.setter('text_size'))
         left.add_widget(self.label)
-        self.input = TextInput(text='192.168.0.171', multiline=False, font_size=35,
+        self.input = TextInput(text='192.168.0.171', multiline=False, font_size=5,
                                   background_color=(0, 0, 0, 0),
                                   foreground_color=(1, 1, 0, 1),  # Yellow
                                   cursor_color=(1, 1, 1, 1),
                                   font_name='fonts/MPLUS1p-Regular.ttf',
                                   size_hint_y=None, height=55,
                                   size_hint_x=None,
-                                  width=200,
+                                  width=400,
                                   halign='left')
         self.input.bind(focus=self.set_cursor_at_end)
         left.add_widget(self.input)
