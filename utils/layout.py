@@ -46,7 +46,7 @@ class FooterBar(BoxLayout):
         super().__init__(orientation='horizontal', size_hint_y=0.2, padding=0, spacing=0, **kwargs)
 
         # Left button + label
-        left_col = BoxLayout(orientation='vertical', size_hint_x=None, width=120, spacing=5)
+        left_col = BoxLayout(orientation='vertical', size_hint_x=None, width=80, spacing=5)
         left_btn = CircularImageButton(
             image_path="images/left_arrow.png",
             diameter=80,
@@ -81,7 +81,7 @@ class FooterBar(BoxLayout):
         center_col.add_widget(self.details)
 
         # Right button + label
-        right_col = BoxLayout(orientation='vertical', size_hint_x=None, width=120, spacing=5)
+        right_col = BoxLayout(orientation='vertical', size_hint_x=None, width=800, spacing=5)
         right_btn = CircularImageButton(
             image_path="images/right_arrow.png",
             diameter=80,
