@@ -81,8 +81,8 @@ class NumberPadScreen(SafeScreen):
         right.add_widget(Widget())  # Spacer
         self.add_widget(right)
         partition = SeparatorLine(
-            size_hint=(0.35, 0.05),
-            pos  = (207,440),
+            size_hint=(0.37, 0.05),
+            pos  = (207,428),
         )
         self.add_widget(partition)
         
