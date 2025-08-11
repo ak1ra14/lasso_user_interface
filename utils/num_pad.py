@@ -36,7 +36,6 @@ class NumberPadScreen(SafeScreen):
                                   size_hint_y=None, height=55,
                                   sixe_hint_x=None,
                                   width=200,
-                                  multiline=False,
                                   halign='left')
         self.input.bind(focus=self.set_cursor_at_end)
         left.add_widget(self.input)
