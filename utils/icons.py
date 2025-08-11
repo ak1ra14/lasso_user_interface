@@ -121,7 +121,7 @@ class IconTextButton(Button):
             font_size = self.size[1] * 0.1 + 5  # Adjust font size based on button height
             if self.label_text:
                 self.label = Label(
-                    text=self.label_text,
+                    text=self.size[1] * 0.1 - 5 if len(self.label_text) > 5 else self.size[1]*0.1 - 2,
                     font_size= font_size,
                     font_name='fonts/MPLUS1p-Regular.ttf',  # Path to your bold font file
                     color=(1, 1, 1, 1),

@@ -103,7 +103,7 @@ class MenuScreen1(SafeScreen):
 
 
         page_indicator = PageIndicator(num_pages=2, current_page=1, size_hint=(None, None), width=200, height=80)
-        page_indicator.pos_hint = {'center_x': 0.51, 'center_y': 0.23}
+        page_indicator.pos_hint = {'center_x': 0.5, 'center_y': 0.23}
         self.add_widget(page_indicator)
 
         time_bar = AnchorLayout(size_hint_y=0.05, )
@@ -291,7 +291,7 @@ class MenuScreen2(SafeScreen):
 
         # Page indicator
         page_indicator = PageIndicator(num_pages=2, current_page=2, size_hint=(None, None), width=200, height=80)
-        page_indicator.pos_hint = {'center_x': 0.51, 'center_y': 0.23}
+        page_indicator.pos_hint = {'center_x': 0.5, 'center_y': 0.23}
         self.add_widget(page_indicator)
         time_bar = AnchorLayout(size_hint_y=0.05)
         self.main_layout.add_widget(time_bar)
