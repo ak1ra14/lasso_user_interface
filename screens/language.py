@@ -6,7 +6,7 @@ from kivy.uix.anchorlayout import AnchorLayout
 from kivy.uix.image import Image
 from kivy.uix.button import Button
 from kivy.uix.widget import Widget
-from utils.config_loader import load_config, update_current_page, save_config
+from utils.config_loader import load_config, update_current_page, save_config, update_text_language
 from utils.layout import HeaderBar, SafeScreen
 from kivy.properties import BooleanProperty
 from utils.freeze_screen import freeze_ui
@@ -17,15 +17,15 @@ class LanguageScreen(SafeScreen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.buttons = []
-        self.header = HeaderBar(title="Language", icon_path="images/home.png", button_text="Home", button_screen="menu")
+        self.header = HeaderBar(title='language', icon_path="images/home.png", button_text="home", button_screen="menu")
         main_layout = BoxLayout(orientation='horizontal', spacing=80, size_hint_y=0.3, pos_hint={'center_x': 0.5, 'center_y': 0.5}, padding=[80,0,80,0])  # Only left and right padding
         main_layout.add_widget(Widget())
-        en_button = LanguageButton(icon_path="images/english.png", text="English", language='en', height=50)
-        main_layout.add_widget(en_button)
-        self.buttons.append(en_button)
-        jp_button = LanguageButton(icon_path="images/japanese.png", text="Japanese", language='jp', height=50)
-        main_layout.add_widget(jp_button)
-        self.buttons.append(jp_button)
+        self.en_button = LanguageButton(icon_path="images/english.png", text=update_text_language('english'), language='en', height=50)
+        main_layout.add_widget(self.en_button)
+        self.buttons.append(self.en_button)
+        self.jp_button = LanguageButton(icon_path="images/japanese.png", text=update_text_language('japanese'), language='jp', height=50)
+        main_layout.add_widget(self.jp_button)
+        self.buttons.append(self.jp_button)
         main_layout.add_widget(Widget())
         self.add_widget(self.header)
         self.add_widget(main_layout)
@@ -45,7 +45,12 @@ class LanguageScreen(SafeScreen):
         """
         # You can add any setup code here if needed
         update_current_page('language')
+    
+    def update_language(self):
         self.header.update_language()
+        self.en_button.label.text = update_text_language('english')
+        self.jp_button.label.text = update_text_language('japanese')
+
 
 class LanguageButton(IconTextButton):
     active = BooleanProperty(False)

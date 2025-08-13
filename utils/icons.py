@@ -91,7 +91,7 @@ class IconTextButton(Button):
         if self.config:
             self.label = Label(
                 text=self.label_text,
-                font_size=  self.size[1]*0.1 - 2,  # Adjust font size based on button height
+                font_size=  self.size[1] * 0.1 - 4 if len(self.label_text) > 5 and App.get_running_app().language == 'jp' else self.size[1]*0.1 - 2,  # Adjust font size based on button height.
                 font_name='fonts/MPLUS1p-Regular.ttf',  # Path to your bold font file
                 color=(1, 1, 1, 1),
                 size_hint=(0.8, 0.10),
@@ -118,14 +118,13 @@ class IconTextButton(Button):
             layout.add_widget(self.status)
 
         else:
-            font_size = self.size[1] * 0.1 + 5  # Adjust font size based on button height
             if self.label_text:
                 self.label = Label(
                     text=self.label_text,
                     font_size= self.size[1] * 0.1 if len(self.label_text) > 5 and App.get_running_app().language == 'jp' else self.size[1]*0.1 + 5,  # Adjust font size based on button height.
                     font_name='fonts/MPLUS1p-Regular.ttf',  # Path to your bold font file
                     color=(1, 1, 1, 1),
-                    size_hint=(0.7, 0.3),
+                    size_hint=(0.8, 0.3),
                     pos_hint={'center_x': 0.5, 'center_y': 0.25},
                     halign='center',
                     valign='middle'

@@ -20,7 +20,7 @@ class LocationScreen(SafeScreen):
         self.add_widget(self.header)
 
         if self.bed_no == 1:
-            self.location_icon1 = IconTextButton(
+            self.location_icon2 = IconTextButton(
                 text=update_text_language('location'),
                 config = self.config.get('location', " "),
                 font_size=18,
@@ -30,7 +30,7 @@ class LocationScreen(SafeScreen):
                 pos_hint={'center_x': 0.3, 'center_y': 0.5},
                 screen_name='device'
             )
-            self.add_widget(self.location_icon1)
+            self.add_widget(self.location_icon2)
             self.bed1_icon1 = IconTextButton(
                 text=update_text_language('bed_1'),
                 config = self.bed_config.get('nbeds', [1,[' ']])[1][0],
@@ -88,8 +88,8 @@ class LocationScreen(SafeScreen):
         update_current_page('location')
         self.config = load_config("config/settings.json", "v3_json")
         self.bed_config = load_config("config/settings.json", "bed_json")
-        self.build_ui()
         self.bed_no = self.bed_config.get("nbeds", [1, [' ']])[0]
+        self.build_ui()
 
     
 class Bed1Screen(KeyboardScreen):

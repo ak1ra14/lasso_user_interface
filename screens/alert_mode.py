@@ -21,19 +21,22 @@ class AlertModeScreen(Screen):
     """
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.modes = load_config('config/settings.json','fall_json').get('previous_mode', 'fall.json')
+        self.modes = load_config('config/settings.json','v3_json').get('previous_mode', 'fall.json')
         self.single_multiple = load_config(f"config/{self.modes}").get('mincount', 1)
         self.no_beds = load_config("config/settings.json",'bed_json').get('nbeds', [1, 1])[0] == 2
         self.header = HeaderBar(title="mode", icon_path="images/home.png", button_text="home", button_screen="menu")
         main_layout = BoxLayout(orientation='horizontal', padding=[50, 0, 50, 0], spacing=50,size_hint_y=0.5, pos_hint={'center_x': 0.5,'center_y':0.4})  # Only left and right padding
         main_layout.add_widget(Widget())  # Spacer on the left
         self.icon_images = ["bed_single", "bed_multiple","fall_single", "fall_multiple"]
+        self.icon_label = ["bed_mode", "bed_mode", "fall_mode", "fall_mode"]
+        self.icon_status = ["bed_single", "bed_multiple", "fall_single", "fall_multiple"]
         self.buttons = []
         for i in range(len(self.icon_images)):
             active_state = 99 if self.icon_images[i].split('_')[1] == "multiple" else 1
             icon = AlertModeButton(
                 icon_path=f"images/{self.icon_images[i]}.png",
-                text=update_text_language(self.icon_images[i]),
+                text=update_text_language(self.icon_label[i]),
+                config = update_text_language(self.icon_status[i]),
                 size_hint_y=None,
                 size=(170, 170),
                 pos_hint={'center_x': 0.5, 'center_y': 0.5},
@@ -88,7 +91,8 @@ class AlertModeScreen(Screen):
         """
         self.header.update_language()
         for i in range(len(self.buttons)):
-            self.buttons[i].label.text = update_text_language(self.icon_images[i])
+            self.buttons[i].label.text = update_text_language(self.icon_label[i])
+            self.buttons[i].status.text = update_text_language(self.icon_status[i])
         self.toggle_button.update_language()
         
 class AlertModeButton(IconTextButton):

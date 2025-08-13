@@ -21,10 +21,12 @@
   "bed_2": "Bed 2",
   "one_bed": "One Bed",
   "two_bed": "Two Beds",
-  "bed_single": "Bed Single",
-  "bed_multiple": "Bed Multiple",
-  "fall_single": "Fall Single",
-  "fall_multiple": "Fall Multiple",
+  "bed_mode": "Bed Mode",
+  "fall_mode": "Fall Mode",
+  "bed_single": "Single",
+  "bed_multiple": "Multiple",
+  "fall_single": "Single",
+  "fall_multiple": "Multiple",
   "auto_acknowledgement_alert": "Auto-acknowledgement alert",
   "alert_with_video": "Alert with video",
   "sit_up": "Sit up",
@@ -58,5 +60,5 @@
   "shutdown": "Shutdown",
   "reboot": "Reboot",
   "english": "English",
-  "japanese": "日本語"
+  "japanese": "Japanese"
 }
