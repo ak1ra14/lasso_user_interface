@@ -180,6 +180,7 @@ class WifiPasswordScreen(KeyboardScreen):
             icon_path ='images/visibility_on.png',
             size = (60,60),
             pos_hint={'center_x': 0.55, 'center_y': 0.8},
+            on_press=self.freeze_ui,  # Freeze UI on press
             on_release=self.password_visibility
         )
         self.add_widget(self.wifi_scan_button)
@@ -193,11 +194,16 @@ class WifiPasswordScreen(KeyboardScreen):
         wifi_loading_screen = App.get_running_app().sm.get_screen('wi-fi')
         wifi_loading_screen.selected_wifi = self.wifi_name
 
+    def freeze_ui(self):
+        """
+        Freeze the UI for a short duration to prevent rapid interactions.
+        """
+        freeze_ui(0.3)
+
     def password_visibility(self, instance):
         """
         Toggle the visibility of the password input.
         """
-        self.visibility_button.disabled = True
         self.keyboard.visibility = not self.keyboard.visibility
         if not self.keyboard.visibility:
             print("Hiding password")
@@ -209,7 +215,6 @@ class WifiPasswordScreen(KeyboardScreen):
             self.visibility_button.icon_path = 'images/visibility_on.png'
             self.visibility_button.image.source = self.visibility_button.icon_path  
             self.keyboard.text_input.text = self.keyboard.actual_text_input
-        Clock.schedule_once(lambda dt: setattr(self.visibility_button, 'disabled', False), 0.3)
 
     def press_enter(self, instance):
         password = self.keyboard.text_input.text.strip()
