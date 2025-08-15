@@ -14,6 +14,7 @@ from kivy.uix.button import Button
 from utils.config_loader import load_config, save_config, update_current_page, update_text_language
 from utils.icons import IconTextButton
 from utils.keyboard import KeyboardScreen
+from utils.freeze_screen import freeze_ui
 
 class WifiLoadingScreen(SafeScreen):
     def __init__(self, **kwargs):
@@ -179,7 +180,7 @@ class WifiPasswordScreen(KeyboardScreen):
             icon_path ='images/visibility_on.png',
             size = (60,60),
             pos_hint={'center_x': 0.55, 'center_y': 0.8},
-            on_press=self.on_press,
+            on_press = freeze_ui(0.3),  # Freeze the UI for 0.3 seconds
             on_release=self.password_visibility
         )
         self.add_widget(self.wifi_scan_button)
