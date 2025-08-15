@@ -176,7 +176,6 @@ class WifiPasswordScreen(KeyboardScreen):
             on_release=self.go_to_wifi_scan
         )
         self.visibility_button = IconTextButton(
-            text="Visibility",
             icon_path ='images/visibility.png',
             size = (70,70),
             pos_hint={'center_x': 0.55, 'center_y': 0.8},
@@ -192,6 +191,15 @@ class WifiPasswordScreen(KeyboardScreen):
         App.get_running_app().sm.current = 'wi-fi'
         wifi_loading_screen = App.get_running_app().sm.get_screen('wi-fi')
         wifi_loading_screen.selected_wifi = self.wifi_name
+
+    def toggle_visibility(self, instance):
+        """
+        Toggle the visibility of the password input.
+        """
+        if self.keyboard.text_input.password:
+            self.visibility_button.icon_path = 'images/visibility_off.png'
+        else:
+            self.visibility_button.icon_path = 'images/visibility_on.png'
 
     def press_enter(self, instance):
         password = self.keyboard.text_input.text.strip()
