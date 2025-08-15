@@ -179,6 +179,7 @@ class WifiPasswordScreen(KeyboardScreen):
             icon_path ='images/visibility_on.png',
             size = (60,60),
             pos_hint={'center_x': 0.55, 'center_y': 0.8},
+            on_press=self.on_press,
             on_release=self.password_visibility
         )
         self.add_widget(self.wifi_scan_button)
