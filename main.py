@@ -123,13 +123,17 @@ class MyApp(App):
         if self.time_left <= 0:
             self._timer_event.cancel()
             if self.sm.current != 'dark':
-                self.sm.current = 'monitor'  # Switch to dark screen when time runs out
+                self.sm.current = 'menu'  # Switch to menu screen when time runs out
+                # self.reset_screensaver_timer()  # Reset screensaver timer
             else:
                 return  # Switch to monitor screen
 
     def reset_timer(self, *args):
         self.time_left = self.time_limit
         self.time_bar.value = self.time_limit
+        if self._timer_event:
+            self._timer_event.cancel()
+        self._timer_event = Clock.schedule_interval(self._update_time_bar, 1)
 
     def on_screen_change(self, *args):
         if self.sm.current == 'dark' or self.sm.current == 'monitor':

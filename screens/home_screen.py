@@ -113,25 +113,24 @@ class MenuScreen1(SafeScreen):
         self.bg.size = self.size
         self.bg.pos = self.pos
 
-
     def check_mode(self):
         """
         Check the current mode and return a string representation.
         """
         mode =  self.config.get("previous_mode", "fall.json")
         mode_config = load_config(f'config/{mode}')
-        single_multiple = "Multiple" if mode_config.get("mincount", 99) == 99 else "Single"
+        single_multiple = "multiple" if mode_config.get("mincount", 99) == 99 else "single"
         if mode == "fall.json":
-            return f"Fall - {single_multiple}"
+            return f"{update_text_language('fall_mode')} - {update_text_language(f'fall_{single_multiple}')}"
         elif mode == "bed.json":
-            return f"Bed Exit - {single_multiple}"
+            return f"{update_text_language('bed_mode')} - {update_text_language(f'bed_{single_multiple}')}"
         else:
-            return f"Unknown Mode - {single_multiple}"
-        
+            return f"{update_text_language('unknown_mode')}"
+
     def check_mode_for_image(self, text):
-        if text.startswith("Fall"):
+        if text.startswith("Fall") or text.startswith("転倒"):
             return "fall_multiple" if "Multiple" in text else "fall_single"
-        elif text.startswith("Bed"):
+        elif text.startswith("Bed") or text.startswith("ベッド"):
             return "bed_multiple" if "Multiple" in text else "bed_single"
     
     

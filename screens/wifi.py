@@ -175,7 +175,15 @@ class WifiPasswordScreen(KeyboardScreen):
             pos_hint={'center_x': 0.79, 'center_y': 0.86},
             on_release=self.go_to_wifi_scan
         )
+        self.visibility_button = IconTextButton(
+            text="Visibility",
+            icon_path ='images/visibility.png',
+            size = (70,70),
+            pos_hint={'center_x': 0.55, 'center_y': 0.8},
+            on_release=self.toggle_visibility
+        )
         self.add_widget(self.wifi_scan_button)
+        self.add_widget(self.visibility_button)
 
     def go_to_wifi_scan(self, instance):
         """
