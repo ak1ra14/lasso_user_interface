@@ -199,7 +199,7 @@ class WifiPasswordScreen(KeyboardScreen):
         """
         self.visibility = not self.visibility
         self.visibility_button.icon_path = 'images/visibility_off.png' if not self.visibility else 'images/visibility_on.png'
-        if self.visibility:
+        if not self.visibility:
             self.keyboard.actual_text_input = self.keyboard.text_input
             self.keyboard.text_input = "*" * len(self.keyboard.actual_text_input)
         else:
