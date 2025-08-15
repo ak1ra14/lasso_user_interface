@@ -168,6 +168,7 @@ class WifiPasswordScreen(KeyboardScreen):
     def __init__(self, title = 'wifi_password', wifi_name = None, **kwargs):
         super().__init__(**kwargs, title=title)
         self.wifi_name = wifi_name
+        self.visibility = True
         self.wifi_scan_button = IconTextButton(
             text="Wi-Fi SSID",
             icon_path ='images/wifi.png',
@@ -176,10 +177,10 @@ class WifiPasswordScreen(KeyboardScreen):
             on_release=self.go_to_wifi_scan
         )
         self.visibility_button = IconTextButton(
-            icon_path ='images/visibility.png',
+            icon_path ='images/visibility_on.png',
             size = (70,70),
             pos_hint={'center_x': 0.55, 'center_y': 0.8},
-            on_release=self.toggle_visibility
+            on_release=self.password_visibility
         )
         self.add_widget(self.wifi_scan_button)
         self.add_widget(self.visibility_button)
@@ -192,14 +193,17 @@ class WifiPasswordScreen(KeyboardScreen):
         wifi_loading_screen = App.get_running_app().sm.get_screen('wi-fi')
         wifi_loading_screen.selected_wifi = self.wifi_name
 
-    def toggle_visibility(self, instance):
+    def password_visibility(self, instance):
         """
         Toggle the visibility of the password input.
         """
-        if self.keyboard.text_input.password:
-            self.visibility_button.icon_path = 'images/visibility_off.png'
+        self.visibility = not self.visibility
+        self.visibility_button.icon_path = 'images/visibility_off.png' if not self.visibility else 'images/visibility_on.png'
+        if self.visibility:
+            self.keyboard.actual_text_input = self.keyboard.text_input
+            self.keyboard.text_input = "*" * len(self.keyboard.actual_text_input)
         else:
-            self.visibility_button.icon_path = 'images/visibility_on.png'
+            self.keyboard.text_input = self.keyboard.actual_text_input
 
     def press_enter(self, instance):
         password = self.keyboard.text_input.text.strip()
