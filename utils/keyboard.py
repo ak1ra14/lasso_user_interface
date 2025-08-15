@@ -45,7 +45,9 @@ class QwertyKeyboard(FloatLayout):
         self.kanji_converter = mozcpy.Converter()  # Initialize the converter
         self.converting = False  # Flag to indicate if the text is being converted
         self.title = title
-
+        self.actual_text_input = ""
+        self.visibility = True  # Flag to indicate password visibility
+        
         ###layout for the keyboard screen
         self.main_layout = BoxLayout(
             orientation='vertical', 
@@ -253,23 +255,31 @@ class QwertyKeyboard(FloatLayout):
         self.text_input.bind(text=self.limit_text_length)  # Bind the text input to limit its length
         if hasattr(instance, 'is_long_press') and instance.is_long_press and instance.sub_key:
             # Insert subkey at cursor position
-            ti.text = ti.text[:cursor_pos] + instance.sub_key + ti.text[cursor_pos:]
+            self.actual_text_input = self.actual_text_input[:cursor_pos] + instance.sub_key + self.actual_text_input[cursor_pos:]
+            if self.visibility:
+                ti.text = ti.text[:cursor_pos] + instance.sub_key + ti.text[cursor_pos:]
+            else:
+                ti.text = ti.text[:cursor_pos] + '*' * len(instance.sub_key) + ti.text[cursor_pos:]
             ti.cursor = (cursor_pos + len(instance.sub_key), 0)
         elif instance.function == 'Space':
             if self.language_mode == 'japanese' and self.start_index < cursor_pos and not self.converting:
                 # Convert the text to Kanji using the converter
                 self.converting = True
                 self.converted_text = self.kanji_converter.convert(ti.text[self.start_index:cursor_pos],n_best=20)
-
             if self.converting and len(self.converted_text) > 0:
                 suggested_text = self.converted_text.pop() if self.converted_text else ti.text[self.start_index:cursor_pos]
                 ti.text = ti.text[:self.start_index] + suggested_text + ti.text[cursor_pos:]
                 ti.cursor = (ti.cursor_index() + len(suggested_text), 0)
             else:
-                ti.text = ti.text[:cursor_pos] + ' ' + ti.text[cursor_pos:]
+                self.actual_text_input = self.actual_text_input[:cursor_pos] + ' ' + self.actual_text_input[cursor_pos:]
+                if self.visibility:
+                    ti.text = ti.text[:cursor_pos] + ' ' + ti.text[cursor_pos:]
+                else:
+                    ti.text = ti.text[:cursor_pos] + '*' + ti.text[cursor_pos:]
                 ti.cursor = (cursor_pos + 1, 0)
         elif instance.function == 'Backspace':
             if cursor_pos > 0:
+                self.actual_text_input = self.actual_text_input[:cursor_pos-1] + self.actual_text_input[cursor_pos:]
                 ti.text = ti.text[:cursor_pos-1] + ti.text[cursor_pos:]
                 ti.cursor = (cursor_pos - 1, 0)
         elif instance.function == "Shift":
@@ -282,12 +292,18 @@ class QwertyKeyboard(FloatLayout):
         elif instance.function == "Enter":
             pass
         elif instance.function == "Daku-on":
-            self.text_input.text = self.text_input.text[:-1] + self.change_dakuon(self.text_input.text[-1]) # Add Daku-on character
+            self.actual_text_input = self.actual_text_input[:-1] + self.change_dakuon(self.actual_text_input[-1])  # Add Daku-on character
+            if self.visibility:
+                self.text_input.text = self.text_input.text[:-1] + self.change_dakuon(self.text_input.text[-1]) # Add Daku-on character
         else:
             if self.converting:
                 self.converting = False  # Reset the converting flag
                 self.start_index = cursor_pos  # Reset the start index
-            self.text_input.text = ti.text[:cursor_pos] + instance.text + ti.text[cursor_pos:]
+            self.actual_text_input = self.actual_text_input[:cursor_pos] + instance.text + self.actual_text_input[cursor_pos:]
+            if self.visibility:
+                self.text_input.text = self.text_input.text[:cursor_pos] + instance.text + self.text_input.text[cursor_pos:]
+            else:
+                self.text_input.text = self.text_input.text[:cursor_pos] + '*' * len(instance.text) + self.text_input.text[cursor_pos:]
             ti.cursor = (cursor_pos + len(instance.text), 0)
 
     def press_enter(self, instance):

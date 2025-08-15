@@ -168,7 +168,6 @@ class WifiPasswordScreen(KeyboardScreen):
     def __init__(self, title = 'wifi_password', wifi_name = None, **kwargs):
         super().__init__(**kwargs, title=title)
         self.wifi_name = wifi_name
-        self.visibility = True
         self.wifi_scan_button = IconTextButton(
             text="Wi-Fi SSID",
             icon_path ='images/wifi.png',
@@ -178,7 +177,7 @@ class WifiPasswordScreen(KeyboardScreen):
         )
         self.visibility_button = IconTextButton(
             icon_path ='images/visibility_on.png',
-            size = (70,70),
+            size = (60,60),
             pos_hint={'center_x': 0.55, 'center_y': 0.8},
             on_release=self.password_visibility
         )
@@ -197,16 +196,17 @@ class WifiPasswordScreen(KeyboardScreen):
         """
         Toggle the visibility of the password input.
         """
-        self.visibility = not self.visibility
-        if not self.visibility:
+        self.keyboard.visibility = not self.keyboard.visibility
+        if not self.keyboard.visibility:
             print("Hiding password")
             self.visibility_button.icon_path = 'images/visibility_off.png'
-            self.keyboard.actual_text_input = self.keyboard.text_input
+            self.visibility_button.image.source = self.visibility_button.icon_path  
             self.keyboard.text_input.text = "*" * len(self.keyboard.text_input.text)
-        else:
+        else:        
             print("Showing password")
             self.visibility_button.icon_path = 'images/visibility_on.png'
-            self.keyboard.text_input = self.keyboard.actual_text_input
+            self.visibility_button.image.source = self.visibility_button.icon_path  
+            self.keyboard.text_input.text = self.keyboard.actual_text_input
 
     def press_enter(self, instance):
         password = self.keyboard.text_input.text.strip()
@@ -244,7 +244,9 @@ class WifiPasswordScreen(KeyboardScreen):
 
     def on_pre_enter(self):
         update_current_page('wifi password')
-
+        self.keyboard.text_input.text = ""
+        self.keyboard.actual_text_input = ""
+ 
     def update_language(self):
         return super().update_language()
 
