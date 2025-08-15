@@ -197,7 +197,7 @@ class WifiPasswordScreen(KeyboardScreen):
         """
         Toggle the visibility of the password input.
         """
-        freeze_ui(0.3)  # Freeze the UI for 0.3 seconds
+        self.visibility_button.disabled = True
         self.keyboard.visibility = not self.keyboard.visibility
         if not self.keyboard.visibility:
             print("Hiding password")
@@ -209,6 +209,7 @@ class WifiPasswordScreen(KeyboardScreen):
             self.visibility_button.icon_path = 'images/visibility_on.png'
             self.visibility_button.image.source = self.visibility_button.icon_path  
             self.keyboard.text_input.text = self.keyboard.actual_text_input
+        Clock.schedule_once(lambda dt: setattr(self.visibility_button, 'disabled', False), 0.3)
 
     def press_enter(self, instance):
         password = self.keyboard.text_input.text.strip()
