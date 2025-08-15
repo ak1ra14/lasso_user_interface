@@ -198,11 +198,12 @@ class WifiPasswordScreen(KeyboardScreen):
         Toggle the visibility of the password input.
         """
         self.visibility = not self.visibility
-        self.visibility_button.icon_path = 'images/visibility_off.png' if not self.visibility else 'images/visibility_on.png'
         if not self.visibility:
+            self.visibility_button.icon_path = 'images/visibility_off.png'
             self.keyboard.actual_text_input = self.keyboard.text_input
             self.keyboard.text_input.text = "*" * len(self.keyboard.text_input.text)
         else:
+            self.visibility_button.icon_path = 'images/visibility_on.png'
             self.keyboard.text_input = self.keyboard.actual_text_input
 
     def press_enter(self, instance):
