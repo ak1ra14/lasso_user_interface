@@ -194,7 +194,7 @@ class WifiPasswordScreen(KeyboardScreen):
         wifi_loading_screen = App.get_running_app().sm.get_screen('wi-fi')
         wifi_loading_screen.selected_wifi = self.wifi_name
 
-    def freeze_ui(self):
+    def freeze_ui(self,instance):
         """
         Freeze the UI for a short duration to prevent rapid interactions.
         """
