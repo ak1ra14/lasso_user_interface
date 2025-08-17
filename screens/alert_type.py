@@ -180,7 +180,7 @@ class SaveButtonAT(IconTextButton):
         config_fall['alert_checking'] = alert_checking_fall
         save_config("config/settings.json", 'fall_json', data=config_fall)
 
-        App.get_running_app.show_saved_popup()  # Show a popup indicating the settings have been saved
+        App.get_running_app().show_saved_popup()  # Show a popup indicating the settings have been saved
         sound = SoundLoader.load('sound/tap.wav')
         if sound:
             sound.play()

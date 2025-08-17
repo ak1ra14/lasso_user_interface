@@ -178,7 +178,7 @@ class MyApp(App):
                       auto_dismiss=True)
         popup.open()
         # Auto-dismiss after 1.5 seconds
-        Clock.schedule_once(lambda dt: popup.dismiss(), 3)
+        Clock.schedule_once(lambda dt: popup.dismiss(), 1.5)
 
 if __name__ == '__main__':
     Window.size = (1024, 600)  # Set the window size to 1024x600 pixels
