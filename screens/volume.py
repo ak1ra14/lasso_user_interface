@@ -133,6 +133,7 @@ class SaveButton(IconTextButton):
         """
         # Save the current volume to the config file
         super().on_press()
+        App.get_running_app().show_saved_popup()  # Show a popup indicating the settings have been saved
         config = load_config('config/settings.json', 'v3_json')
         config['volume'] = self.volume_screen.volume
         save_config('config/settings.json', 'v3_json', data=config)
