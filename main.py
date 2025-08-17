@@ -49,7 +49,7 @@ class MyApp(App):
         else:
             print("Failed to connect to Wi-Fi.")
             self.config['wifi_ssid'] = 'No Network'
-            save_config('config/settings.json', self.config, 'v3_json')
+            save_config('config/settings.json', 'v3_json', data=self.config)
 
         self.sm.add_widget(MonitorScreen(name='monitor'))
         self.sm.add_widget(MenuScreen1(name='menu'))
