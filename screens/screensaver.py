@@ -154,6 +154,7 @@ class SaveButton(IconTextButton):
         """
         # Save the current screensaver time to the config file
         super().on_press()
+        App.get_running_app().show_saved_popup()  # Show a popup indicating the settings have been saved
         config = load_config('config/settings.json','v3_json')
         config['screensaver'] = self.screensaver_screen.screensaver_time
         save_config('config/settings.json', 'v3_json', data=config)

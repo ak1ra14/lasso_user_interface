@@ -142,6 +142,7 @@ class TZSaveButton(IconTextButton):
     
     def on_press(self):
         super().on_press()
+        App.get_running_app().show_saved_popup()  # Show a popup indicating the settings have been saved
         print(f"Saving timezone: {self.tz_screen.selected_timezone}")
         config = load_config('config/settings.json', 'v3_json')
         config['timezone'] = self.tz_screen.selected_timezone

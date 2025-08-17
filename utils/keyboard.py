@@ -309,6 +309,7 @@ class QwertyKeyboard(FloatLayout):
     def press_enter(self, instance):
         if self.enter_callback:
             self.enter_callback(instance)
+        App.get_running_app().show_saved_popup()  # Show a popup indicating the settings have been saved
 
     def change_dakuon(self, char):
         dakuon_map = {
