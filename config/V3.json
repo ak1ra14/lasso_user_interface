@@ -7,13 +7,13 @@
     "ack_enable": "no",
     "screensaver": 170,
     "timezone": "Japan (GMT+9)",
-    "region_address": "192.168.1.100585",
+    "region_address": "192.168.1.100585256",
     "mqtt_address": "192.168.1.15058",
     "mqtt_topic": "healthcare/alertsvnbbbbhfcb",
     "alert_lights_ip1": "192.168.1.201695",
     "alert_lights_ip2": "192.168.1.202",
     "wifi_ssid": "SoundEyeHq",
-    "wifi_password": "afafafaf",
+    "wifi_password": "afafafafaf",
     "previous_mode": "bed.json",
     "placeholder": "placeholder"
 }

@@ -87,7 +87,7 @@ class NumberPadScreen(SafeScreen):
         self.add_widget(partition)
         
     def on_save(self, instance):
-        pass
+        App.get_running_app().show_saved_popup()
 
     def set_cursor_at_end(self, instance, value):
         if value:  # If focused

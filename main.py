@@ -30,6 +30,12 @@ from screens.server import ServerScreen, MQTTTopicKeyboardScreen, RegionServerSc
 from utils.num_pad import NumberPadScreen
 from screens.wifi import WifiLoadingScreen, WifiPasswordScreen, WifiConnectingScreen, WifiConnectedScreen, WifiErrorScreen, connect_wifi
 from kivy.core.audio import SoundLoader
+from kivy.uix.popup import Popup
+from kivy.uix.label import Label
+from kivy.uix.boxlayout import BoxLayout
+from kivy.clock import Clock
+
+
 
 class MyApp(App):
     def build(self):
@@ -41,11 +47,16 @@ class MyApp(App):
         self.config = load_config('config/settings.json','v3_json')
         self.language = self.config.get('language', 'en')
         set_system_volume(self.config.get('volume', 50))
+        self.default_wifi_ssid = 'SoundEyeHq'
+        self.default_wifi_password = 'afafafafaf'
 
         ###wifi autoconnection to the default network
-        connection_status = connect_wifi(self.config.get('wifi_ssid', ''), self.config.get('wifi_password', ''))
-        if connection_status:
+        connection_status = connect_wifi(self.default_wifi_ssid, self.default_wifi_password)
+        if connection_status: #if connected to default wifi
             print("Wi-Fi connected successfully.")
+            self.config['wifi_ssid'] = self.default_wifi_ssid
+            self.config['wifi_password'] = self.default_wifi_password
+            save_config('config/settings.json', 'v3_json', data=self.config)
         else:
             print("Failed to connect to Wi-Fi.")
             self.config['wifi_ssid'] = 'No Network'
@@ -157,6 +168,17 @@ class MyApp(App):
         self.time_left = self.time_limit
         self.time_bar.value = self.time_limit
         self._timer_event = Clock.schedule_interval(self._update_time_bar, 1)
+
+    def show_saved_popup(self, message="Saved successfully!"):
+        content = BoxLayout(orientation='vertical', padding=20)
+        content.add_widget(Label(text=message, font_size=24))
+        popup = Popup(title='Success',
+                      content=content,
+                      size_hint=(None, None), size=(400, 200),
+                      auto_dismiss=True)
+        popup.open()
+        # Auto-dismiss after 1.5 seconds
+        Clock.schedule_once(lambda dt: popup.dismiss(), 1.5)
 
 if __name__ == '__main__':
     Window.size = (1024, 600)  # Set the window size to 1024x600 pixels

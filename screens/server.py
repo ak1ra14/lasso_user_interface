@@ -163,6 +163,7 @@ class RegionServerScreen(NumberPadScreen):
         """
         Override the on_save method to save the region address.
         """
+        super().on_save(instance)
         self.config['region_address'] = self.input.text
         save_config("config/settings.json", "v3_json", data=self.config)
 
@@ -185,6 +186,7 @@ class MQTTBrokerIPScreen(NumberPadScreen):
         """
         Override the on_save method to save the MQTT broker address.
         """
+        super().on_save(instance)
         self.config['mqtt_address'] = self.input.text
         save_config("config/settings.json", "v3_json", data=self.config)
 
@@ -206,6 +208,7 @@ class AlertLight1Screen(NumberPadScreen):
         """
         Override the on_save method to save the alert light 1 address.
         """
+        super().on_save(instance)
         self.config['alert_lights_ip1'] = self.input.text
         save_config("config/settings.json", "v3_json", data=self.config)
 
@@ -228,6 +231,7 @@ class AlertLight2Screen(NumberPadScreen):
         """
         Override the on_save method to save the alert light 2 address.
         """
+        super().on_save(instance)
         self.config['alert_lights_ip2'] = self.input.text
         save_config("config/settings.json", "v3_json", data=self.config)
 
