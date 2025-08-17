@@ -172,8 +172,7 @@ class MyApp(App):
     def show_saved_popup(self, message="Saved successfully!"):
         content = BoxLayout(orientation='vertical', padding=20)
         content.add_widget(Label(text=message, font_size=24))
-        popup = Popup(title='Success',
-                      content=content,
+        popup = Popup(content=content,
                       size_hint=(None, None), size=(400, 200),
                       auto_dismiss=True)
         popup.open()
