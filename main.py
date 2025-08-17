@@ -28,7 +28,7 @@ from screens.alert_type import AlertTypeScreen
 from screens.location import LocationScreen, Bed1Screen, Bed2Screen, DeviceKeyboardScreen
 from screens.server import ServerScreen, MQTTTopicKeyboardScreen, RegionServerScreen, MQTTBrokerIPScreen, AlertLight1Screen, AlertLight2Screen
 from utils.num_pad import NumberPadScreen
-from screens.wifi import WifiLoadingScreen, WifiPasswordScreen, WifiConnectingScreen, WifiConnectedScreen, WifiErrorScreen
+from screens.wifi import WifiLoadingScreen, WifiPasswordScreen, WifiConnectingScreen, WifiConnectedScreen, WifiErrorScreen, connect_wifi
 from kivy.core.audio import SoundLoader
 
 class MyApp(App):
@@ -41,8 +41,13 @@ class MyApp(App):
         self.config = load_config('config/settings.json','v3_json')
         self.language = self.config.get('language', 'en')
         set_system_volume(self.config.get('volume', 50))
+        connection_status = connect_wifi(self.config.get('wifi_ssid', ''), self.config.get('wifi_password', ''))
+        if connection_status:
+            print("Wi-Fi connected successfully.")
+        else:
+            print("Failed to connect to Wi-Fi.")
+            self.config['wifi_ssid'] = 'No Network'
 
-        
         self.sm.add_widget(MonitorScreen(name='monitor'))
         self.sm.add_widget(MenuScreen1(name='menu'))
         self.sm.add_widget(MenuScreen2(name='menu2'))
@@ -142,7 +147,6 @@ class MyApp(App):
                 self.reset_timer_event()
         else:
             self.time_bar.opacity = 1
-
 
     def reset_timer_event(self):
         if self._timer_event:

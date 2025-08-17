@@ -12,8 +12,8 @@
     "mqtt_topic": "healthcare/alertsvnbbbbhfcb",
     "alert_lights_ip1": "192.168.1.201695",
     "alert_lights_ip2": "192.168.1.202",
-    "wifi_ssid": "MyWiFiNetwork",
-    "wifi_password": "randompassword123",
+    "wifi_ssid": "SoundEyeHq",
+    "wifi_password": "afafafafaf",
     "previous_mode": "bed.json",
     "placeholder": "placeholder"
 }
