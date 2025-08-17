@@ -56,7 +56,7 @@ class RebootButton(IconTextButton):
         super().__init__(**kwargs)
         self.bind(on_press=self.on_press)
 
-    def on_press(self):
+    def on_press(self,instance):
         python = sys.executable
         os.execl(python, python, *sys.argv)
 
