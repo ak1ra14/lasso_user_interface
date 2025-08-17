@@ -9,7 +9,7 @@ if sys.platform.startswith('linux'):
 from kivy.app import App
 from kivy.uix.screenmanager import ScreenManager, Screen, NoTransition
 from kivy.core.window import Window
-from utils.config_loader import load_config
+from utils.config_loader import load_config, save_config
 from kivy.clock import Clock
 from kivy.uix.progressbar import ProgressBar
 from kivy.uix.floatlayout import FloatLayout
@@ -41,12 +41,15 @@ class MyApp(App):
         self.config = load_config('config/settings.json','v3_json')
         self.language = self.config.get('language', 'en')
         set_system_volume(self.config.get('volume', 50))
+
+        ###wifi autoconnection to the default network
         connection_status = connect_wifi(self.config.get('wifi_ssid', ''), self.config.get('wifi_password', ''))
         if connection_status:
             print("Wi-Fi connected successfully.")
         else:
             print("Failed to connect to Wi-Fi.")
             self.config['wifi_ssid'] = 'No Network'
+            save_config('config/settings.json', self.config, 'v3_json')
 
         self.sm.add_widget(MonitorScreen(name='monitor'))
         self.sm.add_widget(MenuScreen1(name='menu'))
