@@ -90,7 +90,6 @@ class LocationScreen(SafeScreen):
         self.bed_config = load_config("config/settings.json", "bed_json")
         self.bed_no = self.bed_config.get("nbeds", [1, [' ']])[0]
         self.build_ui()
-
     
 class Bed1Screen(KeyboardScreen):
     def __init__(self, **kwargs):
