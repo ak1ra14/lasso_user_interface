@@ -51,16 +51,7 @@ class MyApp(App):
         self.default_wifi_password = 'afafafafaf'
 
         ###wifi autoconnection to the default network
-        connection_status = connect_wifi(self.default_wifi_ssid, self.default_wifi_password)
-        if connection_status: #if connected to default wifi
-            print("Wi-Fi connected successfully.")
-            self.config['wifi_ssid'] = self.default_wifi_ssid
-            self.config['wifi_password'] = self.default_wifi_password
-            save_config('config/settings.json', 'v3_json', data=self.config)
-        else:
-            print("Failed to connect to Wi-Fi.")
-            self.config['wifi_ssid'] = 'No Network'
-            save_config('config/settings.json', 'v3_json', data=self.config)
+        self.connect_default_wifi()
 
         self.sm.add_widget(MonitorScreen(name='monitor'))
         self.sm.add_widget(MenuScreen1(name='menu'))
@@ -112,6 +103,10 @@ class MyApp(App):
         self.reset_screensaver_timer()
         Window.bind(on_touch_down=self.on_user_activity)
         Window.bind(on_key_down=self.on_user_activity)
+
+        ##checking connection 
+        Clock.schedule_once(lambda dt: self.check_connection(), 10) #checking every 10 second
+
 
         return self.root_layout
     
@@ -181,6 +176,34 @@ class MyApp(App):
         popup.open()
         # Auto-dismiss after 1.5 seconds
         Clock.schedule_once(lambda dt: popup.dismiss(), 1.5)
+
+    def check_connection(self, *args):
+        if not is_connected():
+            print("No internet connection.")
+            self.connect_default_wifi()
+        
+    def connect_default_wifi(self):
+        connection_status = connect_wifi(self.default_wifi_ssid, self.default_wifi_password)
+        if connection_status: #if connected to default wifi
+            print("Wi-Fi connected successfully.")
+            self.config['wifi_ssid'] = self.default_wifi_ssid
+            self.config['wifi_password'] = self.default_wifi_password
+            save_config('config/settings.json', 'v3_json', data=self.config)
+        else:
+            print("Failed to connect to Wi-Fi.")
+            self.config['wifi_ssid'] = 'No Network'
+            save_config('config/settings.json', 'v3_json', data=self.config)
+
+def is_connected(host="8.8.8.8", port=53, timeout=3):
+    """
+    Returns True if there is a network connection, False otherwise.
+    """
+    try:
+        socket.setdefaulttimeout(timeout)
+        socket.socket(socket.AF_INET, socket.SOCK_STREAM).connect((host, port))
+        return True
+    except Exception:
+        return False
 
 if __name__ == '__main__':
     Window.size = (1024, 600)  # Set the window size to 1024x600 pixels
