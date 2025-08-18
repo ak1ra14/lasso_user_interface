@@ -127,6 +127,7 @@ class MyApp(App):
         self.reset_timer()
     
     def reset_screensaver_timer(self, *args):
+        self.config = load_config('config/settings.json', 'v3_json')
         if self.screensaver_event:
             self.screensaver_event.cancel()
         timeout = self.config.get('screensaver', 60)
