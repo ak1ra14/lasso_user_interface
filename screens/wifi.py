@@ -1,6 +1,4 @@
-import sys
-import subprocess
-import threading
+import sys, subprocess, threading, time
 from utils.layout import HeaderBar, SafeScreen, LoadingCircle
 from kivy.uix.image import Image
 from kivy.app import App
@@ -15,7 +13,6 @@ from utils.config_loader import load_config, save_config, update_current_page, u
 from utils.icons import IconTextButton
 from utils.keyboard import KeyboardScreen
 from utils.freeze_screen import freeze_ui
-import time
 
 class WifiLoadingScreen(SafeScreen):
     def __init__(self, **kwargs):
@@ -470,8 +467,6 @@ def get_connected_wifi_windows():
         print("Error getting connected Wi-Fi:", e)
     return None
 
-import sys
-
 def get_connected_wifi():
     if sys.platform == 'darwin':
         return get_connected_wifi_mac()
@@ -480,18 +475,6 @@ def get_connected_wifi():
     elif sys.platform.startswith('win'):
         return get_connected_wifi_windows()
     return None
-
-def is_connected_to_wifi():
-    """
-    Check if the device is connected to Wi-Fi.
-    Returns True if connected, False otherwise.
-    """
-    try:
-        # Attempt to connect to a well-known website
-        socket.create_connection(("www.google.com", 80))
-        return True
-    except OSError:
-        return False
 
 class SelectableButton(Button):
     """
@@ -520,7 +503,7 @@ class SelectableButton(Button):
         self.rect.size = self.size
 
     def update_color(self):
-        print(self.text, "selected:", self.selected)
+        #print(self.text, "selected:", self.selected)
         if self.selected:
             self.color = (1, 1, 1, 1)
             self.background_color = (0.2, 0.6, 0.8, 1)
@@ -534,9 +517,6 @@ class SelectableButton(Button):
         """
         super().on_press()
         self.selection.selected_wifi = self.text
-        print(f"Selected Wi-Fi: {self.text}")
+        #print(f"Selected Wi-Fi: {self.text}")
         self.selection.select_wifi(self)
 
-# Example usage:
-if __name__ == "__main__":
-    print(get_available_wifi())
