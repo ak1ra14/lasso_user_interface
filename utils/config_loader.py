@@ -42,7 +42,7 @@ def update_current_page(page_name):
     config = load_config('config/settings.json')
     config['current_page'] = page_name
     save_config('config/settings.json', data=config)
-    print(f"Current page updated to: {page_name}")
+    #print(f"Current page updated to: {page_name}")
     
         
 def update_text_language(variable_name=None):

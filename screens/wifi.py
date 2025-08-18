@@ -380,9 +380,11 @@ class WifiErrorScreen(SafeScreen):
         self.retry_button.label.text = update_text_language("try_again")
         self.connection_failed.text = update_text_language("connection_fail")
 
+
+####### connecting wifi #########
+
 def connect_wifi_linux(ssid, password):
     try:
-        # Add Wi-Fi connection
         subprocess.run(['nmcli', 'dev', 'wifi', 'connect', ssid, 'password', password], check=True)
         print(f"Connected to {ssid}")
         return True
@@ -420,7 +422,77 @@ def connect_wifi(ssid, password):
     else:
         print("Unsupported platform")
         return False
-            
+    
+
+######### checking connected wifi #########
+import subprocess
+
+def get_connected_wifi_linux():
+    try:
+        result = subprocess.check_output(
+            ['nmcli', '-t', '-f', 'active,ssid', 'dev', 'wifi'],
+            universal_newlines=True
+        )
+        for line in result.split('\n'):
+            if line.startswith('yes:'):
+                return line.split(':', 1)[1]
+    except Exception as e:
+        print("Error getting connected Wi-Fi:", e)
+    return None
+
+import subprocess
+
+def get_connected_wifi_mac():
+    try:
+        result = subprocess.check_output(
+            ["/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport", "-I"],
+            universal_newlines=True
+        )
+        for line in result.split('\n'):
+            if " SSID:" in line:
+                return line.split("SSID:")[1].strip()
+    except Exception as e:
+        print("Error getting connected Wi-Fi:", e)
+    return None
+
+import subprocess
+
+def get_connected_wifi_windows():
+    try:
+        result = subprocess.check_output(
+            ['netsh', 'wlan', 'show', 'interfaces'],
+            universal_newlines=True
+        )
+        for line in result.split('\n'):
+            if "SSID" in line and "BSSID" not in line:
+                return line.split(":", 1)[1].strip()
+    except Exception as e:
+        print("Error getting connected Wi-Fi:", e)
+    return None
+
+import sys
+
+def get_connected_wifi():
+    if sys.platform == 'darwin':
+        return get_connected_wifi_mac()
+    elif sys.platform.startswith('linux'):
+        return get_connected_wifi_linux()
+    elif sys.platform.startswith('win'):
+        return get_connected_wifi_windows()
+    return None
+
+def is_connected_to_wifi():
+    """
+    Check if the device is connected to Wi-Fi.
+    Returns True if connected, False otherwise.
+    """
+    try:
+        # Attempt to connect to a well-known website
+        socket.create_connection(("www.google.com", 80))
+        return True
+    except OSError:
+        return False
+
 class SelectableButton(Button):
     """
     A button that can be selected or deselected.

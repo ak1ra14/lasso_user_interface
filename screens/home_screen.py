@@ -188,12 +188,9 @@ class MenuScreen1(SafeScreen):
 
     def go_to_location(self, instance):
         self.config = load_config('config/settings.json', 'v3_json')
-        print("previous_mode:", self.config.get('previous_mode'))
         if self.config.get('previous_mode', 'fall.json') == 'fall.json':
-            print("Switching to device screen")
             self.manager.current = 'device'
         else:
-            print("Switching to location screen")
             self.manager.current = 'location'
 
     def update_language(self):

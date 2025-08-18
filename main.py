@@ -28,7 +28,7 @@ from screens.alert_type import AlertTypeScreen
 from screens.location import LocationScreen, Bed1Screen, Bed2Screen, DeviceKeyboardScreen
 from screens.server import ServerScreen, MQTTTopicKeyboardScreen, RegionServerScreen, MQTTBrokerIPScreen, AlertLight1Screen, AlertLight2Screen
 from utils.num_pad import NumberPadScreen
-from screens.wifi import WifiLoadingScreen, WifiPasswordScreen, WifiConnectingScreen, WifiConnectedScreen, WifiErrorScreen, connect_wifi
+from screens.wifi import WifiLoadingScreen, WifiPasswordScreen, WifiConnectingScreen, WifiConnectedScreen, WifiErrorScreen, connect_wifi, get_connected_wifi
 from kivy.core.audio import SoundLoader
 from kivy.uix.popup import Popup
 from kivy.uix.label import Label
@@ -180,6 +180,12 @@ class MyApp(App):
         if not is_connected():
             print("No internet connection.")
             self.connect_default_wifi()
+        else:
+            ssid = get_connected_wifi()
+            if ssid:
+                print(f"Connected to Wi-Fi: {ssid}")
+                self.config['wifi_ssid'] = ssid
+                save_config('config/settings.json', 'v3_json', data=self.config)
         
     def connect_default_wifi(self):
         connection_status = connect_wifi(self.default_wifi_ssid, self.default_wifi_password)
