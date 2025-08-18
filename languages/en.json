@@ -60,5 +60,6 @@
   "shutdown": "Shutdown",
   "reboot": "Reboot",
   "english": "English",
-  "japanese": "Japanese"
+  "japanese": "Japanese",
+  "saved": "Saved successfully"
 }

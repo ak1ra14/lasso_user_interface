@@ -34,7 +34,7 @@ from kivy.uix.popup import Popup
 from kivy.uix.label import Label
 from kivy.uix.boxlayout import BoxLayout
 from kivy.clock import Clock
-
+from utils.config_loader import update_text_language
 
 
 class MyApp(App):
@@ -169,11 +169,12 @@ class MyApp(App):
         self.time_bar.value = self.time_limit
         self._timer_event = Clock.schedule_interval(self._update_time_bar, 1)
 
-    def show_saved_popup(self, message="Saved successfully!"):
+    def show_saved_popup(self):
+
         content = BoxLayout(orientation='vertical', padding=20)
-        content.add_widget(Label(text=message, font_size=24))
+        content.add_widget(Label(text=update_text_language('saved'), font_name="fonts/MPLUS1p-Regular.ttf", font_size=24))
         popup = Popup(title='Notification',
-                    content=content,
+                      content=content,
                       size_hint=(None, None), size=(400, 200),
                       auto_dismiss=True)
         popup.open()
