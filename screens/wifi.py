@@ -154,6 +154,8 @@ def get_available_wifi():
             print("Error getting Wi-Fi:", e)
     elif sys.platform.startswith('win'):
         try:
+            #forcing a new scan everytime 
+            subprocess.run(['nmcli', 'dev', 'wifi', 'rescan'], check=True)
             result = subprocess.check_output(['netsh', 'wlan', 'show', 'networks'], universal_newlines=True)
             for line in result.split('\n'):
                 if "SSID" in line:
