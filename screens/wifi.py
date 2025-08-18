@@ -15,6 +15,7 @@ from utils.config_loader import load_config, save_config, update_current_page, u
 from utils.icons import IconTextButton
 from utils.keyboard import KeyboardScreen
 from utils.freeze_screen import freeze_ui
+import time
 
 class WifiLoadingScreen(SafeScreen):
     def __init__(self, **kwargs):
