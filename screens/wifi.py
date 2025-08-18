@@ -148,6 +148,8 @@ def get_available_wifi():
             print("Error getting Wi-Fi:", e)
     elif sys.platform.startswith('linux'):
         try:
+            subprocess.run(['nmcli', 'dev', 'wifi', 'rescan'], check=True)
+            time.sleep(1)  # Wait for the scan to complete
             result = subprocess.check_output(['nmcli', '-t', '-f', 'SSID', 'dev', 'wifi'], universal_newlines=True)
             wifi_list = [line for line in result.split('\n') if line]
         except Exception as e:
@@ -156,6 +158,7 @@ def get_available_wifi():
         try:
             #forcing a new scan everytime 
             subprocess.run(['nmcli', 'dev', 'wifi', 'rescan'], check=True)
+            time.sleep(1)  # Wait for the scan to complete
             result = subprocess.check_output(['netsh', 'wlan', 'show', 'networks'], universal_newlines=True)
             for line in result.split('\n'):
                 if "SSID" in line:
