@@ -13,10 +13,14 @@ from utils.freeze_screen import freeze_ui
 from kivy.uix.image import Image
 from kivy.clock import Clock
 from kivy.uix.screenmanager import Screen
+import sys, os
+if sys.platform.startswith('linux'):
+    # Set the environment variable for the dictionary path
+    os.environ['MECAB_DICDIR'] = '/usr/lib/aarch64-linux-gnu/mecab/dic'
 import mozcpy
 from kivy.app import App
 from utils.config_loader import load_config, update_text_language
-import sys
+
 
 class KeyboardScreen(SafeScreen):
     def __init__(self, title, **kwargs):
@@ -43,12 +47,7 @@ class QwertyKeyboard(FloatLayout):
         self.english_buttons = []
         self.japanese_buttons = []
         self.language_mode = 'english'  # Default language mode
-        if sys.platform == 'linux':
-            # Replace with your actual dictionary path
-            mecab_args = '-r /dev/null -d /usr/lib/arm-linux-gnueabihf/mecab/dic/ipadic'
-            self.kanji_converter = mozcpy.Converter(args=mecab_args)
-        else:
-            self.kanji_converter = mozcpy.Converter()  # Initialize the converter
+        self.kanji_converter = mozcpy.Converter()  # Initialize the converter
         self.converting = False  # Flag to indicate if the text is being converted
         self.title = title
         self.actual_text_input = ""
