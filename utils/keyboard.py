@@ -16,6 +16,7 @@ from kivy.uix.screenmanager import Screen
 import mozcpy
 from kivy.app import App
 from utils.config_loader import load_config, update_text_language
+import sys
 
 class KeyboardScreen(SafeScreen):
     def __init__(self, title, **kwargs):
@@ -42,7 +43,10 @@ class QwertyKeyboard(FloatLayout):
         self.english_buttons = []
         self.japanese_buttons = []
         self.language_mode = 'english'  # Default language mode
-        self.kanji_converter = mozcpy.Converter()  # Initialize the converter
+        if sys.platform.startswith('linux'):
+            self.kanji_converter = mozcpy.Converter(dicdir='/usr/lib/aarch64-linux-gnu/mecab/dic')
+        else:
+            self.kanji_converter = mozcpy.Converter()  # Initialize the converter
         self.converting = False  # Flag to indicate if the text is being converted
         self.title = title
         self.actual_text_input = ""

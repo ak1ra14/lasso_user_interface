@@ -12,3 +12,6 @@ pygame==2.6.1
 Pygments==2.19.2
 requests==2.32.4
 urllib3==2.5.0
+
+# After pip install, run:
+# sudo apt-get install mecab libmecab-dev mecab-ipadic-utf8
