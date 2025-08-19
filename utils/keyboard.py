@@ -43,8 +43,10 @@ class QwertyKeyboard(FloatLayout):
         self.english_buttons = []
         self.japanese_buttons = []
         self.language_mode = 'english'  # Default language mode
-        if sys.platform.startswith('linux'):
-            self.kanji_converter = mozcpy.Converter(dicdir='/usr/lib/aarch64-linux-gnu/mecab/dic')
+        if sys.platform == 'linux':
+            # Replace with your actual dictionary path
+            mecab_args = '-r /dev/null -d /usr/lib/arm-linux-gnueabihf/mecab/dic/ipadic'
+            self.kanji_converter = mozcpy.Converter(args=mecab_args)
         else:
             self.kanji_converter = mozcpy.Converter()  # Initialize the converter
         self.converting = False  # Flag to indicate if the text is being converted
