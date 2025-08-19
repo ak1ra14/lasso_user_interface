@@ -95,6 +95,7 @@ class ChangeVolume(IconTextButton):
         self.volume_screen = volume_screen  # Reference to the screen
 
     def on_press(self):
+        super().on_press()
         freeze_ui(0.3)  # Freeze the UI for 0.3 seconds
         if self.change == "increase":
             self._increase()
@@ -109,7 +110,6 @@ class ChangeVolume(IconTextButton):
         self.volume_screen.volume = new_volume
         self.volume_label.text = f"{new_volume}%"
         set_system_volume(new_volume)
-        App.get_running_app().play_sound()  # Play sound on button press
 
 
     def _decrease(self):
@@ -118,7 +118,6 @@ class ChangeVolume(IconTextButton):
         self.volume_screen.volume = new_volume
         self.volume_label.text = f"{new_volume}%"
         set_system_volume(new_volume)
-        App.get_running_app().play_sound()
 
 
 class SaveButton(IconTextButton):

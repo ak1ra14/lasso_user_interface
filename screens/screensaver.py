@@ -117,8 +117,8 @@ class ChangeTime(IconTextButton):
         self.sound = SoundLoader.load('sound/tap.wav')
 
     def on_press(self):
+        super().on_press()
         freeze_ui(0.3)  # Freeze the UI for 0.3 seconds
-        App.get_running_app().play_sound()  # Play sound on button press
         if self.change == "increase":
             self._increase()
         elif self.change == "decrease":
@@ -130,17 +130,12 @@ class ChangeTime(IconTextButton):
         new_time = min(current_time + self.by, 600)
         self.screensaver_screen.screensaver_time = new_time
         self.screensaver_time_label.text = f"{new_time}"
-        if self.sound:
-            self.sound.play()
-
 
     def _decrease(self):
         current_time = self.screensaver_screen.screensaver_time
         new_time = max(current_time - self.by, 10)
         self.screensaver_screen.screensaver_time = new_time
         self.screensaver_time_label.text = f"{new_time}"
-        if self.sound:
-            self.sound.play()
 
 class SaveButton(IconTextButton):
     def __init__(self, screensaver_screen=None, **kwargs):
