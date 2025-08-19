@@ -152,8 +152,7 @@ class IconTextButton(Button):
 
     def on_press(self):
         App.get_running_app().play_sound()  # Play sound on button press
-        with self.canvas:
-            self.color_instruction = Color(rgba=(0.2, 0.8, 0.2, 1))  # Change color to green on press
+        self.color_instruction.rgba = (0.2, 0.8, 0.2, 1) # Change color to green on press
         Clock.schedule_once(self._reset_color, 0.3)  # Reset color after 0.3 seconds
         # Only navigate if screen_name is set and no custom handler is bound
 
@@ -162,10 +161,8 @@ class IconTextButton(Button):
             App.get_running_app().sm.current = self.screen_name
 
     def _reset_color(self, dt):
-        """Reset the color of the button after a delay."""
-        with self.canvas:
-            self.color_instruction.rgba = (0.22, 0.45, 0.91, 1)  # Restore original color  
- 
+        self.color_instruction.rgba = (0.22, 0.45, 0.91, 1)
+
     def has_custom_handler(self):
         # Check if more than one handler is bound to on_press (the default and a custom one)
         return len(self.get_property_observers('on_press')) > 1
@@ -181,7 +178,7 @@ class CircularImageButton(Button):
         self.background_color = (0, 0, 0, 0)  # Fully transparent
 
         with self.canvas.before:
-            Color(0.22, 0.45, 0.91, 1)  # Example blue color
+            self.color_instruction = Color(rgba=(0.22, 0.45, 0.91, 1))
             self.circle = Ellipse(pos=self.pos, size=self.size)
         self.bind(pos=self._update_circle, size=self._update_circle)
 
@@ -207,10 +204,27 @@ class CircularImageButton(Button):
         Override the on_press method to change the current screen.
         This method is called when the button is pressed.
         """
+        self.color_instruction.rgba = (0.2, 0.8, 0.2, 1)  # Change color to green on press
+        Clock.schedule_once(self._reset_color, 0.3)  # Reset color after
         App.get_running_app().play_sound()  # Play sound on button press
-        App.get_running_app().sm.current = self.screen_name  # Navigate to the screen
 
+    def _reset_color(self, dt):
+        self.color_instruction.rgba = (0.22, 0.45, 0.91, 1)
 
+    def has_custom_handler(self):
+        """
+        Check if more than one handler is bound to on_press (the default and a custom one).
+        This is used to determine if the button should navigate to a screen.
+        """
+        return len(self.get_property_observers('on_press')) > 1
+
+    def on_release(self):
+        """
+        Override the on_release method to handle button release.
+        This method is called when the button is released.
+        """
+        if self.screen_name and not self.has_custom_handler():
+            App.get_running_app().sm.current = self.screen_name
 
 class CustomSwitch(FloatLayout):
     active = BooleanProperty(False)
