@@ -91,7 +91,7 @@ class IconTextButton(Button):
         if self.config:
             self.label = Label(
                 text=self.label_text,
-                font_size=  self.size[1] * 0.1 - 3,   # Adjust font size based on button height.
+                font_size=  self.size[1] * 0.1 - 3 if self.label_text == 'スクリーンセーバー' else self.size[1] * 0.1,   # Adjust font size based on button height.
                 font_name='fonts/MPLUS1p-Regular.ttf',  # Path to your bold font file
                 color=(1, 1, 1, 1),
                 size_hint=(0.9, 0.10),
