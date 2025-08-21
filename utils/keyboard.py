@@ -7,16 +7,13 @@ from kivy.uix.widget import Widget
 from kivy.graphics import Color, RoundedRectangle, Ellipse, Line
 from kivy.properties import BooleanProperty
 from kivy.uix.floatlayout import FloatLayout
-from utils.icons import IconTextButton
+from utils.icons import IconTextButton, FlickKey
 from utils.layout import SafeScreen
 from utils.freeze_screen import freeze_ui
 from kivy.uix.image import Image
 from kivy.clock import Clock
 from kivy.uix.screenmanager import Screen
 import sys, os
-if sys.platform.startswith('linux'):
-    # Set the environment variable for the dictionary path
-    os.environ['MECAB_DICDIR'] = '/usr/lib/aarch64-linux-gnu/mecab/dic'
 import mozcpy
 from kivy.app import App
 from utils.config_loader import load_config, update_text_language
@@ -127,6 +124,24 @@ class QwertyKeyboard(FloatLayout):
             ['オ', 'コ', 'ソ', 'ト', 'ノ', 'ホ', 'モ', 'ヨ', 'ロ', '','']
             # Add more rows as needed
         ]
+        self.flick_mappings = [
+            ('あ', 'い', 'う', 'え', 'お'),
+            ('か', 'き', 'く', 'け', 'こ'),
+            ('さ', 'し', 'す', 'せ', 'そ'),
+            ('Backspace',),    
+            ('た', 'ち', 'つ', 'て', 'と'),
+            ('な', 'に', 'ぬ', 'ね', 'の'),
+            ('は', 'ひ', 'ふ', 'へ', 'ほ'),
+            ('Space',),
+            ('ま', 'み', 'む', 'め', 'も'),
+            ('や', 'ゃ', 'ゆ', 'ぇ', 'よ'),
+            ('ら', 'り', 'る', 'れ', 'ろ'),
+            ('Enter',),
+            ('Daku-on',),
+            ('わ', 'を', 'ん', 'ー', ''),
+            ('、', '。', '?', '!', ''),
+            ('English',)
+        ]
 
         self.build_qwerty_keyboard()  # Build the QWERTY keyboard layout
         self.add_widget(self.main_layout)
@@ -227,7 +242,7 @@ class QwertyKeyboard(FloatLayout):
                 if key == 'English':
                     btn = RoundedButton(text='', sub_key=sub_key, image=f'images/english.png', font_size=24, font_name='fonts/MPLUS1p-Regular.ttf',
                                         background_color=(0.22, 0.45, 0.91, 1), size_hint_x=None, width=key_width*1.5,
-                                        function='English')
+                                        function='Flick')
                 elif key == 'Backspace':
                     btn = RoundedButton(text='', sub_key=sub_key, image='images/backspace.png', font_size=24, font_name='fonts/Roboto-Bold.ttf',
                                         background_color=(0.22, 0.45, 0.91, 1), size_hint_x=None, width=key_width*1.5,
@@ -251,6 +266,45 @@ class QwertyKeyboard(FloatLayout):
                 self.japanese_buttons.append(btn)
                 row_layout.add_widget(btn)
             self.main_layout.add_widget(row_layout)
+
+    def build_flick_keyboard(self):
+        # Example flick mappings for common Japanese columns (10 columns)
+        self.main_layout.clear_widgets()  # Clear the main layout
+        grid = GridLayout(cols=4, spacing=6, size_hint_y=None, height=300)
+        for mapping in self.flick_mappings:
+            if len(mapping) == 5 and type(mapping[0]) is str:
+                btn = FlickKey(mappings=mapping, text_input=self.text_input,
+                            size_hint=(None, None), size=(72, 72))
+            else:
+                if mapping[0] == 'Backspace':
+                    btn = RoundedButton(
+                        text='', sub_key='', image='images/backspace.png', font_size=24, font_name='fonts/MPLUS1p-Regular.ttf',
+                        size_hint=(None, None), size=(72, 72), function='Backspace'
+                    )
+                elif mapping[0] == 'Enter':
+                    btn = RoundedButton(
+                        text='', sub_key='', image='images/enter.png', font_size=24, font_name='fonts/MPLUS1p-Regular.ttf',
+                        size_hint=(None, None), size=(72, 72), function='Enter', on_press=self.press_enter
+                    )
+                elif mapping[0] == 'Space':
+                    btn = RoundedButton(
+                        text='空白/変換', sub_key='', font_size=24, font_name='fonts/MPLUS1p-Regular.ttf',
+                        size_hint=(None, None), size=(72, 72), function='Space'
+                    )
+                elif mapping[0] == 'Daku-on':
+                    btn = RoundedButton(
+                        text='', sub_key='', image='images/daku-on.png', font_size=24, font_name='fonts/MPLUS1p-Regular.ttf',
+                        size_hint=(None, None), size=(72, 72), function='Daku-on'
+                    )
+                elif mapping[0] == 'English':
+                    btn = RoundedButton(
+                        text='', sub_key='', image='images/english.png', font_size=24, font_name='fonts/MPLUS1p-Regular.ttf',
+                        size_hint=(None, None), size=(72, 72), function='English'
+                    )
+                btn.bind(on_release=self.on_key_release)
+            grid.add_widget(btn)
+
+        self.main_layout.add_widget(grid)
 
     def on_key_release(self, instance):
         ti = self.text_input #to indicate the position of the input in a word
@@ -296,6 +350,8 @@ class QwertyKeyboard(FloatLayout):
             self.build_qwerty_keyboard()
         elif instance.function == "Enter":
             pass
+        elif instance.function == 'Flick':
+            self.build_flick_keyboard()
         elif instance.function == "Daku-on":
             self.actual_text_input = self.actual_text_input[:-1] + self.change_dakuon(self.actual_text_input[-1])  # Add Daku-on character
             if self.visibility:

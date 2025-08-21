@@ -60,7 +60,7 @@ class IconTextButton(Button):
         layout.size = self.size
         layout.pos = self.pos
         self.bind(pos=layout.setter('pos'), size=layout.setter('size'))
-        if self.label_text is "": # If no label text is provided, we only show the icon
+        if self.label_text == "": # If no label text is provided, we only show the icon
             self.image = Image(
             source=icon_path,
             size_hint=(0.6,0.6),
@@ -91,7 +91,7 @@ class IconTextButton(Button):
         if self.config:
             self.label = Label(
                 text=self.label_text,
-                font_size=  self.size[1] * 0.1 - 3 if self.label_text == 'スクリーンセーバー' else self.size[1] * 0.1,   # Adjust font size based on button height.
+                font_size=  self.size[1] * 0.1 - 3 if self.label_text == 'スクリーンセーバー' or self.label_text == 'Screensaver' else self.size[1] * 0.1,   # Adjust font size based on button height.
                 font_name='fonts/MPLUS1p-Regular.ttf',  # Path to your bold font file
                 color=(1, 1, 1, 1),
                 size_hint=(0.9, 0.10),
@@ -384,3 +384,116 @@ class PageIndicator(BoxLayout):
     def set_page(self, page):
         self.current_page = page
         self.build_dots()
+
+
+
+class FlickKey(Button):
+    """
+    Buttons for japanese flick input.
+    Flick key with mappings: (center, up, right, down, left).
+    Tap -> center, flick up/right/down/left -> corresponding char.
+    """
+    def __init__(self, mappings, text_input, threshold=20, **kwargs):
+        super().__init__(**kwargs)
+        self.mappings = list(mappings) + [None] * (5 - len(mappings))
+        self.text_input = text_input
+        self._touch_start = None
+        self.preview = None
+        self.threshold = threshold
+        self.font_size = kwargs.get('font_size', 28)
+        self.text = self.mappings[0] or ''
+        self.font_name = kwargs.get('font_name', 'fonts/MPLUS1p-Regular.ttf')
+        self.background_normal = ''
+        self.background_down = ''
+        self.background_color = (0,0,0,0)  # Transparent color
+        with self.canvas.before:
+            self.color_instruction = Color(rgba=(0.2, 0.2, 0.2, 1)) #grey color
+            self.rounded_rect_instruction = RoundedRectangle(
+                pos=self.pos,
+                size=self.size,
+                radius=[20,]  # Adjust this value for more or less curvature
+            )
+        self.bind(pos=self._update_rect, size=self._update_rect)
+
+    def show_preview(self, char, pos):
+        if not self.preview:
+            self.preview = Label(size_hint=(None, None), size=(60, 40), font_name=self.font_name,
+                                 font_size=24, color=(1, 1, 1, 1))
+            # add to root layout (assume parent of parent is main container)
+            root = self.get_root_window()
+            if root:
+                # add to widget tree via parent container if possible
+                try:
+                    self.parent.parent.add_widget(self.preview)
+                except Exception:
+                    # fallback: add to parent
+                    try:
+                        self.parent.add_widget(self.preview)
+                    except Exception:
+                        pass
+        if self.preview:
+            self.preview.text = char or ''
+            self.preview.pos = (pos[0] - 30, pos[1] + 10)
+            self.preview.opacity = 1
+
+    def hide_preview(self):
+        if self.preview and self.preview.parent:
+            try:
+                self.preview.parent.remove_widget(self.preview)
+            except Exception:
+                pass
+            self.preview = None
+
+    def on_touch_down(self, touch):
+        if not self.collide_point(*touch.pos):
+            return False
+        self._touch_start = touch.pos
+        self.show_preview(self.mappings[0], touch.pos)
+        return True
+
+    def on_touch_move(self, touch):
+        if self._touch_start is None:
+            return False
+        dx = touch.x - self._touch_start[0]
+        dy = touch.y - self._touch_start[1]
+        if abs(dx) + abs(dy) < self.threshold:
+            char = self.mappings[0]
+        else:
+            if abs(dx) > abs(dy):
+                char = self.mappings[3] if dx > 0 else self.mappings[1]
+            else:
+                char = self.mappings[2] if dy > 0 else self.mappings[4]
+        self.show_preview(char, touch.pos)
+        return True
+
+    def on_touch_up(self, touch):
+        if self._touch_start is None:
+            return False
+        dx = touch.x - self._touch_start[0]
+        dy = touch.y - self._touch_start[1]
+        if abs(dx) + abs(dy) < self.threshold:
+            chosen = self.mappings[0]
+        else:
+            if abs(dx) > abs(dy):
+                chosen = self.mappings[3] if dx > 0 else self.mappings[1]
+            else:
+                chosen = self.mappings[2] if dy > 0 else self.mappings[4]
+        if chosen:
+            try:
+                # insert_text handles cursor and selection correctly
+                self.text_input.insert_text(chosen)
+            except Exception:
+                # fallback append
+                self.text_input.text += chosen
+        self.hide_preview()
+        self._touch_start = None
+        return True
+
+    def _update_rect(self, instance, value):
+        """Callback to update the position and size of the rounded rectangle."""
+        self.rounded_rect_instruction.pos = instance.pos
+        self.rounded_rect_instruction.size = instance.size
+    
+    def _update_color(self, instance, value):
+        """Callback to update the color of the rounded rectangle."""
+        self.color_instruction.rgba = value
