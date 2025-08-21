@@ -50,9 +50,6 @@ class MyApp(App):
         self.default_wifi_ssid = 'SoundEyeHq'
         self.default_wifi_password = 'afafafafaf'
 
-        ###wifi autoconnection to the default network
-        self.connect_default_wifi()
-
         self.sm.add_widget(MonitorScreen(name='monitor'))
         self.sm.add_widget(MenuScreen1(name='menu'))
         self.sm.add_widget(MenuScreen2(name='menu2'))
@@ -177,27 +174,24 @@ class MyApp(App):
         Clock.schedule_once(lambda dt: popup.dismiss(), 1.5)
 
     def check_connection(self, *args):
-        if not is_connected():
-            print("No internet connection.")
-            self.connect_default_wifi()
-        else:
+        if is_connected():
             ssid = get_connected_wifi()
             if ssid:
                 print(f"Connected to Wi-Fi: {ssid}")
                 self.config['wifi_ssid'] = ssid
                 save_config('config/settings.json', 'v3_json', data=self.config)
         
-    def connect_default_wifi(self):
-        connection_status = connect_wifi(self.default_wifi_ssid, self.default_wifi_password)
-        if connection_status: #if connected to default wifi
-            print("Wi-Fi connected successfully.")
-            self.config['wifi_ssid'] = self.default_wifi_ssid
-            self.config['wifi_password'] = self.default_wifi_password
-            save_config('config/settings.json', 'v3_json', data=self.config)
-        else:
-            print("Failed to connect to Wi-Fi.")
-            self.config['wifi_ssid'] = 'No Network'
-            save_config('config/settings.json', 'v3_json', data=self.config)
+    # def connect_default_wifi(self):
+    #     connection_status = connect_wifi(self.default_wifi_ssid, self.default_wifi_password)
+    #     if connection_status: #if connected to default wifi
+    #         print("Wi-Fi connected successfully.")
+    #         self.config['wifi_ssid'] = self.default_wifi_ssid
+    #         self.config['wifi_password'] = self.default_wifi_password
+    #         save_config('config/settings.json', 'v3_json', data=self.config)
+    #     else:
+    #         print("Failed to connect to Wi-Fi.")
+    #         self.config['wifi_ssid'] = 'No Network'
+    #         save_config('config/settings.json', 'v3_json', data=self.config)
 
 def is_connected(host="8.8.8.8", port=53, timeout=3):
     """
