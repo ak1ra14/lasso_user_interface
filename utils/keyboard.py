@@ -271,9 +271,10 @@ class QwertyKeyboard(FloatLayout):
         # Example flick mappings for common Japanese columns (10 columns)
         self.main_layout.clear_widgets()  # Clear the main layout
         grid = GridLayout(cols=4, spacing=6, size_hint_y=None, height=300)
+        self.overlay = FloatLayout(size_hint=(1, 1))
         for mapping in self.flick_mappings:
             if len(mapping) == 5 and type(mapping[0]) is str:
-                btn = FlickKey(mappings=mapping, text_input=self.text_input,
+                btn = FlickKey(mappings=mapping, text_input=self.text_input, overlay=self.overlay,
                             size_hint=(None, None), size=(90, 90))
             else:
                 if mapping[0] == 'Backspace':
@@ -303,8 +304,10 @@ class QwertyKeyboard(FloatLayout):
                     )
                 btn.bind(on_release=self.on_key_release)
             grid.add_widget(btn)
+            grid.bind(minimum_height=grid.setter('height'))
 
         self.main_layout.add_widget(grid)
+        self.add_widget(self.overlay)  # Add the overlay to the main layout
 
     def on_key_release(self, instance):
         ti = self.text_input #to indicate the position of the input in a word

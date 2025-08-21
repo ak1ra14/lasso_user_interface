@@ -385,107 +385,117 @@ class PageIndicator(BoxLayout):
         self.current_page = page
         self.build_dots()
 
+######### Flick key  ###########
+from kivy.uix.floatlayout import FloatLayout
+from kivy.uix.label import Label
+from kivy.graphics import Color, RoundedRectangle
 
+class FlickPopup(FloatLayout):
+    def __init__(self, mappings, center_pos, font_name, font_size=32, **kwargs):
+        super().__init__(**kwargs)
+        self.size_hint = (None, None)
+        self.size = (180, 180)
+        self.pos = (center_pos[0] - 90, center_pos[1] - 90)
+        self.labels = []
+        # Order: center, up, right, down, left
+        positions = [
+            (90, 90),    # center
+            (0, 90),    #left
+            (90, 180),   # up
+            (180, 90),   # right
+            (90, 0),    # down
+            # left
+        ]
+        for i, char in enumerate(mappings):
+            if not char: continue
+            lbl = Label(text=char, font_size=font_size, font_name=font_name,
+                        size_hint=(None, None), size=(90, 90),
+                        pos=(positions[i][0]-30, positions[i][1]-30),
+                        color=(1,1,1,1))
+            with lbl.canvas.before:
+                lbl.bg_color = Color(0.22, 0.45, 0.91, 0.7 if i==0 else 0.5)
+                lbl.bg_rect = RoundedRectangle(pos=lbl.pos, size=lbl.size, radius=[20])
+            lbl.bind(pos=lambda inst, val: setattr(inst.bg_rect, 'pos', val))
+            lbl.bind(size=lambda inst, val: setattr(inst.bg_rect, 'size', val))
+            self.add_widget(lbl)
+            self.labels.append(lbl)
+
+    def highlight(self, idx):
+        for i, lbl in enumerate(self.labels):
+            lbl.bg_color.a = 1.0 if i == idx else (0.7 if i==0 else 0.5)
 
 class FlickKey(Button):
-    """
-    Buttons for japanese flick input.
-    Flick key with mappings: (center, up, right, down, left).
-    Tap -> center, flick up/right/down/left -> corresponding char.
-    """
-    def __init__(self, mappings, text_input, threshold=20, **kwargs):
+    def __init__(self, mappings, text_input, overlay=None, threshold=20, **kwargs):
         super().__init__(**kwargs)
         self.mappings = list(mappings) + [None] * (5 - len(mappings))
         self.text_input = text_input
+        self.overlay = overlay  # pass overlay from parent
         self._touch_start = None
-        self.preview = None
+        self.popup = None
         self.threshold = threshold
         self.font_size = kwargs.get('font_size', 28)
         self.text = self.mappings[0] or ''
         self.font_name = kwargs.get('font_name', 'fonts/MPLUS1p-Regular.ttf')
         self.background_normal = ''
         self.background_down = ''
-        self.background_color = (0,0,0,0)  # Transparent color
+        self.background_color = (0,0,0,0)
         with self.canvas.before:
-            self.color_instruction = Color(rgba=(0.2, 0.2, 0.2, 1)) #grey color
+            self.color_instruction = Color(rgba=(0.2, 0.2, 0.2, 1))
             self.rounded_rect_instruction = RoundedRectangle(
-                pos=self.pos,
-                size=self.size,
-                radius=[20,]  # Adjust this value for more or less curvature
+                pos=self.pos, size=self.size, radius=[20,]
             )
         self.bind(pos=self._update_rect, size=self._update_rect)
-
-    def show_preview(self, char, pos):
-        if not self.preview:
-            self.preview = Label(size_hint=(None, None), size=(60, 40), font_name=self.font_name,
-                                 font_size=24, color=(1, 1, 1, 1))
-            # add to root layout (assume parent of parent is main container)
-            root = self.get_root_window()
-            if root:
-                # add to widget tree via parent container if possible
-                try:
-                    self.parent.parent.add_widget(self.preview)
-                except Exception:
-                    # fallback: add to parent
-                    try:
-                        self.parent.add_widget(self.preview)
-                    except Exception:
-                        pass
-        if self.preview:
-            self.preview.text = char or ''
-            self.preview.pos = (pos[0] - 30, pos[1] + 10)
-            self.preview.opacity = 1
-
-    def hide_preview(self):
-        if self.preview and self.preview.parent:
-            try:
-                self.preview.parent.remove_widget(self.preview)
-            except Exception:
-                pass
-            self.preview = None
 
     def on_touch_down(self, touch):
         if not self.collide_point(*touch.pos):
             return False
         self._touch_start = touch.pos
-        self.show_preview(self.mappings[0], touch.pos)
+        # Calculate FlickKey center in window coordinates
+        key_cx, key_cy = self.to_window(*self.center)
+        # Calculate overlay's bottom-left in window coordinates
+        overlay_cx, overlay_cy = self.overlay.to_window(*self.overlay.pos)
+        # Popup center relative to overlay
+        popup_center = (key_cx - overlay_cx, key_cy - overlay_cy)
+        if not self.popup:
+            self.popup = FlickPopup(self.mappings, popup_center, self.font_name, font_size=32)
+            self.overlay.add_widget(self.popup)
         return True
 
     def on_touch_move(self, touch):
-        if self._touch_start is None:
+        if self._touch_start is None or not self.popup:
             return False
         dx = touch.x - self._touch_start[0]
         dy = touch.y - self._touch_start[1]
-        if abs(dx) + abs(dy) < self.threshold:
-            char = self.mappings[0]
-        else:
+        idx = 0  # center
+        if abs(dx) + abs(dy) >= self.threshold:
             if abs(dx) > abs(dy):
-                char = self.mappings[3] if dx > 0 else self.mappings[1]
+                idx = 3 if dx > 0 else 1
             else:
-                char = self.mappings[2] if dy > 0 else self.mappings[4]
-        self.show_preview(char, touch.pos)
+                idx = 2 if dy > 0 else 4
+        self.popup.highlight(idx)
         return True
 
     def on_touch_up(self, touch):
-        if self._touch_start is None:
+        if self._touch_start is None or not self.popup:
             return False
         dx = touch.x - self._touch_start[0]
         dy = touch.y - self._touch_start[1]
-        if abs(dx) + abs(dy) < self.threshold:
-            chosen = self.mappings[0]
-        else:
+        idx = 0
+        if abs(dx) + abs(dy) >= self.threshold:
             if abs(dx) > abs(dy):
-                chosen = self.mappings[3] if dx > 0 else self.mappings[1]
+                idx = 3 if dx > 0 else 1
             else:
-                chosen = self.mappings[2] if dy > 0 else self.mappings[4]
+                idx = 2 if dy > 0 else 4
+        chosen = self.mappings[idx]
         if chosen:
             try:
-                # insert_text handles cursor and selection correctly
                 self.text_input.insert_text(chosen)
             except Exception:
-                # fallback append
                 self.text_input.text += chosen
-        self.hide_preview()
+        # Remove popup
+        if self.popup and self.popup.parent:
+            self.popup.parent.remove_widget(self.popup)
+        self.popup = None
         self._touch_start = None
         return True
 
