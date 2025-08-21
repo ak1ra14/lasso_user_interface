@@ -274,32 +274,32 @@ class QwertyKeyboard(FloatLayout):
         for mapping in self.flick_mappings:
             if len(mapping) == 5 and type(mapping[0]) is str:
                 btn = FlickKey(mappings=mapping, text_input=self.text_input,
-                            size_hint=(None, None), size=(72, 72))
+                            size_hint=(None, None), size=(90, 90))
             else:
                 if mapping[0] == 'Backspace':
                     btn = RoundedButton(
                         text='', sub_key='', image='images/backspace.png', font_size=24, font_name='fonts/MPLUS1p-Regular.ttf',
-                        size_hint=(None, None), size=(72, 72), function='Backspace'
+                        size_hint=(None, None), size=(120, 90), function='Backspace'
                     )
                 elif mapping[0] == 'Enter':
                     btn = RoundedButton(
                         text='', sub_key='', image='images/enter.png', font_size=24, font_name='fonts/MPLUS1p-Regular.ttf',
-                        size_hint=(None, None), size=(72, 72), function='Enter', on_press=self.press_enter
+                        size_hint=(None, None), size=(120, 90), function='Enter', on_press=self.press_enter
                     )
                 elif mapping[0] == 'Space':
                     btn = RoundedButton(
                         text='空白/変換', sub_key='', font_size=24, font_name='fonts/MPLUS1p-Regular.ttf',
-                        size_hint=(None, None), size=(72, 72), function='Space'
+                        size_hint=(None, None), size=(120, 90), function='Space'
                     )
                 elif mapping[0] == 'Daku-on':
                     btn = RoundedButton(
                         text='', sub_key='', image='images/daku-on.png', font_size=24, font_name='fonts/MPLUS1p-Regular.ttf',
-                        size_hint=(None, None), size=(72, 72), function='Daku-on'
+                        size_hint=(None, None), size=(90, 90), function='Daku-on'
                     )
                 elif mapping[0] == 'English':
                     btn = RoundedButton(
                         text='', sub_key='', image='images/english.png', font_size=24, font_name='fonts/MPLUS1p-Regular.ttf',
-                        size_hint=(None, None), size=(72, 72), function='English'
+                        size_hint=(None, None), size=(120, 90), function='English'
                     )
                 btn.bind(on_release=self.on_key_release)
             grid.add_widget(btn)
