@@ -404,7 +404,6 @@ class FlickPopup(FloatLayout):
             (135, 225),  # up
             (225, 135),  # right
             (135, 45),   # down
-
         ]
 
         for i, char in enumerate(mappings):
@@ -462,6 +461,8 @@ class FlickKey(Button):
         if not self.popup:
             self.popup = FlickPopup(self.mappings, popup_center, self.font_name, font_size=32)
             self.overlay.add_widget(self.popup)
+        Clock.schedule_once(lambda dt: setattr(self.popup, 'pos', (popup_center[0] - 135, popup_center[1] - 135)), 0)
+
         return True
 
     def on_touch_move(self, touch):
