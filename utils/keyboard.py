@@ -146,7 +146,8 @@ class QwertyKeyboard(FloatLayout):
         self.build_qwerty_keyboard()  # Build the QWERTY keyboard layout
         self.add_widget(self.main_layout)
 
-        overlay = FloatLayout(size_hint=(1, 1))
+        self.overlay = FloatLayout(size_hint=(1, 1), pos=(0, 0))
+
         self.home_button = IconTextButton(
             text=update_text_language("home"),
             icon_path='images/home.png',
@@ -155,10 +156,8 @@ class QwertyKeyboard(FloatLayout):
             pos_hint={'top': 0.95, 'right': 0.97},
             screen_name='menu',
         )
-        overlay.add_widget(self.home_button)
-        self.flick_overlay = FloatLayout(size_hint=(1, 1), pos=(0, 0))
-        self.add_widget(overlay)  # Add overlay last so it's on top
-        self.add_widget(self.flick_overlay)  # Add flick overlay for Japanese input
+        self.overlay.add_widget(self.home_button)
+        self.add_widget(self.overlay)  # Add flick overlay for Japanese input
     
     def build_qwerty_keyboard(self):
         self.language_mode = 'english'  # Set the language mode to English
@@ -273,13 +272,13 @@ class QwertyKeyboard(FloatLayout):
         # Example flick mappings for common Japanese columns (10 columns)
         self.main_layout.clear_widgets()  # Clear the main layout
         grid = GridLayout(cols=4, spacing=6, padding=(100,0,100,0), size_hint_y=None, height=300)
-        with self.flick_overlay.canvas.before:
+        with self.overlay.canvas.before:
             Color(1, 0, 0, 0.2)
             from kivy.graphics import Rectangle
-            Rectangle(pos=self.flick_overlay.pos, size=self.flick_overlay.size)
+            Rectangle(pos=self.overlay.pos, size=self.overlay.size)
         for mapping in self.flick_mappings:
             if len(mapping) == 5 and type(mapping[0]) is str:
-                btn = FlickKey(mappings=mapping, text_input=self.text_input,actual_text=self.actual_text_input, overlay=self.flick_overlay,
+                btn = FlickKey(mappings=mapping, text_input=self.text_input,actual_text=self.actual_text_input, overlay=self.overlay,
                             size_hint=(None, None), size=(90, 90))
             else:
                 if mapping[0] == 'Backspace':

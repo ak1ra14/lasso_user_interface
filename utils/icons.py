@@ -395,7 +395,7 @@ class FlickPopup(FloatLayout):
         super().__init__(**kwargs)
         self.size_hint = (None, None)
         self.size = (270, 270)
-        self.pos = (center_pos[0] - 90, center_pos[1] - 90)
+        self.pos = (center_pos[0] - 135, center_pos[1] - 135)  # Center the popup at the given position
         self.labels = []
         # Order: center, up, right, down, left
         positions = [
@@ -460,8 +460,17 @@ class FlickKey(Button):
         print(f"Popup center: {popup_center}, Key center: ({key_cx}, {key_cy}), Overlay pos: ({overlay_cx}, {overlay_cy})")
         if not self.popup:
             self.popup = FlickPopup(self.mappings, popup_center, self.font_name, font_size=32)
+            print(f"Creating popup at {self.popup.pos} with mappings: {self.mappings}")
             self.overlay.add_widget(self.popup)
-        Clock.schedule_once(lambda dt: setattr(self.popup, 'pos', (popup_center[0] - 135, popup_center[1] - 135)), 0)
+            # Bind overlay position/size to update popup position
+            def update_popup_pos(*args):
+                key_cx, key_cy = self.to_window(*self.center)
+                overlay_cx, overlay_cy = self.overlay.to_window(*self.overlay.pos)
+                popup_center = (key_cx - overlay_cx, key_cy - overlay_cy)
+                self.popup.pos = (popup_center[0] - self.popup.size[0] // 2, popup_center[1] - self.popup.size[1] // 2)
+            self.overlay.bind(pos=update_popup_pos, size=update_popup_pos)
+            # Optionally, also bind self (the FlickKey) in case it moves
+            self.bind(pos=update_popup_pos, size=update_popup_pos)
 
         return True
 
