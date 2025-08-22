@@ -394,18 +394,19 @@ class FlickPopup(FloatLayout):
     def __init__(self, mappings, center_pos, font_name, font_size=32, **kwargs):
         super().__init__(**kwargs)
         self.size_hint = (None, None)
-        self.size = (180, 180)
+        self.size = (270, 270)
         self.pos = (center_pos[0] - 90, center_pos[1] - 90)
         self.labels = []
         # Order: center, up, right, down, left
         positions = [
-            (90, 90),    # center
-            (0, 90),    #left
-            (90, 180),   # up
-            (180, 90),   # right
-            (90, 0),    # down
-            # left
+            (135, 135),  # center (popup center is at (135, 135) in a 270x270 popup)
+            (45, 135),   # left
+            (135, 225),  # up
+            (225, 135),  # right
+            (135, 45),   # down
+
         ]
+
         for i, char in enumerate(mappings):
             if not char: continue
             lbl = Label(text=char, font_size=font_size, font_name=font_name,
@@ -425,10 +426,11 @@ class FlickPopup(FloatLayout):
             lbl.bg_color.a = 1.0 if i == idx else (0.7 if i==0 else 0.5)
 
 class FlickKey(Button):
-    def __init__(self, mappings, text_input, overlay=None, threshold=20, **kwargs):
+    def __init__(self, mappings, text_input,actual_text, overlay=None, threshold=20, **kwargs):
         super().__init__(**kwargs)
         self.mappings = list(mappings) + [None] * (5 - len(mappings))
         self.text_input = text_input
+        self.actual_text_input = actual_text  # Store the actual text input
         self.overlay = overlay  # pass overlay from parent
         self._touch_start = None
         self.popup = None
@@ -456,6 +458,7 @@ class FlickKey(Button):
         overlay_cx, overlay_cy = self.overlay.to_window(*self.overlay.pos)
         # Popup center relative to overlay
         popup_center = (key_cx - overlay_cx, key_cy - overlay_cy)
+        print(f"Popup center: {popup_center}, Key center: ({key_cx}, {key_cy}), Overlay pos: ({overlay_cx}, {overlay_cy})")
         if not self.popup:
             self.popup = FlickPopup(self.mappings, popup_center, self.font_name, font_size=32)
             self.overlay.add_widget(self.popup)
@@ -490,6 +493,7 @@ class FlickKey(Button):
         if chosen:
             try:
                 self.text_input.insert_text(chosen)
+                self.actual_text_input = self.actual_text_input[:self.text_input.cursor_index()] + chosen + self.actual_text_input[self.text_input.cursor_index():]
             except Exception:
                 self.text_input.text += chosen
         # Remove popup

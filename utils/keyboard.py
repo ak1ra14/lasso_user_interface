@@ -270,11 +270,11 @@ class QwertyKeyboard(FloatLayout):
     def build_flick_keyboard(self):
         # Example flick mappings for common Japanese columns (10 columns)
         self.main_layout.clear_widgets()  # Clear the main layout
-        grid = GridLayout(cols=4, spacing=6, size_hint_y=None, height=300)
+        grid = GridLayout(cols=4, spacing=6, padding=(100,0,100,0), size_hint_y=None, height=300)
         self.overlay = FloatLayout(size_hint=(1, 1))
         for mapping in self.flick_mappings:
             if len(mapping) == 5 and type(mapping[0]) is str:
-                btn = FlickKey(mappings=mapping, text_input=self.text_input, overlay=self.overlay,
+                btn = FlickKey(mappings=mapping, text_input=self.text_input,actual_text=self.actual_text_input, overlay=self.overlay,
                             size_hint=(None, None), size=(90, 90))
             else:
                 if mapping[0] == 'Backspace':
@@ -302,7 +302,7 @@ class QwertyKeyboard(FloatLayout):
                         text='', sub_key='', image='images/english.png', font_size=24, font_name='fonts/MPLUS1p-Regular.ttf',
                         size_hint=(None, None), size=(120, 90), function='English'
                     )
-                btn.bind(on_release=self.on_key_release)
+            btn.bind(on_release=self.on_key_release)
             grid.add_widget(btn)
             grid.bind(minimum_height=grid.setter('height'))
 
@@ -356,6 +356,8 @@ class QwertyKeyboard(FloatLayout):
         elif instance.function == 'Flick':
             self.build_flick_keyboard()
         elif instance.function == "Daku-on":
+            print(self.actual_text_input)
+            print(self.text_input.text)
             self.actual_text_input = self.actual_text_input[:-1] + self.change_dakuon(self.actual_text_input[-1])  # Add Daku-on character
             if self.visibility:
                 self.text_input.text = self.text_input.text[:-1] + self.change_dakuon(self.text_input.text[-1]) # Add Daku-on character
@@ -365,7 +367,7 @@ class QwertyKeyboard(FloatLayout):
                 self.start_index = cursor_pos  # Reset the start index
             self.actual_text_input = self.actual_text_input[:cursor_pos] + instance.text + self.actual_text_input[cursor_pos:]
             if self.visibility:
-                self.text_input.text = self.text_input.text[:cursor_pos] + instance.text + self.text_input.text[cursor_pos:]
+                    self.text_input.text = self.text_input.text[:cursor_pos] + instance.text + self.text_input.text[cursor_pos:]
             else:
                 self.text_input.text = self.text_input.text[:cursor_pos] + '*' * len(instance.text) + self.text_input.text[cursor_pos:]
             ti.cursor = (cursor_pos + len(instance.text), 0)

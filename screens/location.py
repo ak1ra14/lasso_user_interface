@@ -113,6 +113,7 @@ class Bed1Screen(KeyboardScreen):
         update_current_page('bed1')
         self.config = load_config("config/settings.json", "bed_json")
         self.keyboard.text_input.text = self.config.get("nbeds", [1, ['Bed 1']])[1][0]
+        self.keyboard.actual_text_input = self.keyboard.text_input.text
 
         
 
@@ -138,6 +139,7 @@ class Bed2Screen(KeyboardScreen):
         self.keyboard.title = update_text_language('bed_2')
         self.config = load_config("config/settings.json", "bed_json")
         self.keyboard.text_input.text = self.config.get("nbeds", [2, [1, 2]])[1][1]
+        self.keyboard.actual_text_input = self.keyboard.text_input.text
 
 class DeviceKeyboardScreen(KeyboardScreen):
     def __init__(self, **kwargs):
@@ -161,3 +163,4 @@ class DeviceKeyboardScreen(KeyboardScreen):
         update_current_page('device_keyboard')
         self.config = load_config("config/settings.json", "v3_json")
         self.keyboard.text_input.text = self.config.get("location", "Room 1")
+        self.keyboard.actual_text_input = self.keyboard.text_input.text
