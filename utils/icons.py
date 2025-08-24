@@ -261,7 +261,7 @@ class CustomSwitch(FloatLayout):
         if self.collide_point(*touch.pos):
             self.active = not self.active
             App.get_running_app().play_sound()  # Play sound on toggle
-            freeze_ui(0.3)  # Freeze UI for 0.3 seconds
+            freeze_ui(0.2)  # Freeze UI for 0.2 seconds
             return True
         return False
 

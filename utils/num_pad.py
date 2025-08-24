@@ -130,5 +130,5 @@ class RoundedButton(Button):
     
     def on_press(self):
         App.get_running_app().play_sound()  # Play sound on press
-        freeze_ui(0.3)
+        freeze_ui(0.2)
 
