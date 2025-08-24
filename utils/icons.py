@@ -511,4 +511,4 @@ class FlickKey(Button):
         self.color_instruction.rgba = value
 
     def on_press(self):
-        print("Pressed")
+        freeze_ui(0.2)
