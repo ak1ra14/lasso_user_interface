@@ -17,6 +17,7 @@ import sys, os
 import mozcpy
 from kivy.app import App
 from utils.config_loader import load_config, update_text_language
+import time 
 
 
 class KeyboardScreen(SafeScreen):
@@ -134,7 +135,7 @@ class QwertyKeyboard(FloatLayout):
             ('は', 'ひ', 'ふ', 'へ', 'ほ'),
             ('Space',),
             ('ま', 'み', 'む', 'め', 'も'),
-            ('や', 'ゃ', 'ゆ', 'ぇ', 'よ'),
+            ('や', '', 'ゆ', '', 'よ'),
             ('ら', 'り', 'る', 'れ', 'ろ'),
             ('Enter',),
             ('Daku-on',),
@@ -271,15 +272,16 @@ class QwertyKeyboard(FloatLayout):
     def build_flick_keyboard(self):
         # Example flick mappings for common Japanese columns (10 columns)
         self.main_layout.clear_widgets()  # Clear the main layout
+        self.flick_index = 0
+        self.selected_flick_mappings = None
+        self.last_click_time = 0 
+
         grid = GridLayout(cols=4, spacing=6, padding=(100,0,100,0), size_hint_y=None, height=300)
-        with self.overlay.canvas.before:
-            Color(1, 0, 0, 0.2)
-            from kivy.graphics import Rectangle
-            Rectangle(pos=self.overlay.pos, size=self.overlay.size)
         for mapping in self.flick_mappings:
             if len(mapping) == 5 and type(mapping[0]) is str:
                 btn = FlickKey(mappings=mapping, text_input=self.text_input,actual_text=self.actual_text_input, overlay=self.overlay,
                             size_hint=(None, None), size=(90, 90))
+                btn.bind(on_release=self.on_key_release) 
             else:
                 if mapping[0] == 'Backspace':
                     btn = RoundedButton(
@@ -306,17 +308,17 @@ class QwertyKeyboard(FloatLayout):
                         text='', sub_key='', image='images/english.png', font_size=24, font_name='fonts/MPLUS1p-Regular.ttf',
                         size_hint=(None, None), size=(120, 90), function='English'
                     )
-            btn.bind(on_release=self.on_key_release)
+                btn.bind(on_release=self.on_key_release)
             grid.add_widget(btn)
             grid.bind(minimum_height=grid.setter('height'))
 
         self.main_layout.add_widget(grid)
 
     def on_key_release(self, instance):
+        print("on_release fired for", instance)
         ti = self.text_input #to indicate the position of the input in a word
         ti.focus = True  # Keep the text input focused
         cursor_pos = ti.cursor_index()
-
         self.text_input.bind(text=self.limit_text_length)  # Bind the text input to limit its length
         if hasattr(instance, 'is_long_press') and instance.is_long_press and instance.sub_key:
             # Insert subkey at cursor position
@@ -326,6 +328,18 @@ class QwertyKeyboard(FloatLayout):
             else:
                 ti.text = ti.text[:cursor_pos] + '*' * len(instance.sub_key) + ti.text[cursor_pos:]
             ti.cursor = (cursor_pos + len(instance.sub_key), 0)
+        elif hasattr(instance,'mappings'):
+            now = time.time()
+            if self.selected_flick_mappings == instance.mappings and (now - self.last_click_time) < 1.0:
+                self.last_click_time = now
+                self.flick_index += 1 if self.flick_index < 4 else 0 
+                ti.text = ti.text[:cursor_pos - 2] + instance.mappings[self.flick_index] + ti.text[cursor_pos:]
+                self.actual_text_input = self.actual_text_input[:cursor_pos - 2] + instance.mappings[self.flick_index] + self.actual_text_input[cursor_pos:]
+            else:
+                self.last_click_time = now
+                self.selected_flick_mappings = instance.mappings
+                self.flick_index = 0
+
         elif instance.function == 'Space':
             if self.language_mode == 'japanese' and self.start_index < cursor_pos and not self.converting:
                 # Convert the text to Kanji using the converter

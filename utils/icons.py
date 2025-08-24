@@ -392,10 +392,9 @@ from kivy.graphics import Color, RoundedRectangle
 
 class FlickPopup(FloatLayout):
     def __init__(self, mappings, center_pos, font_name, font_size=32, **kwargs):
-        super().__init__(**kwargs)
-        self.size_hint = (None, None)
+        super().__init__(size_hint=(None, None), **kwargs)
         self.size = (270, 270)
-        self.pos = (center_pos[0] - 135, center_pos[1] - 135)  # Center the popup at the given position
+        self.pos = (center_pos[0] - self.size[0] // 2, center_pos[1] - self.size[1] // 2)
         self.labels = []
         # Order: center, up, right, down, left
         positions = [
@@ -410,13 +409,13 @@ class FlickPopup(FloatLayout):
             if not char: continue
             lbl = Label(text=char, font_size=font_size, font_name=font_name,
                         size_hint=(None, None), size=(90, 90),
-                        pos=(positions[i][0]-30, positions[i][1]-30),
+                        pos=(self.pos[0] + positions[i][0] - 45, self.pos[1] + positions[i][1] - 45),
                         color=(1,1,1,1))
             with lbl.canvas.before:
                 lbl.bg_color = Color(0.22, 0.45, 0.91, 0.7 if i==0 else 0.5)
                 lbl.bg_rect = RoundedRectangle(pos=lbl.pos, size=lbl.size, radius=[20])
-            lbl.bind(pos=lambda inst, val: setattr(inst.bg_rect, 'pos', val))
-            lbl.bind(size=lambda inst, val: setattr(inst.bg_rect, 'size', val))
+            # lbl.bind(pos=lambda inst, val: setattr(inst.bg_rect, 'pos', val))
+            # lbl.bind(size=lambda inst, val: setattr(inst.bg_rect, 'size', val))
             self.add_widget(lbl)
             self.labels.append(lbl)
 
@@ -457,22 +456,11 @@ class FlickKey(Button):
         overlay_cx, overlay_cy = self.overlay.to_window(*self.overlay.pos)
         # Popup center relative to overlay
         popup_center = (key_cx - overlay_cx, key_cy - overlay_cy)
-        print(f"Popup center: {popup_center}, Key center: ({key_cx}, {key_cy}), Overlay pos: ({overlay_cx}, {overlay_cy})")
         if not self.popup:
             self.popup = FlickPopup(self.mappings, popup_center, self.font_name, font_size=32)
-            print(f"Creating popup at {self.popup.pos} with mappings: {self.mappings}")
             self.overlay.add_widget(self.popup)
-            # Bind overlay position/size to update popup position
-            def update_popup_pos(*args):
-                key_cx, key_cy = self.to_window(*self.center)
-                overlay_cx, overlay_cy = self.overlay.to_window(*self.overlay.pos)
-                popup_center = (key_cx - overlay_cx, key_cy - overlay_cy)
-                self.popup.pos = (popup_center[0] - self.popup.size[0] // 2, popup_center[1] - self.popup.size[1] // 2)
-            self.overlay.bind(pos=update_popup_pos, size=update_popup_pos)
-            # Optionally, also bind self (the FlickKey) in case it moves
-            self.bind(pos=update_popup_pos, size=update_popup_pos)
 
-        return True
+        return super().on_touch_down(touch)
 
     def on_touch_move(self, touch):
         if self._touch_start is None or not self.popup:
@@ -490,7 +478,7 @@ class FlickKey(Button):
 
     def on_touch_up(self, touch):
         if self._touch_start is None or not self.popup:
-            return False
+            return super().on_touch_up(touch)
         dx = touch.x - self._touch_start[0]
         dy = touch.y - self._touch_start[1]
         idx = 0
@@ -511,7 +499,7 @@ class FlickKey(Button):
             self.popup.parent.remove_widget(self.popup)
         self.popup = None
         self._touch_start = None
-        return True
+        return super().on_touch_up(touch)
 
     def _update_rect(self, instance, value):
         """Callback to update the position and size of the rounded rectangle."""
@@ -521,3 +509,6 @@ class FlickKey(Button):
     def _update_color(self, instance, value):
         """Callback to update the color of the rounded rectangle."""
         self.color_instruction.rgba = value
+
+    def on_press(self):
+        print("Pressed")
