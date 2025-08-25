@@ -3,6 +3,7 @@ from kivy.core.window import Window
 from kivy.app import App
 from kivy.clock import Clock
 
+## freese functionality to block all UI interactions for a short duration to prevent double tapping in lasso device
 class UILockOverlay(FloatLayout):
     def on_touch_down(self, touch):
         return True  # Block all touches

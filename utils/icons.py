@@ -168,6 +168,9 @@ class IconTextButton(Button):
         return len(self.get_property_observers('on_press')) > 1
 
 class CircularImageButton(Button):
+    """
+    A circular button with an image centered inside. mainly used for footer navigation arrows.
+    """
     def __init__(self, image_path, diameter=80, screen_name=None, **kwargs):
         super().__init__(**kwargs)
         self.screen_name = screen_name  # Store the screen name for navigation
@@ -227,6 +230,9 @@ class CircularImageButton(Button):
             App.get_running_app().sm.current = self.screen_name
 
 class CustomSwitch(FloatLayout):
+    """
+    A custom switch widget with rounded corners and a sliding thumb.
+    Integrated in toggle button for bed mode and bed alerts screens"""
     active = BooleanProperty(False)
 
     def __init__(self, **kwargs):
@@ -267,6 +273,9 @@ class CustomSwitch(FloatLayout):
 
 
 class ToggleButton(BoxLayout):
+    '''
+    A toggle button with a label on the left, a switch in the middle, and a label on the right.
+    '''
     def __init__(self, text_left="", text_right="", text_size_l_r=(75, 130), switch=None, **kwargs):
         super().__init__(orientation='horizontal', spacing=7.5, padding=7.5, **kwargs)
         self.size_hint = (None, None)
@@ -348,6 +357,9 @@ class PageIndicatorWidget(Widget):
             self.dots.append(dot)
 
 class PageIndicator(BoxLayout):
+    '''
+    A horizontal layout that contains page indicator dots.
+    '''
     def __init__(self, num_pages=2, current_page=0, **kwargs):
         super().__init__(orientation='horizontal', spacing=10, **kwargs)
         self.num_pages = num_pages
@@ -391,6 +403,9 @@ from kivy.uix.label import Label
 from kivy.graphics import Color, RoundedRectangle
 
 class FlickPopup(FloatLayout):
+    '''
+    A popup that appears to select different characters in the same character column when a flick key is pressed.
+    '''
     def __init__(self, mappings, center_pos, font_name, font_size=32, **kwargs):
         super().__init__(size_hint=(None, None), **kwargs)
         self.size = (270, 270)
@@ -414,8 +429,7 @@ class FlickPopup(FloatLayout):
             with lbl.canvas.before:
                 lbl.bg_color = Color(0.22, 0.45, 0.91, 0.7 if i==0 else 0.5)
                 lbl.bg_rect = RoundedRectangle(pos=lbl.pos, size=lbl.size, radius=[20])
-            # lbl.bind(pos=lambda inst, val: setattr(inst.bg_rect, 'pos', val))
-            # lbl.bind(size=lambda inst, val: setattr(inst.bg_rect, 'size', val))
+
             self.add_widget(lbl)
             self.labels.append(lbl)
 
@@ -424,6 +438,8 @@ class FlickPopup(FloatLayout):
             lbl.bg_color.a = 1.0 if i == idx else (0.7 if i==0 else 0.5)
 
 class FlickKey(Button):
+    '''
+    A button that supports flick gestures to input different characters.'''
     def __init__(self, mappings, text_input,actual_text, overlay=None, threshold=20, **kwargs):
         super().__init__(**kwargs)
         self.mappings = list(mappings) + [None] * (5 - len(mappings))
@@ -447,6 +463,8 @@ class FlickKey(Button):
         self.bind(pos=self._update_rect, size=self._update_rect)
 
     def on_touch_down(self, touch):
+        '''
+        Handle touch down event to show the flick popup.'''
         if not self.collide_point(*touch.pos):
             return False
         self._touch_start = touch.pos
@@ -463,6 +481,8 @@ class FlickKey(Button):
         return super().on_touch_down(touch)
 
     def on_touch_move(self, touch):
+        '''
+        Handle touch move event to update the highlighted character in the popup.'''
         if self._touch_start is None or not self.popup:
             return False
         dx = touch.x - self._touch_start[0]
@@ -477,6 +497,9 @@ class FlickKey(Button):
         return True
 
     def on_touch_up(self, touch):
+        '''
+        Handle touch up event to select the character and remove the popup.
+        '''
         if self._touch_start is None or not self.popup:
             return super().on_touch_up(touch)
         dx = touch.x - self._touch_start[0]

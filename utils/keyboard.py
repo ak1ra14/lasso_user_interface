@@ -21,6 +21,9 @@ import time
 
 
 class KeyboardScreen(SafeScreen):
+    '''
+    A screen that provides a full keyboard functionalities for user input.
+    '''
     def __init__(self, title, **kwargs):
         super().__init__(**kwargs)
         self.title = title
@@ -36,6 +39,9 @@ class KeyboardScreen(SafeScreen):
         self.keyboard.home_button.label.text = update_text_language("home")
         
 class QwertyKeyboard(FloatLayout):
+    '''
+    A full QWERTY keyboard with English and Japanese input modes, including flick input for Japanese.
+    '''
     shift_activate = BooleanProperty(False)
     MAX_CHARS = 100  # Maximum characters allowed in the text input
 
@@ -88,6 +94,7 @@ class QwertyKeyboard(FloatLayout):
         self.add_widget(self.text_input)
         self.add_widget(partition)
 
+#### English keyboard layouts #######
         self.shift_keys = [
             ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'],
             ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'],
@@ -109,6 +116,8 @@ class QwertyKeyboard(FloatLayout):
             [' ', '*', '\"', '\'', ':', ';', '!', '?', ' '],
             [' ', ' ', ' ', ' ', ' ', ' ']
         ]
+
+#### Japanese keyboard layouts #######
         self.japanese_keys = [
             ['あ', 'か', 'さ', 'た', 'な', 'は', 'ま', 'や', 'ら', 'わ','Backspace'],
             ['い', 'き', 'し', 'ち', 'に', 'ひ', 'み', '', 'り', 'を', 'Space'],
@@ -125,6 +134,8 @@ class QwertyKeyboard(FloatLayout):
             ['オ', 'コ', 'ソ', 'ト', 'ノ', 'ホ', 'モ', 'ヨ', 'ロ', '','']
             # Add more rows as needed
         ]
+
+###### Flick keyboard layouts #######
         self.flick_mappings = [
             ('あ', 'い', 'う', 'え', 'お'),
             ('か', 'き', 'く', 'け', 'こ'),
@@ -143,10 +154,11 @@ class QwertyKeyboard(FloatLayout):
             ('、', '。', '?', '!', ''),
             ('English',)
         ]
-
+        
         self.build_qwerty_keyboard()  # Build the QWERTY keyboard layout
         self.add_widget(self.main_layout)
 
+        #overlay used for flick key popup 
         self.overlay = FloatLayout(size_hint=(1, 1), pos=(0, 0))
 
         self.home_button = IconTextButton(
@@ -190,6 +202,7 @@ class QwertyKeyboard(FloatLayout):
                 width= width,
                 pos_hint={'center_x': 0.5}
             )
+            ## Based on the key, create different buttons with functions 
             for key, sub_key, shift_key in zip(row, subrow, shift_row):
                 btn = None
                 if key == 'Shift':
@@ -239,6 +252,7 @@ class QwertyKeyboard(FloatLayout):
                 size_hint_x=None,
                 width=num_keys * key_width + (num_keys - 1) * key_spacing
             )
+            # Based on the key, create different buttons with functions
             for key, sub_key in zip(row, subrow):
                 btn = None
                 if key == 'English':
@@ -264,7 +278,7 @@ class QwertyKeyboard(FloatLayout):
                 else:
                     btn = RoundedButton(text=key, sub_key=sub_key, font_size=24, font_name='fonts/MPLUS1p-Regular.ttf',
                                         size_hint_x=None, width=key_width)
-                btn.bind(on_release=self.on_key_release)
+                btn.bind(on_release=self.on_key_release) # Bind the button release event
                 self.japanese_buttons.append(btn)
                 row_layout.add_widget(btn)
             self.main_layout.add_widget(row_layout)
@@ -277,6 +291,7 @@ class QwertyKeyboard(FloatLayout):
         self.last_click_time = 0 
 
         grid = GridLayout(cols=4, spacing=6, padding=(100,0,100,0), size_hint_y=None, height=300)
+        # Create buttons based on flick mappings
         for mapping in self.flick_mappings:
             if len(mapping) == 5 and type(mapping[0]) is str:
                 btn = FlickKey(mappings=mapping, text_input=self.text_input,actual_text=self.actual_text_input, overlay=self.overlay,
@@ -315,11 +330,14 @@ class QwertyKeyboard(FloatLayout):
         self.main_layout.add_widget(grid)
 
     def on_key_release(self, instance):
+        '''
+         Handle key release events for various keyboard buttons.'''
         print("on_release fired for", instance)
         ti = self.text_input #to indicate the position of the input in a word
         ti.focus = True  # Keep the text input focused
         cursor_pos = ti.cursor_index()
         self.text_input.bind(text=self.limit_text_length)  # Bind the text input to limit its length
+        # when a key is pressed for more than two seconds sub key will be used instead of the main key
         if hasattr(instance, 'is_long_press') and instance.is_long_press and instance.sub_key:
             # Insert subkey at cursor position
             self.actual_text_input = self.actual_text_input[:cursor_pos] + instance.sub_key + self.actual_text_input[cursor_pos:]
@@ -328,6 +346,7 @@ class QwertyKeyboard(FloatLayout):
             else:
                 ti.text = ti.text[:cursor_pos] + '*' * len(instance.sub_key) + ti.text[cursor_pos:]
             ti.cursor = (cursor_pos + len(instance.sub_key), 0)
+        # if the same flick key is pressed within one second cycle through the options
         elif hasattr(instance,'mappings'):
             now = time.time()
             if self.selected_flick_mappings == instance.mappings and (now - self.last_click_time) < 1.0:
@@ -339,8 +358,9 @@ class QwertyKeyboard(FloatLayout):
                 self.last_click_time = now
                 self.selected_flick_mappings = instance.mappings
                 self.flick_index = 0
-
+        # Space key function 
         elif instance.function == 'Space':
+            #if japanese keyboard, the space key is used for both word conversion and space insertion
             if self.language_mode == 'japanese' and self.start_index < cursor_pos and not self.converting:
                 # Convert the text to Kanji using the converter
                 self.converting = True
@@ -432,6 +452,8 @@ class QwertyKeyboard(FloatLayout):
 
 
 class RoundedButton(Button):
+    '''
+    A custom button with rounded corners, optional image, sub-key display, and long-press functionality.'''
     def __init__(self, text = None,sub_key = None, shift_key = None,function = None, image = None, background_color = (0.2, 0.2, 0.2, 1), font_name='fonts/Roboto-Regular.ttf', **kwargs):
         super().__init__(font_name=font_name, **kwargs)
         self.text = text
@@ -516,7 +538,7 @@ class RoundedButton(Button):
     def on_press(self):
         print(f"Button {self.text} pressed")
         App.get_running_app().play_sound()
-        freeze_ui(0.3)
+        freeze_ui(0.3)  # freeze the UI for 0.3 seconds to prevent multiple presses
 
 
 class SeparatorLine(Widget):
