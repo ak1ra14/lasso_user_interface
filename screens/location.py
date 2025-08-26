@@ -109,11 +109,12 @@ class Bed1Screen(KeyboardScreen):
         """
         Override the on_pre_enter method to set the keyboard title.
         """
-        super().on_pre_enter()
         update_current_page('bed1')
         self.config = load_config("config/settings.json", "bed_json")
         self.keyboard.text_input.text = self.config.get("nbeds", [1, ['Bed 1']])[1][0]
         self.keyboard.actual_text_input = self.keyboard.text_input.text
+        super().on_pre_enter()
+
 
         
 
@@ -135,11 +136,12 @@ class Bed2Screen(KeyboardScreen):
         """
         Override the on_pre_enter method to set the keyboard title.
         """
-        super().on_pre_enter()
         self.keyboard.title = update_text_language('bed_2')
         self.config = load_config("config/settings.json", "bed_json")
         self.keyboard.text_input.text = self.config.get("nbeds", [2, [1, 2]])[1][1]
         self.keyboard.actual_text_input = self.keyboard.text_input.text
+        super().on_pre_enter()
+
 
 class DeviceKeyboardScreen(KeyboardScreen):
     def __init__(self, **kwargs):
@@ -159,8 +161,9 @@ class DeviceKeyboardScreen(KeyboardScreen):
         """
         Override the on_pre_enter method to set the keyboard title.
         """
-        super().on_pre_enter()
         update_current_page('device_keyboard')
         self.config = load_config("config/settings.json", "v3_json")
         self.keyboard.text_input.text = self.config.get("location", "Room 1")
         self.keyboard.actual_text_input = self.keyboard.text_input.text
+        super().on_pre_enter()
+

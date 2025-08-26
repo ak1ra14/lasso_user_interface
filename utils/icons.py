@@ -440,11 +440,10 @@ class FlickPopup(FloatLayout):
 class FlickKey(Button):
     '''
     A button that supports flick gestures to input different characters.'''
-    def __init__(self, mappings, text_input,actual_text, overlay=None, threshold=20, **kwargs):
+    def __init__(self, mappings,keyboard, overlay=None, threshold=20, **kwargs):
         super().__init__(**kwargs)
         self.mappings = list(mappings) + [None] * (5 - len(mappings))
-        self.text_input = text_input
-        self.actual_text_input = actual_text  # Store the actual text input
+        self.keyboard = keyboard  # Store a reference to the keyboard
         self.overlay = overlay  # pass overlay from parent
         self._touch_start = None
         self.popup = None
@@ -513,10 +512,21 @@ class FlickKey(Button):
         chosen = self.mappings[idx]
         if chosen:
             try:
-                self.text_input.insert_text(chosen)
-                self.actual_text_input = self.actual_text_input[:self.text_input.cursor_index()] + chosen + self.actual_text_input[self.text_input.cursor_index():]
+                insert_pos = self.keyboard.text_input.cursor_index()
+                self.keyboard.text_input.text = (
+                    self.keyboard.text_input.text[:insert_pos] +
+                    chosen +
+                    self.keyboard.text_input.text[insert_pos:]
+                )
+                self.keyboard.actual_text_input = (
+                    self.keyboard.actual_text_input[:insert_pos] +
+                    chosen +
+                    self.keyboard.actual_text_input[insert_pos:]
+                )
+                self.keyboard.text_input.cursor = (insert_pos + len(chosen), 0)
             except Exception:
-                self.text_input.text += chosen
+                print('Error updating text input with chosen character')
+                self.keyboard.text_input += chosen
         # Remove popup
         if self.popup and self.popup.parent:
             self.popup.parent.remove_widget(self.popup)
@@ -534,4 +544,13 @@ class FlickKey(Button):
         self.color_instruction.rgba = value
 
     def on_press(self):
+        print(f"at position {self.keyboard.text_input.cursor_index()}. self.keyboard.last_cursor_index updated to {self.keyboard.last_cursor_index}")
+        if self.keyboard.last_click_space:
+            print('resetting index due to space key')
+            self.keyboard.last_click_space = False
+            self.keyboard.converting = False
+            self.keyboard.start_index = self.keyboard.text_input.cursor_index()
+        self.keyboard.last_cursor_index += 1
         freeze_ui(0.2)
+
+
