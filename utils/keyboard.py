@@ -19,7 +19,6 @@ from kivy.app import App
 from utils.config_loader import load_config, update_text_language
 import time 
 
-
 class KeyboardScreen(SafeScreen):
     '''
     A screen that provides a full keyboard functionalities for user input.
@@ -147,7 +146,7 @@ class QwertyKeyboard(FloatLayout):
             ('は', 'ひ', 'ふ', 'へ', 'ほ'),
             ('Space',),
             ('ま', 'み', 'む', 'め', 'も'),
-            ('や', '', 'ゆ', '', 'よ'),
+            ('や', 'ゆ', 'よ', '',''),
             ('ら', 'り', 'る', 'れ', 'ろ'),
             ('Enter',),
             ('Daku-on',),
@@ -337,9 +336,10 @@ class QwertyKeyboard(FloatLayout):
         ti.focus = True  # Keep the text input focused
         cursor_pos = ti.cursor_index()
         self.text_input.bind(text=self.limit_text_length)  # Bind the text input to limit its length
+        if hasattr(instance, 'function'):
+            if instance.function != 'Space':
+                self.converting = False  # Reset the converting flag if not space key
         # when a key is pressed for more than two seconds sub key will be used instead of the main key
-        if instance.function != 'Space':
-            self.converting = False  # Reset the converting flag if not space key
         if hasattr(instance, 'is_long_press') and instance.is_long_press and instance.sub_key:
             # Insert subkey at cursor position
             self.actual_text_input = self.actual_text_input[:cursor_pos] + instance.sub_key + self.actual_text_input[cursor_pos:]
@@ -354,10 +354,10 @@ class QwertyKeyboard(FloatLayout):
             now = time.time()
             if self.selected_flick_mappings == instance.mappings and (now - self.last_click_time) < 1.0:
                 self.last_click_time = now
-                if self.flick_index < 4:
-                    self.flick_index += 1 
-                else:
-                    self.flick_index = 0 
+                for _ in range(5):  # At most 5 tries to avoid infinite loop
+                    self.flick_index = (self.flick_index + 1) % 5
+                    if instance.mappings[self.flick_index]:
+                        break
                 ti.text = ti.text[:cursor_pos - 2] + instance.mappings[self.flick_index] + ti.text[cursor_pos:]
                 self.actual_text_input = self.actual_text_input[:cursor_pos - 2] + instance.mappings[self.flick_index] + self.actual_text_input[cursor_pos:]
             else:

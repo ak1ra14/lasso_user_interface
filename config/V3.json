@@ -14,6 +14,6 @@
     "alert_lights_ip2": "192.168.1.202",
     "wifi_ssid": "SoundEyeHq",
     "wifi_password": "afafafafaf",
-    "previous_mode": "bed.json",
+    "previous_mode": "fall.json",
     "placeholder": "placeholder"
 }
