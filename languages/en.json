@@ -34,6 +34,8 @@
   "sit_to_stand": "Sit-to-Stand",
   "fall_besides_bed": "Fall besides bed",
   "alert_without_video": "Alert without video",
+  "no_alerts": "No Alerts",
+  "bed_exit_and_fall": "Bed Exit & Fall",
   "fall": "Fall",
   "second": "seconds",
   "scanning_wifi": "Scanning Wi-Fi",

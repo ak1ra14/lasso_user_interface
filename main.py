@@ -39,6 +39,9 @@ from utils.config_loader import update_text_language
 
 class MyApp(App):
     def build(self):
+        '''
+        Build the main application. creating instance of ScreenManager and adding all screens to it.
+        '''
         self.sm = ScreenManager(transition=NoTransition())
         self.sound = SoundLoader.load('sound/tap.mp3')  # Load sound once
         self.en_dictionary = load_config('languages/en.json')
@@ -50,6 +53,7 @@ class MyApp(App):
         self.default_wifi_ssid = 'SoundEyeHq'
         self.default_wifi_password = 'afafafafaf'
 
+        # Add all screens to the ScreenManager
         self.sm.add_widget(MonitorScreen(name='monitor'))
         self.sm.add_widget(MenuScreen1(name='menu'))
         self.sm.add_widget(MenuScreen2(name='menu2'))
@@ -114,10 +118,15 @@ class MyApp(App):
             print("Sound file not found or unsupported format.")
     
     def on_user_activity(self, *args):
+        '''
+        Reset the screensaver timer and the time bar timer on user activity.'''
         self.reset_screensaver_timer()
         self.reset_timer()
     
     def reset_screensaver_timer(self, *args):
+        '''
+        Reset the screensaver timer.
+        '''
         self.config = load_config('config/settings.json', 'v3_json')
         if self.screensaver_event:
             self.screensaver_event.cancel()
@@ -125,10 +134,16 @@ class MyApp(App):
         self.screensaver_event = Clock.schedule_once(self.activate_screensaver, timeout)
 
     def activate_screensaver(self, *args):
+        '''
+        Activate the screensaver by switching to the dark screen.
+        '''
         if self.sm.current != 'dark':
             self.sm.current = 'dark'
 
     def _update_time_bar(self, dt):
+        '''
+        Update the time bar every second. If time runs out, switch to menu screen.
+        '''
         self.time_left -= 1
         self.time_bar.value = self.time_left
         if self.time_left <= 0:
@@ -140,6 +155,9 @@ class MyApp(App):
                 return  # Switch to monitor screen
 
     def reset_timer(self, *args):
+        '''
+        Reset the time bar timer.
+        '''
         self.time_left = self.time_limit
         self.time_bar.value = self.time_limit
         if self._timer_event:
@@ -147,6 +165,8 @@ class MyApp(App):
         self._timer_event = Clock.schedule_interval(self._update_time_bar, 1)
 
     def on_screen_change(self, *args):
+        '''
+        Handle screen changes to show/hide the time bar and manage timers.'''
         if self.sm.current == 'dark' or self.sm.current == 'monitor':
             self.time_bar.opacity = 0  # Hide time bar in dark screen
             if self.sm.current == 'monitor':
@@ -162,6 +182,9 @@ class MyApp(App):
         self._timer_event = Clock.schedule_interval(self._update_time_bar, 1)
 
     def show_saved_popup(self):
+        '''
+        Show a popup notification that settings have been saved. when buttons are pressed 
+        '''
 
         content = BoxLayout(orientation='vertical', padding=20)
         content.add_widget(Label(text=update_text_language('saved'), font_name="fonts/MPLUS1p-Regular.ttf", font_size=24))
@@ -174,6 +197,8 @@ class MyApp(App):
         Clock.schedule_once(lambda dt: popup.dismiss(), 1.5)
 
     def check_connection(self, *args):
+        '''
+        Check network connection and update Wi-Fi SSID in config if connected.'''
         if is_connected():
             ssid = get_connected_wifi()
             if ssid:
@@ -181,17 +206,6 @@ class MyApp(App):
                 self.config['wifi_ssid'] = ssid
                 save_config('config/settings.json', 'v3_json', data=self.config)
         
-    # def connect_default_wifi(self):
-    #     connection_status = connect_wifi(self.default_wifi_ssid, self.default_wifi_password)
-    #     if connection_status: #if connected to default wifi
-    #         print("Wi-Fi connected successfully.")
-    #         self.config['wifi_ssid'] = self.default_wifi_ssid
-    #         self.config['wifi_password'] = self.default_wifi_password
-    #         save_config('config/settings.json', 'v3_json', data=self.config)
-    #     else:
-    #         print("Failed to connect to Wi-Fi.")
-    #         self.config['wifi_ssid'] = 'No Network'
-    #         save_config('config/settings.json', 'v3_json', data=self.config)
 
 def is_connected(host="8.8.8.8", port=53, timeout=3):
     """

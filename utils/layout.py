@@ -11,6 +11,9 @@ from utils.config_loader import update_text_language
 import math
 
 class HeaderBar(BoxLayout):
+    '''
+    A header bar with a title and a top-right button for menu navigation.
+    '''
     def __init__(self, title="Language", icon_path="images/home.png", button_text="home", button_screen="menu", padding=[50, 0, 50, 0], spacing=10, **kwargs):
         super().__init__(orientation='horizontal', size_hint_y=0.30, pos_hint={'top': 1}, padding=padding, spacing=spacing, **kwargs)
         self.button_text = button_text
@@ -42,6 +45,8 @@ class HeaderBar(BoxLayout):
         self.top_right_button.label.text = update_text_language(self.button_text)
 
 class FooterBar(BoxLayout):
+    '''
+    A footer bar with left/right navigation buttons and center details.'''
     def __init__(self, screen_name, **kwargs):
         super().__init__(orientation='horizontal', size_hint_y=0.2, padding=0, spacing=0, **kwargs)
 
@@ -127,6 +132,10 @@ class SeparatorLine(Widget):
 
 
 class LoadingCircle(Widget):
+    '''
+    A loading spinner with rotating dots used for wifi loading.
+    '''
+
     def __init__(self, size=80, dot_radius=8, dot_color=(0.22, 0.45, 0.91, 1), **kwargs):
         super().__init__(**kwargs)
         self.size_hint = (None, None)
