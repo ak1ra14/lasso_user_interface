@@ -2,7 +2,7 @@
     "version": "SG-S1-20250630",
     "sensor_ID": "ABC123",
     "language": "jp",
-    "location": "\u6709",
+    "location": "ROOM 1",
     "volume": 25,
     "ack_enable": "no",
     "screensaver": 90,
