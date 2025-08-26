@@ -56,7 +56,8 @@ class QwertyKeyboard(FloatLayout):
         self.title = title
         self.actual_text_input = ""
         self.visibility = True  # Flag to indicate password visibility
-        
+        self.last_cursor_index = 0 #for japanese key conversion 
+
         ###layout for the keyboard screen
         self.main_layout = BoxLayout(
             orientation='vertical', 
@@ -332,12 +333,13 @@ class QwertyKeyboard(FloatLayout):
     def on_key_release(self, instance):
         '''
          Handle key release events for various keyboard buttons.'''
-        print("on_release fired for", instance)
         ti = self.text_input #to indicate the position of the input in a word
         ti.focus = True  # Keep the text input focused
         cursor_pos = ti.cursor_index()
         self.text_input.bind(text=self.limit_text_length)  # Bind the text input to limit its length
         # when a key is pressed for more than two seconds sub key will be used instead of the main key
+        if instance.function != 'Space':
+            self.converting = False  # Reset the converting flag if not space key
         if hasattr(instance, 'is_long_press') and instance.is_long_press and instance.sub_key:
             # Insert subkey at cursor position
             self.actual_text_input = self.actual_text_input[:cursor_pos] + instance.sub_key + self.actual_text_input[cursor_pos:]
@@ -346,12 +348,16 @@ class QwertyKeyboard(FloatLayout):
             else:
                 ti.text = ti.text[:cursor_pos] + '*' * len(instance.sub_key) + ti.text[cursor_pos:]
             ti.cursor = (cursor_pos + len(instance.sub_key), 0)
+            self.last_cursor_index = ti.cursor_index()
         # if the same flick key is pressed within one second cycle through the options
         elif hasattr(instance,'mappings'):
             now = time.time()
             if self.selected_flick_mappings == instance.mappings and (now - self.last_click_time) < 1.0:
                 self.last_click_time = now
-                self.flick_index += 1 if self.flick_index < 4 else 0 
+                if self.flick_index < 4:
+                    self.flick_index += 1 
+                else:
+                    self.flick_index = 0 
                 ti.text = ti.text[:cursor_pos - 2] + instance.mappings[self.flick_index] + ti.text[cursor_pos:]
                 self.actual_text_input = self.actual_text_input[:cursor_pos - 2] + instance.mappings[self.flick_index] + self.actual_text_input[cursor_pos:]
             else:
@@ -365,11 +371,14 @@ class QwertyKeyboard(FloatLayout):
                 # Convert the text to Kanji using the converter
                 self.converting = True
                 self.converted_text = self.kanji_converter.convert(ti.text[self.start_index:cursor_pos],n_best=20)
-            if self.converting and len(self.converted_text) > 0:
+            if self.converting and len(self.converted_text) > 0 and cursor_pos == self.last_cursor_index:
+                print(f"{self.converted_text[0]}, starting from {self.start_index}, ending at{cursor_pos},cursor pos {ti.cursor_index()}")
                 suggested_text = self.converted_text.pop() if self.converted_text else ti.text[self.start_index:cursor_pos]
                 ti.text = ti.text[:self.start_index] + suggested_text + ti.text[cursor_pos:]
-                ti.cursor = (ti.cursor_index() + len(suggested_text), 0)
+                ti.cursor = (self.start_index + len(suggested_text), 0)
+                self.last_cursor_index = ti.cursor_index()
             else:
+                self.converting = False  # Reset the converting flag
                 self.actual_text_input = self.actual_text_input[:cursor_pos] + ' ' + self.actual_text_input[cursor_pos:]
                 if self.visibility:
                     ti.text = ti.text[:cursor_pos] + ' ' + ti.text[cursor_pos:]
@@ -381,6 +390,7 @@ class QwertyKeyboard(FloatLayout):
                 self.actual_text_input = self.actual_text_input[:cursor_pos-1] + self.actual_text_input[cursor_pos:]
                 ti.text = ti.text[:cursor_pos-1] + ti.text[cursor_pos:]
                 ti.cursor = (cursor_pos - 1, 0)
+                self.last_cursor_index = ti.cursor_index()
         elif instance.function == "Shift":
                 for btn in self.english_buttons:
                     btn.update_shift_text()
@@ -408,6 +418,7 @@ class QwertyKeyboard(FloatLayout):
             else:
                 self.text_input.text = self.text_input.text[:cursor_pos] + '*' * len(instance.text) + self.text_input.text[cursor_pos:]
             ti.cursor = (cursor_pos + len(instance.text), 0)
+            self.last_cursor_index = ti.cursor_index()
 
     def press_enter(self, instance):
         if self.enter_callback:
