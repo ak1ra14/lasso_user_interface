@@ -16,13 +16,16 @@ from utils.freeze_screen import freeze_ui
 from kivy.app import App
 
 class NumberPadScreen(SafeScreen):
+    '''
+    A screen that provides a numeric keypad for user input.
+    '''
     def __init__(self, title = 'Custom Numpad',screen_name='menu2', **kwargs):
         super(NumberPadScreen,self).__init__(**kwargs)
         # === Left side ===
         self.title = title
+        #left handles the title, input field, and keypad
         left = BoxLayout(orientation='vertical', spacing=5, pos_hint={'x':0.2, 'y':0.10}, size_hint=(0.6, 0.8))
 
-        # IP Input Header
         self.label = Label(text=update_text_language(self.title), markup=True, font_size=45,
                            font_name='fonts/MPLUS1p-Regular.ttf',
                            size_hint_y=None, height=55, halign='left')
@@ -56,9 +59,6 @@ class NumberPadScreen(SafeScreen):
         left.add_widget(keypad)
 
         self.add_widget(left)
-
-        #text input line
-
 
         # === Right side (action buttons) ===
         right = FloatLayout(size_hint=(1,1))

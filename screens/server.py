@@ -264,3 +264,4 @@ class MQTTTopicKeyboardScreen(KeyboardScreen):
         self.keyboard.title = "MQTT Topic"
         self.config = load_config("config/settings.json", "v3_json")
         self.keyboard.text_input.text = self.config.get("mqtt_topic", "")
+        self.keyboard.actual_text_input = self.keyboard.text_input.text

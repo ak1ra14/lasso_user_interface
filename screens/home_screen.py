@@ -135,22 +135,26 @@ class MenuScreen1(SafeScreen):
     
     
     def has_any_alert(self):
-        bed_alerts = load_config("config/settings.json", 'bed_json').get("alert_checking", [])
-        fall_alerts = load_config("config/settings.json", 'fall_json').get("alert_checking", [])
+        bed_config = load_config("config/settings.json", 'bed_json')
+        fall_config = load_config("config/settings.json", 'fall_json')
+        bed_alerts = bed_config.get("alert_checking", [])
+        fall_alerts = fall_config.get("alert_checking", [])
+        has_bed_video = bed_config.get("attach_video", 0)
+        has_fall_video = fall_config.get("attach_video", 0)
 
         # Check if any nested list's first element is 1
         bed_has_alert = any(isinstance(item, list) and len(item) > 0 and item[0] == 1 for item in bed_alerts)
         fall_has_alert = any(isinstance(item, list) and len(item) > 0 and item[0] == 1 for item in fall_alerts)
 
-        if bed_has_alert and fall_has_alert:
-            return "Bed Exit & Fall"
-        elif bed_has_alert:
-            return "Bed Exit"
-        elif fall_has_alert:
-            return "Fall"
+        if (bed_has_alert or has_bed_video) and (fall_has_alert or has_fall_video):
+            return "bed_exit_and_fall"
+        elif (bed_has_alert or has_bed_video):
+            return "bed_exit"
+        elif (fall_has_alert or has_fall_video):
+            return "fall"
         else:
-            return "No Alerts"
-        
+            return "no_alerts"
+
     def on_pre_enter(self):
         """
         Called when the screen is entered.
@@ -184,7 +188,7 @@ class MenuScreen1(SafeScreen):
         # Update the icon image directly if possible
         self.content_buttons['mode'].image.source = f'images/{mode_path}.png'
         self.content_buttons['mode'].status.text = self.mode
-        self.content_buttons['alerts'].status.text = self.alerts
+        self.content_buttons['alerts'].status.text = update_text_language(self.alerts)
 
     def go_to_location(self, instance):
         self.config = load_config('config/settings.json', 'v3_json')

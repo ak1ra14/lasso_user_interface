@@ -7,22 +7,22 @@ from kivy.uix.widget import Widget
 from kivy.graphics import Color, RoundedRectangle, Ellipse, Line
 from kivy.properties import BooleanProperty
 from kivy.uix.floatlayout import FloatLayout
-from utils.icons import IconTextButton
+from utils.icons import IconTextButton, FlickKey
 from utils.layout import SafeScreen
 from utils.freeze_screen import freeze_ui
 from kivy.uix.image import Image
 from kivy.clock import Clock
 from kivy.uix.screenmanager import Screen
 import sys, os
-if sys.platform.startswith('linux'):
-    # Set the environment variable for the dictionary path
-    os.environ['MECAB_DICDIR'] = '/usr/lib/aarch64-linux-gnu/mecab/dic'
 import mozcpy
 from kivy.app import App
 from utils.config_loader import load_config, update_text_language
-
+import time 
 
 class KeyboardScreen(SafeScreen):
+    '''
+    A screen that provides a full keyboard functionalities for user input.
+    '''
     def __init__(self, title, **kwargs):
         super().__init__(**kwargs)
         self.title = title
@@ -36,8 +36,14 @@ class KeyboardScreen(SafeScreen):
     def update_language(self):
         self.keyboard.label.text = update_text_language(self.title)
         self.keyboard.home_button.label.text = update_text_language("home")
+
+    def pre_enter(self):
+        self.last_cursor_index = len(self.keyboard.actual_text_input)
         
 class QwertyKeyboard(FloatLayout):
+    '''
+    A full QWERTY keyboard with English and Japanese input modes, including flick input for Japanese.
+    '''
     shift_activate = BooleanProperty(False)
     MAX_CHARS = 100  # Maximum characters allowed in the text input
 
@@ -52,7 +58,9 @@ class QwertyKeyboard(FloatLayout):
         self.title = title
         self.actual_text_input = ""
         self.visibility = True  # Flag to indicate password visibility
-        
+        self.last_cursor_index = 0  # Track the last cursor position
+        self.last_click_space = False  # Track if the last click was on space
+
         ###layout for the keyboard screen
         self.main_layout = BoxLayout(
             orientation='vertical', 
@@ -90,6 +98,7 @@ class QwertyKeyboard(FloatLayout):
         self.add_widget(self.text_input)
         self.add_widget(partition)
 
+#### English keyboard layouts #######
         self.shift_keys = [
             ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'],
             ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'],
@@ -111,6 +120,8 @@ class QwertyKeyboard(FloatLayout):
             [' ', '*', '\"', '\'', ':', ';', '!', '?', ' '],
             [' ', ' ', ' ', ' ', ' ', ' ']
         ]
+
+#### Japanese keyboard layouts #######
         self.japanese_keys = [
             ['あ', 'か', 'さ', 'た', 'な', 'は', 'ま', 'や', 'ら', 'わ','Backspace'],
             ['い', 'き', 'し', 'ち', 'に', 'ひ', 'み', '', 'り', 'を', 'Space'],
@@ -128,10 +139,32 @@ class QwertyKeyboard(FloatLayout):
             # Add more rows as needed
         ]
 
+###### Flick keyboard layouts #######
+        self.flick_mappings = [
+            ('あ', 'い', 'う', 'え', 'お'),
+            ('か', 'き', 'く', 'け', 'こ'),
+            ('さ', 'し', 'す', 'せ', 'そ'),
+            ('Backspace',),    
+            ('た', 'ち', 'つ', 'て', 'と'),
+            ('な', 'に', 'ぬ', 'ね', 'の'),
+            ('は', 'ひ', 'ふ', 'へ', 'ほ'),
+            ('Space',),
+            ('ま', 'み', 'む', 'め', 'も'),
+            ('や', 'ゆ', 'よ', '',''),
+            ('ら', 'り', 'る', 'れ', 'ろ'),
+            ('Enter',),
+            ('Daku-on',),
+            ('わ', 'を', 'ん', 'ー', ''),
+            ('、', '。', '?', '!', ''),
+            ('English',)
+        ]
+        
         self.build_qwerty_keyboard()  # Build the QWERTY keyboard layout
         self.add_widget(self.main_layout)
 
-        overlay = FloatLayout(size_hint=(1, 1))
+        #overlay used for flick key popup 
+        self.overlay = FloatLayout(size_hint=(1, 1), pos=(0, 0))
+
         self.home_button = IconTextButton(
             text=update_text_language("home"),
             icon_path='images/home.png',
@@ -140,8 +173,8 @@ class QwertyKeyboard(FloatLayout):
             pos_hint={'top': 0.95, 'right': 0.97},
             screen_name='menu',
         )
-        overlay.add_widget(self.home_button)
-        self.add_widget(overlay)  # Add overlay last so it's on top
+        self.overlay.add_widget(self.home_button)
+        self.add_widget(self.overlay)  # Add flick overlay for Japanese input
     
     def build_qwerty_keyboard(self):
         self.language_mode = 'english'  # Set the language mode to English
@@ -173,6 +206,7 @@ class QwertyKeyboard(FloatLayout):
                 width= width,
                 pos_hint={'center_x': 0.5}
             )
+            ## Based on the key, create different buttons with functions 
             for key, sub_key, shift_key in zip(row, subrow, shift_row):
                 btn = None
                 if key == 'Shift':
@@ -210,6 +244,7 @@ class QwertyKeyboard(FloatLayout):
         self.start_index = self.text_input.cursor_index()  # Save the cursor position
         self.entered = False # Flag to indicate if the Enter key has not been pressed to determine the word conversion 
         self.language_mode = 'japanese'  # Set the language mode to Japanese
+        self.last_click_space = False
 
         for row, subrow in zip(self.japanese_keys, self.japanese_subkeys):
             num_keys = len(row)
@@ -222,12 +257,13 @@ class QwertyKeyboard(FloatLayout):
                 size_hint_x=None,
                 width=num_keys * key_width + (num_keys - 1) * key_spacing
             )
+            # Based on the key, create different buttons with functions
             for key, sub_key in zip(row, subrow):
                 btn = None
                 if key == 'English':
-                    btn = RoundedButton(text='', sub_key=sub_key, image=f'images/english.png', font_size=24, font_name='fonts/MPLUS1p-Regular.ttf',
+                    btn = RoundedButton(text='', sub_key=sub_key, image=f'images/japanese.png', font_size=24, font_name='fonts/MPLUS1p-Regular.ttf',
                                         background_color=(0.22, 0.45, 0.91, 1), size_hint_x=None, width=key_width*1.5,
-                                        function='English')
+                                        function='Flick')
                 elif key == 'Backspace':
                     btn = RoundedButton(text='', sub_key=sub_key, image='images/backspace.png', font_size=24, font_name='fonts/Roboto-Bold.ttf',
                                         background_color=(0.22, 0.45, 0.91, 1), size_hint_x=None, width=key_width*1.5,
@@ -237,9 +273,10 @@ class QwertyKeyboard(FloatLayout):
                                         background_color=(0.22, 0.45, 0.91, 1), size_hint_x=None, width=key_width*1.5,
                                         function='Enter', on_press=self.press_enter)
                 elif key == 'Space':
-                    btn = RoundedButton(text='空白/変換', sub_key=sub_key,  font_size=22, font_name='fonts/MPLUS1p-Regular.ttf',
+                    btn = RoundedButton(text='空白', sub_key=sub_key,  font_size=22, font_name='fonts/MPLUS1p-Regular.ttf',
                                         size_hint_x=None, width=key_width*1.5, background_color=(0.22, 0.45, 0.91, 1),
                                         function='Space')
+                    self.space_button = btn
                 elif key == 'Daku-on':
                     btn = RoundedButton(text='', sub_key=sub_key, image='images/daku-on.png', font_size=24, font_name='fonts/Roboto-Bold.ttf',
                                         background_color=(0.22, 0.45, 0.91, 1), size_hint_x=None, width=key_width*1.5,
@@ -247,17 +284,71 @@ class QwertyKeyboard(FloatLayout):
                 else:
                     btn = RoundedButton(text=key, sub_key=sub_key, font_size=24, font_name='fonts/MPLUS1p-Regular.ttf',
                                         size_hint_x=None, width=key_width)
-                btn.bind(on_release=self.on_key_release)
+                btn.bind(on_release=self.on_key_release) # Bind the button release event
                 self.japanese_buttons.append(btn)
                 row_layout.add_widget(btn)
             self.main_layout.add_widget(row_layout)
 
+    def build_flick_keyboard(self):
+        # Example flick mappings for common Japanese columns (10 columns)
+        self.language_mode = 'japanese'  # Set the language mode to Japanese
+        self.main_layout.clear_widgets()  # Clear the main layout
+        self.flick_index = 0 # Index to track the current selection in flick mappings
+        self.selected_flick_mappings = None # Currently selected flick mapping
+        self.last_click_time = 0  # Timestamp of the last flick key click
+        self.last_cursor_index = self.text_input.cursor_index() # Save the cursor position
+        self.last_click_space = False
+
+        grid = GridLayout(cols=4, spacing=6, padding=(100,0,100,0), size_hint_y=None, height=300)
+        # Create buttons based on flick mappings
+        for mapping in self.flick_mappings:
+            if len(mapping) == 5 and type(mapping[0]) is str:
+                btn = FlickKey(mappings=mapping,keyboard=self, overlay=self.overlay,
+                            size_hint=(None, None), size=(90, 90))
+                btn.bind(on_release=self.on_key_release) 
+            else:
+                if mapping[0] == 'Backspace':
+                    btn = RoundedButton(
+                        text='', sub_key='', image='images/backspace.png', font_size=24, font_name='fonts/MPLUS1p-Regular.ttf',
+                        size_hint=(None, None), size=(120, 90), function='Backspace'
+                    )
+                elif mapping[0] == 'Enter':
+                    btn = RoundedButton(
+                        text='', sub_key='', image='images/enter.png', font_size=24, font_name='fonts/MPLUS1p-Regular.ttf',
+                        size_hint=(None, None), size=(120, 90), function='Enter', on_press=self.press_enter
+                    )
+                elif mapping[0] == 'Space':
+                    btn = RoundedButton(
+                        text='空白', sub_key='', font_size=24, font_name='fonts/MPLUS1p-Regular.ttf',
+                        size_hint=(None, None), size=(120, 90), function='Space'
+                    )
+                    self.space_button = btn
+                elif mapping[0] == 'Daku-on':
+                    btn = RoundedButton(
+                        text='', sub_key='', image='images/daku-on.png', font_size=24, font_name='fonts/MPLUS1p-Regular.ttf',
+                        size_hint=(None, None), size=(90, 90), function='Daku-on'
+                    )
+                elif mapping[0] == 'English':
+                    btn = RoundedButton(
+                        text='', sub_key='', image='images/english.png', font_size=24, font_name='fonts/MPLUS1p-Regular.ttf',
+                        size_hint=(None, None), size=(120, 90), function='English'
+                    )
+                btn.bind(on_release=self.on_key_release)
+            grid.add_widget(btn)
+            grid.bind(minimum_height=grid.setter('height'))
+
+        self.main_layout.add_widget(grid)
+
     def on_key_release(self, instance):
+        '''
+         Handle key release events for various keyboard buttons.'''
+        print(f"Key released: {instance.text if instance.text else instance.function}")
         ti = self.text_input #to indicate the position of the input in a word
         ti.focus = True  # Keep the text input focused
         cursor_pos = ti.cursor_index()
-
         self.text_input.bind(text=self.limit_text_length)  # Bind the text input to limit its length
+       
+        # when a key is pressed for more than two seconds sub key will be used instead of the main key
         if hasattr(instance, 'is_long_press') and instance.is_long_press and instance.sub_key:
             # Insert subkey at cursor position
             self.actual_text_input = self.actual_text_input[:cursor_pos] + instance.sub_key + self.actual_text_input[cursor_pos:]
@@ -266,27 +357,62 @@ class QwertyKeyboard(FloatLayout):
             else:
                 ti.text = ti.text[:cursor_pos] + '*' * len(instance.sub_key) + ti.text[cursor_pos:]
             ti.cursor = (cursor_pos + len(instance.sub_key), 0)
+            self.last_cursor_index = ti.cursor_index()
+        # if the same flick key is pressed within one second cycle through the options
+        elif hasattr(instance,'mappings'):
+            now = time.time()
+            #recurrent flick key pressed within one second to select other characters
+            if self.selected_flick_mappings == instance.mappings and (now - self.last_click_time) < 1.0:
+                self.last_click_time = now
+                for _ in range(5):  # At most 5 tries to avoid infinite loop
+                    self.flick_index = (self.flick_index + 1) % 5
+                    if instance.mappings[self.flick_index]:
+                        break
+                ti.text = ti.text[:cursor_pos - 2] + instance.mappings[self.flick_index] + ti.text[cursor_pos:]
+                self.actual_text_input = self.actual_text_input[:cursor_pos - 2] + instance.mappings[self.flick_index] + self.actual_text_input[cursor_pos:]
+            # If the flick key is pressed for the first time, initialize the flick index
+            else:
+                self.last_click_time = now
+                self.selected_flick_mappings = instance.mappings
+                self.flick_index = 0
+        # Space key function 
         elif instance.function == 'Space':
+            print(f"Space key pressed, converting: {self.converting}, start index: {self.start_index}, cursor pos: {cursor_pos}, last cursor index: {self.last_cursor_index}")
+            #if japanese keyboard, the space key is used for both word conversion and space insertion
             if self.language_mode == 'japanese' and self.start_index < cursor_pos and not self.converting:
                 # Convert the text to Kanji using the converter
                 self.converting = True
+                self.space_button.text = '変換'
                 self.converted_text = self.kanji_converter.convert(ti.text[self.start_index:cursor_pos],n_best=20)
-            if self.converting and len(self.converted_text) > 0:
+            if self.last_cursor_index != ti.cursor_index():
+                print("Cursor moved, reset converting")
+                self.converting = False  # Reset the converting flag if cursor has moved
+                self.space_button.text = '空白'
+                self.start_index = cursor_pos  # Reset the start index
+            if self.converting and len(self.converted_text) > 0 and cursor_pos == self.last_cursor_index:
+                print(f"{self.converted_text[0]}, starting from {self.start_index}, ending at{cursor_pos},cursor pos {ti.cursor_index()}")
                 suggested_text = self.converted_text.pop() if self.converted_text else ti.text[self.start_index:cursor_pos]
                 ti.text = ti.text[:self.start_index] + suggested_text + ti.text[cursor_pos:]
-                ti.cursor = (ti.cursor_index() + len(suggested_text), 0)
+                ti.cursor = (self.start_index + len(suggested_text), 0)
+                self.last_cursor_index = ti.cursor_index()
             else:
+                print("Inserting space")
+                self.converting = False  # Reset the converting flag
+                self.space_button.text = '空白'
                 self.actual_text_input = self.actual_text_input[:cursor_pos] + ' ' + self.actual_text_input[cursor_pos:]
                 if self.visibility:
                     ti.text = ti.text[:cursor_pos] + ' ' + ti.text[cursor_pos:]
                 else:
                     ti.text = ti.text[:cursor_pos] + '*' + ti.text[cursor_pos:]
                 ti.cursor = (cursor_pos + 1, 0)
+                #self.last_cursor_index = ti.cursor_index()
+            self.last_click_space = True
         elif instance.function == 'Backspace':
             if cursor_pos > 0:
                 self.actual_text_input = self.actual_text_input[:cursor_pos-1] + self.actual_text_input[cursor_pos:]
                 ti.text = ti.text[:cursor_pos-1] + ti.text[cursor_pos:]
                 ti.cursor = (cursor_pos - 1, 0)
+                self.last_cursor_index = ti.cursor_index()
         elif instance.function == "Shift":
                 for btn in self.english_buttons:
                     btn.update_shift_text()
@@ -296,22 +422,38 @@ class QwertyKeyboard(FloatLayout):
             self.build_qwerty_keyboard()
         elif instance.function == "Enter":
             pass
+        elif instance.function == 'Flick':
+            self.build_flick_keyboard()
         elif instance.function == "Daku-on":
+            print(self.actual_text_input)
+            print(self.text_input.text)
             self.actual_text_input = self.actual_text_input[:-1] + self.change_dakuon(self.actual_text_input[-1])  # Add Daku-on character
             if self.visibility:
                 self.text_input.text = self.text_input.text[:-1] + self.change_dakuon(self.text_input.text[-1]) # Add Daku-on character
         else:
+            print(f"Normal key pressed: {instance.text},self.converting: {self.converting}, cursor pos: {cursor_pos}, last cursor index: {self.last_cursor_index}")
+            if self.language_mode == 'japanese' and self.last_click_space:
+                self.space_button.text = '変換'
             if self.converting:
+                print('index reset due to normal key press')
                 self.converting = False  # Reset the converting flag
+                self.space_button.text = '空白'
                 self.start_index = cursor_pos  # Reset the start index
             self.actual_text_input = self.actual_text_input[:cursor_pos] + instance.text + self.actual_text_input[cursor_pos:]
             if self.visibility:
-                self.text_input.text = self.text_input.text[:cursor_pos] + instance.text + self.text_input.text[cursor_pos:]
+                    self.text_input.text = self.text_input.text[:cursor_pos] + instance.text + self.text_input.text[cursor_pos:]
             else:
                 self.text_input.text = self.text_input.text[:cursor_pos] + '*' * len(instance.text) + self.text_input.text[cursor_pos:]
             ti.cursor = (cursor_pos + len(instance.text), 0)
+            self.last_cursor_index = ti.cursor_index()
 
     def press_enter(self, instance):
+        if self.language_mode == 'japanese':
+            if self.converting:
+                self.space_button.text = '空白'
+                self.converting = False
+                self.start_index = self.text_input.cursor_index()  # Reset the start index
+                return 
         if self.enter_callback:
             self.enter_callback(instance)
         App.get_running_app().show_saved_popup()  # Show a popup indicating the settings have been saved
@@ -354,6 +496,8 @@ class QwertyKeyboard(FloatLayout):
 
 
 class RoundedButton(Button):
+    '''
+    A custom button with rounded corners, optional image, sub-key display, and long-press functionality.'''
     def __init__(self, text = None,sub_key = None, shift_key = None,function = None, image = None, background_color = (0.2, 0.2, 0.2, 1), font_name='fonts/Roboto-Regular.ttf', **kwargs):
         super().__init__(font_name=font_name, **kwargs)
         self.text = text
@@ -438,7 +582,7 @@ class RoundedButton(Button):
     def on_press(self):
         print(f"Button {self.text} pressed")
         App.get_running_app().play_sound()
-        freeze_ui(0.3)
+        freeze_ui(0.3)  # freeze the UI for 0.3 seconds to prevent multiple presses
 
 
 class SeparatorLine(Widget):

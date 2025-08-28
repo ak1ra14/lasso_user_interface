@@ -3,6 +3,10 @@ import os
 from kivy.app import App
 
 def load_config(file_path, variable_name=None):
+    '''
+    Load configuration from a JSON file. If variable_name is provided, it loads the JSON file
+    specified by the value of that variable in the initial JSON file.
+    '''
     with open(file_path, "r") as f:
         data = json.load(f)
     if variable_name:
@@ -19,6 +23,9 @@ def load_config(file_path, variable_name=None):
     return data
 
 def save_config(file_path, variable_name=None, data=None):
+    '''
+    Save configuration to a JSON file. If variable_name is provided, it saves the data to
+    the JSON file specified by the value of that variable in the initial JSON file.'''
     with open(file_path,"r") as f:
         paths = json.load(f)
     if variable_name:
