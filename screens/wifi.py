@@ -280,8 +280,8 @@ class WifiConnectingScreen(Screen):
         self.cancel_button = IconTextButton(
             text=update_text_language("cancel"),
             font_size=30,
-            size=(200, 100),
-            pos_hint={'center_x': 0.5, 'center_y': 0.2},
+            size=(200, 90),
+            pos_hint={'center_x': 0.5, 'center_y': 0.25},
             on_release=self.cancel_connection
         )
         
