@@ -70,7 +70,7 @@ class IconTextButton(Button):
             self.label = Label(
                 text=self.label_text,
                 font_size= font_size,  # Adjust font size based on button height
-                font_name='fonts/MPLUS1p-Regular.ttf',
+                font_name='fonts/MPLUS1p-Bold.ttf',
                 color=(1, 1, 1, 1),
                 size_hint=(0.9, 0.9),
                 pos_hint={'center_x': 0.5, 'center_y': 0.5},
@@ -92,7 +92,7 @@ class IconTextButton(Button):
             self.label = Label(
                 text=self.label_text,
                 font_size=  self.size[1] * 0.1 - 3 if self.label_text == 'スクリーンセーバー' or self.label_text == 'Screensaver' else self.size[1] * 0.1,   # Adjust font size based on button height.
-                font_name='fonts/MPLUS1p-Regular.ttf',  # Path to your bold font file
+                font_name='fonts/MPLUS1p-Bold.ttf',  # Path to your bold font file
                 color=(1, 1, 1, 1),
                 size_hint=(0.9, 0.10),
                 pos_hint={'center_x': 0.5, 'center_y': 0.33},
@@ -122,7 +122,7 @@ class IconTextButton(Button):
                 self.label = Label(
                     text=self.label_text,
                     font_size= self.size[1] * 0.1 if len(self.label_text) > 5 and App.get_running_app().language == 'jp' else self.size[1]*0.1 + 5,  # Adjust font size based on button height.
-                    font_name='fonts/MPLUS1p-Regular.ttf',  # Path to your bold font file
+                    font_name='fonts/MPLUS1p-Bold.ttf',  # Path to your bold font file
                     color=(1, 1, 1, 1),
                     size_hint=(0.8, 0.3),
                     pos_hint={'center_x': 0.5, 'center_y': 0.25},
