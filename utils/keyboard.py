@@ -405,6 +405,7 @@ class QwertyKeyboard(FloatLayout):
                 else:
                     ti.text = ti.text[:cursor_pos] + '*' + ti.text[cursor_pos:]
                 ti.cursor = (cursor_pos + 1, 0)
+                #self.last_cursor_index = ti.cursor_index()
             self.last_click_space = True
         elif instance.function == 'Backspace':
             if cursor_pos > 0:
