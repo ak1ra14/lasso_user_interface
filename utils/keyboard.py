@@ -52,6 +52,7 @@ class QwertyKeyboard(FloatLayout):
         self.enter_callback = enter_callback
         self.english_buttons = []
         self.japanese_buttons = []
+        self.flick_keys = []
         self.language_mode = 'english'  # Default language mode
         self.kanji_converter = mozcpy.Converter()  # Initialize the converter
         self.converting = False  # Flag to indicate if the text is being converted
@@ -159,7 +160,6 @@ class QwertyKeyboard(FloatLayout):
             ('English',)
         ]
         
-        self.build_qwerty_keyboard()  # Build the QWERTY keyboard layout
         self.add_widget(self.main_layout)
 
         #overlay used for flick key popup 
@@ -175,12 +175,17 @@ class QwertyKeyboard(FloatLayout):
         )
         self.overlay.add_widget(self.home_button)
         self.add_widget(self.overlay)  # Add flick overlay for Japanese input
+
+
+        self.build_qwerty_keyboard()  # Build the QWERTY keyboard layout
+        self.build_flick_keyboard()  # Build the flick keyboard layout
+        self.build_japanese_keyboard()  # Build the Japanese keyboard layout
+        self.show_layout('english')
     
     def build_qwerty_keyboard(self):
         self.language_mode = 'english'  # Set the language mode to English
         key_width = 90
         key_spacing = 8
-        self.main_layout.clear_widgets()
         key_width = 90
         key_spacing = 8
 
@@ -240,7 +245,6 @@ class QwertyKeyboard(FloatLayout):
     def build_japanese_keyboard(self):
         key_width = 77
         key_spacing = 8
-        self.main_layout.clear_widgets()  # Clear the main layout
         self.start_index = self.text_input.cursor_index()  # Save the cursor position
         self.entered = False # Flag to indicate if the Enter key has not been pressed to determine the word conversion 
         self.language_mode = 'japanese'  # Set the language mode to Japanese
@@ -292,7 +296,6 @@ class QwertyKeyboard(FloatLayout):
     def build_flick_keyboard(self):
         # Example flick mappings for common Japanese columns (10 columns)
         self.language_mode = 'japanese'  # Set the language mode to Japanese
-        self.main_layout.clear_widgets()  # Clear the main layout
         self.flick_index = 0 # Index to track the current selection in flick mappings
         self.selected_flick_mappings = None # Currently selected flick mapping
         self.last_click_time = 0  # Timestamp of the last flick key click
@@ -335,6 +338,7 @@ class QwertyKeyboard(FloatLayout):
                     )
                 btn.bind(on_release=self.on_key_release)
             grid.add_widget(btn)
+            self.flick_keys.append(btn)
             grid.bind(minimum_height=grid.setter('height'))
 
         self.main_layout.add_widget(grid)
@@ -417,13 +421,13 @@ class QwertyKeyboard(FloatLayout):
                 for btn in self.english_buttons:
                     btn.update_shift_text()
         elif instance.function == "Japanese":
-            self.build_japanese_keyboard()
+            self.show_layout('japanese')
         elif instance.function == "English":
-            self.build_qwerty_keyboard()
+            self.show_layout('english')
         elif instance.function == "Enter":
             pass
         elif instance.function == 'Flick':
-            self.build_flick_keyboard()
+            self.show_layout('flick')
         elif instance.function == "Daku-on":
             print(self.actual_text_input)
             print(self.text_input.text)
@@ -493,6 +497,26 @@ class QwertyKeyboard(FloatLayout):
     def limit_text_length(self, instance, value):
         if len(value) > self.MAX_CHARS:
             instance.text = value[:self.MAX_CHARS]
+
+    def show_layout(self, layout_name):
+        # Hide all buttons first
+        for btn in self.english_buttons + self.japanese_buttons + self.flick_keys:
+            btn.opacity = 0
+            btn.disabled = True
+
+        # Show only the relevant buttons
+        if layout_name == 'english':
+            for btn in self.english_buttons:
+                btn.opacity = 1
+                btn.disabled = False
+        elif layout_name == 'japanese':
+            for btn in self.japanese_buttons:
+                btn.opacity = 1
+                btn.disabled = False
+        elif layout_name == 'flick':
+            for btn in self.flick_keys:
+                btn.opacity = 1
+                btn.disabled = False
 
 
 class RoundedButton(Button):
