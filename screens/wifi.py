@@ -364,7 +364,7 @@ class WifiErrorScreen(SafeScreen):
             text=update_text_language("try_again"),
             size=(300,80),
             font_size=30,
-            pos_hint={'center_x': 0.5, 'center_y': 0.25},
+            pos_hint={'center_x': 0.5, 'center_y': 0.22},
             screen_name='wifi password',
             font_name='fonts/MPLUS1p-Regular.ttf'
         )
