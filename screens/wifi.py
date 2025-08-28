@@ -348,7 +348,7 @@ class WifiErrorScreen(SafeScreen):
             text="temporary",
             font_size=60,
             color = (1,1,0,1),  # Yellow color for error
-            pos_hint={'center_x': 0.5, 'center_y': 0.5},
+            pos_hint={'center_x': 0.5, 'center_y': 0.47},
             size_hint=(None, None),
             size=(400, 100),
             font_name='fonts/MPLUS1p-Regular.ttf'
@@ -356,7 +356,7 @@ class WifiErrorScreen(SafeScreen):
         self.check_password_label = Label(
             text=update_text_language("check_password"),
             font_size=30,
-            pos_hint={'center_x': 0.5, 'center_y': 0.35},
+            pos_hint={'center_x': 0.5, 'center_y': 0.40},
             size_hint=(None, None),
             font_name='fonts/MPLUS1p-Regular.ttf',
         )
