@@ -148,7 +148,7 @@ class SaveButtonAT(IconTextButton):
         self.icon_path = "images/save.png"
         self.size_hint = (None, None)
         self.size = (120, 120)
-        self.pos = (800, 140)
+        self.pos = (800, 180)
         self.screen_name = "menu"
         self.AT_screen = AT_screen
 
