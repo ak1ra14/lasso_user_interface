@@ -108,8 +108,6 @@ class WifiLoadingScreen(SafeScreen):
             print("No Wi-Fi selected")
             return
         print(f"Connecting to {self.selected_wifi}...")
-        # Here you would implement the logic to connect to the Wi-Fi network
-        # For example, you might open a new screen to enter the password
         App.get_running_app().sm.current = 'wifi password'
         wifi_password_screen = App.get_running_app().sm.get_screen('wifi password')
         wifi_password_screen.wifi_name = self.selected_wifi
@@ -172,6 +170,7 @@ class WifiPasswordScreen(KeyboardScreen):
     def __init__(self, title = 'wifi_password', wifi_name = None, **kwargs):
         super().__init__(**kwargs, title=title)
         self.wifi_name = wifi_name
+        self.cancel_event = threading.Event()
         self.wifi_scan_button = IconTextButton(
             text="Wi-Fi SSID",
             icon_path ='images/wifi.png',
@@ -232,24 +231,28 @@ class WifiPasswordScreen(KeyboardScreen):
         # Show connecting screen
         app = App.get_running_app()
         app.sm.current = 'wifi connecting'
+        connecting_screen = app.sm.get_screen('wifi connecting')
+        connecting_screen.cancel_event = self.cancel_event  # Pass the event
 
         # Connect in a background thread
         def do_connect():
-            success = connect_wifi(self.wifi_name, password)
-            # Save config and switch screen on main thread
-            def after_connect(dt):
-                if success:
-                    config = load_config('config/settings.json', 'v3_json')
-                    config['wifi_ssid'] = self.wifi_name
-                    config['wifi_password'] = password
-                    save_config('config/settings.json', 'v3_json', data=config)
-                    print(f"Connected to {self.wifi_name} with password: {password}")
-                    App.get_running_app().sm.current = 'wifi connected'
+            while not self.cancel_event.is_set():
+                success = connect_wifi(self.wifi_name, password)
+                # Save config and switch screen on main thread
+                def after_connect(dt):
+                    if success:
+                        config = load_config('config/settings.json', 'v3_json')
+                        config['wifi_ssid'] = self.wifi_name
+                        config['wifi_password'] = password
+                        save_config('config/settings.json', 'v3_json', data=config)
+                        print(f"Connected to {self.wifi_name} with password: {password}")
+                        App.get_running_app().sm.current = 'wifi connected'
 
-                else:
-                    print(f"Failed to connect to {self.wifi_name} with password: {password}")
-                    App.get_running_app().sm.current = 'wifi error'
-            Clock.schedule_once(after_connect, 0)
+                    else:
+                        print(f"Failed to connect to {self.wifi_name} with password: {password}")
+                        App.get_running_app().sm.current = 'wifi error'
+                Clock.schedule_once(after_connect, 0)
+                break
 
         threading.Thread(target=do_connect, daemon=True).start()
 
@@ -264,6 +267,7 @@ class WifiPasswordScreen(KeyboardScreen):
 class WifiConnectingScreen(Screen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        self.cancel_event = None
         self.scanning = LoadingCircle(pos_hint={'center_x': 0.5, 'center_y': 0.6}, size=120, dot_color=(0.5, 0, 0.5, 1))
         self.label = Label(
             text= update_text_language('connecting'),
@@ -273,14 +277,32 @@ class WifiConnectingScreen(Screen):
             font_name='fonts/MPLUS1p-Bold.ttf',
             size=(400, 100)
         )
+        self.cancel_button = IconTextButton(
+            text=update_text_language("cancel"),
+            font_size=30,
+            size=(140, 80),
+            pos_hint={'center_x': 0.5, 'center_y': 0.2},
+            on_release=self.cancel_connection
+        )
+        
         self.add_widget(self.label)
         self.add_widget(self.scanning)
+        self.add_widget(self.cancel_button)
 
     def update_language(self):
         """
         Update the language of the widgets in this screen.
         """
         self.label.text = update_text_language('connecting')
+        self.cancel_button.label.text = update_text_language("cancel")
+
+    def cancel_connection(self, instance):
+        """
+        Cancel the ongoing Wi-Fi connection attempt.
+        """
+        if self.cancel_event:
+            self.cancel_event.set()
+        App.get_running_app().sm.current = 'wifi password'
 
 class WifiConnectedScreen(SafeScreen):
     def __init__(self, **kwargs):
