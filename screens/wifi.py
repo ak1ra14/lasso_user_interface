@@ -333,7 +333,7 @@ class WifiErrorScreen(SafeScreen):
             source='images/wifi_failed.png',
             size_hint=(None, None),
             size=(400, 400),
-            pos_hint={'center_x': 0.5, 'center_y': 0.7}
+            pos_hint={'center_x': 0.5, 'center_y': 0.73}
         ))
         self.connection_failed = Label(
             text=update_text_language("connection_fail"),
