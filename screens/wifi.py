@@ -227,8 +227,7 @@ class WifiPasswordScreen(KeyboardScreen):
         if not self.wifi_name:
             print("No Wi-Fi network selected")
             return
-
-        # Show connecting screen
+        self.cancel_event.clear()  # <-- Reset the event before starting a new connection
         app = App.get_running_app()
         app.sm.current = 'wifi connecting'
         connecting_screen = app.sm.get_screen('wifi connecting')
