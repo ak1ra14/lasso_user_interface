@@ -73,14 +73,14 @@ class WifiLoadingScreen(SafeScreen):
         self.scan_wifi_button = IconTextButton(
             text=update_text_language("scan_wifi"),
             icon_path ='images/wifi.png',
-            size = (120,120),
+            size = (140,140),
             pos_hint={'center_x': 0.25, 'center_y': 0.55},
             on_release=lambda x: self.pre_enter_loading()  # Re-scan Wi-Fi
         )
         self.connect_wifi_button = IconTextButton(
             text=update_text_language("connect_wifi"),
             icon_path ='images/connection.png',
-            size = (120,120),
+            size = (140,140),
             pos_hint={'center_x': 0.25, 'center_y': 0.25},
             on_release=self.connect_wifi
         )
