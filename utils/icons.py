@@ -524,6 +524,7 @@ class FlickKey(Button):
                     self.keyboard.actual_text_input[insert_pos:]
                 )
                 self.keyboard.text_input.cursor = (insert_pos + len(chosen), 0)
+                self.keyboard.space_button.text = '変換'
             except Exception:
                 print('Error updating text input with chosen character')
                 self.keyboard.text_input += chosen
@@ -549,6 +550,7 @@ class FlickKey(Button):
             print('resetting index due to space key')
             self.keyboard.last_click_space = False
             self.keyboard.converting = False
+            self.keyboard.space_button.text = '空白'
             self.keyboard.start_index = self.keyboard.text_input.cursor_index()
         self.keyboard.last_cursor_index += 1
         freeze_ui(0.2)
