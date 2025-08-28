@@ -337,21 +337,28 @@ class WifiErrorScreen(SafeScreen):
         ))
         self.connection_failed = Label(
             text=update_text_language("connection_fail"),
-            font_size=40,
-            pos_hint={'center_x': 0.5, 'center_y': 0.5},
+            font_size=35,
+            pos_hint={'center_x': 0.5, 'center_y': 0.6},
             size_hint=(None, None),
             size=(400, 100),
-            font_name='fonts/MPLUS1p-Regular.ttf'
+            font_name='fonts/MPLUS1p-Bold.ttf'
         )
         self.add_widget(self.connection_failed)
         self.label = Label(
             text="temporary",
             font_size=60,
             color = (1,1,0,1),  # Yellow color for error
-            pos_hint={'center_x': 0.5, 'center_y': 0.4},
+            pos_hint={'center_x': 0.5, 'center_y': 0.5},
             size_hint=(None, None),
             size=(400, 100),
             font_name='fonts/MPLUS1p-Regular.ttf'
+        )
+        self.check_password_label = Label(
+            text=update_text_language("check_password"),
+            font_size=30,
+            pos_hint={'center_x': 0.5, 'center_y': 0.35},
+            size_hint=(None, None),
+            font_name='fonts/MPLUS1p-Regular.ttf',
         )
         self.retry_button = IconTextButton(
             text=update_text_language("try_again"),
@@ -363,6 +370,7 @@ class WifiErrorScreen(SafeScreen):
         )
 
         self.add_widget(self.label)
+        self.add_widget(self.check_password_label)
         self.add_widget(self.retry_button)
 
     def on_pre_enter(self):
