@@ -205,6 +205,10 @@ class MyApp(App):
                 print(f"Connected to Wi-Fi: {ssid}")
                 self.config['wifi_ssid'] = ssid
                 save_config('config/settings.json', 'v3_json', data=self.config)
+            else:
+                self.config['wifi_ssid'] = 'Not connected'
+                save_config('config/settings.json', 'v3_json', data=self.config)
+                print("Not connected to any Wi-Fi network.")
         
 
 def is_connected(host="8.8.8.8", port=53, timeout=3):
