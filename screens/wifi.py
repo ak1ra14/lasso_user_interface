@@ -233,11 +233,13 @@ class WifiPasswordScreen(KeyboardScreen):
         app.sm.current = 'wifi connecting'
         connecting_screen = app.sm.get_screen('wifi connecting')
         connecting_screen.cancel_event = self.cancel_event  # Pass the event
+        connecting_screen.process_holder = {}  
 
         # Connect in a background thread
         def do_connect():
+            process_holder = connecting_screen.process_holder
             while not self.cancel_event.is_set():
-                success = connect_wifi(self.wifi_name, password)
+                success = connect_wifi(self.wifi_name, password, cancel_event=self.cancel_event, process_holder=process_holder)
                 # Save config and switch screen on main thread
                 def after_connect(dt):
                     if success:
@@ -302,6 +304,12 @@ class WifiConnectingScreen(Screen):
         """
         if self.cancel_event:
             self.cancel_event.set()
+        if self.process_holder and 'proc' in self.process_holder:
+            try:
+                self.process_holder['proc'].terminate()
+                print("Terminated the connection process.")
+            except Exception as e:
+                print(f"Error terminating process: {e}")
         App.get_running_app().sm.current = 'wifi password'
 
 class WifiConnectedScreen(SafeScreen):
@@ -411,16 +419,24 @@ class WifiErrorScreen(SafeScreen):
 
 ####### connecting wifi #########
 
-def connect_wifi_linux(ssid, password):
+def connect_wifi_linux(ssid, password, cancel_event=None, process_holder=None):
     try:
-        subprocess.run(['nmcli', 'dev', 'wifi', 'connect', ssid, 'password', password], check=True)
-        print(f"Connected to {ssid}")
-        return True
-    except subprocess.CalledProcessError as e:
+        cmd = ['nmcli', 'dev', 'wifi', 'connect', ssid, 'password', password]
+        proc = subprocess.Popen(cmd)
+        if process_holder is not None:
+            process_holder['proc'] = proc
+        while proc.poll() is None:
+            if cancel_event and cancel_event.is_set():
+                proc.terminate()
+                print("Connection cancelled by user.")
+                return False
+            time.sleep(0.1)
+        return proc.returncode == 0
+    except Exception as e:
         print(f"Failed to connect: {e}")
         return False
 
-def connect_wifi_mac(ssid, password):
+def connect_wifi_mac(ssid, password, cancel_event=None, process_holder=None):
     try:
         # Find your Wi-Fi device name (usually 'en0')
         device = 'en0'
@@ -440,11 +456,11 @@ def connect_wifi_windows(ssid):
         print(f"Failed to connect: {e}")
         return False
 
-def connect_wifi(ssid, password):
+def connect_wifi(ssid, password, cancel_event=None, process_holder=None):
     if sys.platform.startswith('linux'):
-        return connect_wifi_linux(ssid, password)
+        return connect_wifi_linux(ssid, password, cancel_event=cancel_event, process_holder=process_holder)
     elif sys.platform == 'darwin':
-        return connect_wifi_mac(ssid, password)
+        return connect_wifi_mac(ssid, password, cancel_event=cancel_event, process_holder=process_holder)
     elif sys.platform.startswith('win'):
         return connect_wifi_windows(ssid)
     else:
