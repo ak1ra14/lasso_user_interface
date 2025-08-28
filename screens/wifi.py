@@ -384,6 +384,7 @@ class WifiErrorScreen(SafeScreen):
         """
         self.retry_button.label.text = update_text_language("try_again")
         self.connection_failed.text = update_text_language("connection_fail")
+        self.check_password_label.text = update_text_language("check_password")
 
 
 ####### connecting wifi #########
