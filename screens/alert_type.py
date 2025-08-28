@@ -70,7 +70,7 @@ class AlertTypeScreen(SafeScreen):
             source="images/fall_single.png",
             size_hint=(None, None),
             size=(50,50),
-            pos = (420, 265)
+            pos = (420, 305)
         )
         for i, bed_type in enumerate(["alert_without_video","sit_to_stand","fall"]):
             if i == 0:
