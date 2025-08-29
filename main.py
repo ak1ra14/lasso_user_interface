@@ -18,7 +18,7 @@ import sys
 import socket
 from screens.home_screen import MenuScreen1, MenuScreen2
 from screens.language import LanguageScreen
-from screens.monitor import MonitorScreen
+from screens.monitor import MonitorScreen, get_ip_address
 from screens.power import PowerScreen
 from screens.screensaver import ScreenSaverScreen, DarkScreen
 from screens.timezone import TimezoneScreen
@@ -52,6 +52,7 @@ class MyApp(App):
         set_system_volume(self.config.get('volume', 50))
         self.default_wifi_ssid = 'SoundEyeHq'
         self.default_wifi_password = 'afafafafaf'
+        self.ip_address = get_ip_address()
 
         # Add all screens to the ScreenManager
         self.sm.add_widget(MonitorScreen(name='monitor'))
@@ -205,6 +206,8 @@ class MyApp(App):
                 print(f"Connected to Wi-Fi: {ssid}")
                 self.config['wifi_ssid'] = ssid
                 save_config('config/settings.json', 'v3_json', data=self.config)
+                self.ip_address = get_ip_address()
+                App.get_running_app().ip_label.text = f"{update_text_language('ip_address')}: {self.ip_address}"
             else:
                 self.config['wifi_ssid'] = 'Not connected'
                 save_config('config/settings.json', 'v3_json', data=self.config)

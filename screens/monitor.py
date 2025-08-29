@@ -15,10 +15,9 @@ class MonitorScreen(SafeScreen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         print("MonitorScreen initialized")
-        ip_address = self.get_ip_address()
         header = BoxLayout(orientation='horizontal', pos_hint={'top': 1}, size_hint_y=0.2, padding=10, spacing=10)
         self.ip_label = ColoredLabel(
-            text=f"{update_text_language('ip_address')}: {ip_address}",
+            text=f"{update_text_language('ip_address')}: {App.get_running_app().ip_address}",
             font_size=20,
             color=(0, 0, 0, 1),  # Black text
             size_hint=(None, None),
@@ -51,17 +50,6 @@ class MonitorScreen(SafeScreen):
             size_hint=(0.5, 0.5),
             pos_hint={'center_x': 0.5, 'center_y': 0.5})
         )
-
-    def get_ip_address(self):
-        try:
-            # Connect to an external server to force socket to use active network
-            s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-            s.connect(("8.8.8.8", 80))  # Google DNS
-            ip = s.getsockname()[0]
-            s.close()
-            return ip
-        except Exception as e:
-            return f"Not connected" 
         
     def go_to_menu(self, instance):
         print("Going to menu")
@@ -80,4 +68,13 @@ class MonitorScreen(SafeScreen):
         self.ip_label.text = f"{update_text_language('ip_address')}: {self.get_ip_address()}"
         
 
-
+def get_ip_address():
+    try:
+        # Connect to an external server to force socket to use active network
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.connect(("8.8.8.8", 80))  # Google DNS
+        ip = s.getsockname()[0]
+        s.close()
+        return ip
+    except Exception as e:
+        return f"Not connected" 
