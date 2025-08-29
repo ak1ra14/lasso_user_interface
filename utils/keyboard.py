@@ -443,6 +443,8 @@ class QwertyKeyboard(FloatLayout):
                 ti.text = ti.text[:cursor_pos-1] + ti.text[cursor_pos:]
                 ti.cursor = (cursor_pos - 1, 0)
                 self.last_cursor_index = ti.cursor_index()
+                if ti._get_text_width(ti.text, ti.tab_width, ti._label_cached) < ti.width:
+                    ti.scroll_x = 0
         elif instance.function == "Shift":
                 for btn in self.english_buttons:
                     btn.update_shift_text()
