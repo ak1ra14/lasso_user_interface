@@ -10,7 +10,7 @@
             "fall"
         ]
     ],
-    "attach_video": 1,
+    "attach_video": 0,
     "max_dist": 3000,
     "rtsp_recording": {
         "on": 0
