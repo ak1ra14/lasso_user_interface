@@ -206,7 +206,7 @@ class QwertyKeyboard(FloatLayout):
                 padding=3,
                 size_hint_x=None,
                 width= width,
-                pos = (0, 420- row_number*80)
+                pos = (0, 390- row_number*80)
             )
             row_number += 1
             ## Based on the key, create different buttons with functions 
@@ -258,7 +258,7 @@ class QwertyKeyboard(FloatLayout):
                 padding=3,
                 size_hint_x=None,
                 width=num_keys * key_width + (num_keys - 1) * key_spacing,
-                pos = (0,420 - row_num*80)
+                pos = (0,390 - row_num*80)
             )
             row_num += 1
             # Based on the key, create different buttons with functions
@@ -503,6 +503,10 @@ class QwertyKeyboard(FloatLayout):
         for btn in self.english_buttons + self.japanese_buttons + self.flick_keys:
             btn.opacity = 0
             btn.disabled = True
+        for btn in self.overlay:
+            if btn != self.home_button:
+                btn.opacity = 1
+                btn.disabled = True
 
         # Show only the relevant buttons
         if layout_name == 'english':
@@ -517,6 +521,10 @@ class QwertyKeyboard(FloatLayout):
             for btn in self.flick_keys:
                 btn.opacity = 1
                 btn.disabled = False
+            for btn in self.overlay:
+                if btn != self.home_button:
+                    btn.opacity = 0
+                    btn.disabled = True
 
 
 class RoundedButton(Button):
