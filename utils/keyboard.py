@@ -206,7 +206,7 @@ class QwertyKeyboard(FloatLayout):
                 padding=3,
                 size_hint_x=None,
                 width= width,
-                pos = (0, 450- row_number*80)
+                pos = (0, 420- row_number*80)
             )
             row_number += 1
             ## Based on the key, create different buttons with functions 
@@ -258,7 +258,7 @@ class QwertyKeyboard(FloatLayout):
                 padding=3,
                 size_hint_x=None,
                 width=num_keys * key_width + (num_keys - 1) * key_spacing,
-                pos = (0,450 - row_num*80)
+                pos = (0,420 - row_num*80)
             )
             row_num += 1
             # Based on the key, create different buttons with functions
