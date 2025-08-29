@@ -503,8 +503,8 @@ class QwertyKeyboard(FloatLayout):
         for btn in self.english_buttons + self.japanese_buttons + self.flick_keys:
             btn.opacity = 0
             btn.disabled = True
-        for btn in self.overlay:
-            if btn != self.home_button:
+        for btn in self.overlay.children:
+            if type(btn) is FlickKey:
                 btn.opacity = 1
                 btn.disabled = True
 
@@ -521,8 +521,8 @@ class QwertyKeyboard(FloatLayout):
             for btn in self.flick_keys:
                 btn.opacity = 1
                 btn.disabled = False
-            for btn in self.overlay:
-                if btn != self.home_button:
+            for btn in self.overlay.children:
+                if type(btn) is FlickKey:
                     btn.opacity = 0
                     btn.disabled = True
 
