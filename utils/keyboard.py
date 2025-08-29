@@ -63,9 +63,7 @@ class QwertyKeyboard(FloatLayout):
         self.last_click_space = False  # Track if the last click was on space
 
         ###layout for the keyboard screen
-        self.main_layout = BoxLayout(
-            orientation='vertical', 
-            padding=20, 
+        self.main_layout = FloatLayout(
             size_hint=(1, 1), 
             pos_hint={'center_x': 0.5, 'center_y': 0.53},
         )
@@ -176,10 +174,9 @@ class QwertyKeyboard(FloatLayout):
         self.overlay.add_widget(self.home_button)
         self.add_widget(self.overlay)  # Add flick overlay for Japanese input
 
-
+        self.build_japanese_keyboard()  # Build the Japanese keyboard layout
         self.build_qwerty_keyboard()  # Build the QWERTY keyboard layout
         self.build_flick_keyboard()  # Build the flick keyboard layout
-        self.build_japanese_keyboard()  # Build the Japanese keyboard layout
         self.show_layout('english')
     
     def build_qwerty_keyboard(self):
@@ -189,7 +186,7 @@ class QwertyKeyboard(FloatLayout):
         key_width = 90
         key_spacing = 8
 
-
+        row_number = 0
         for row, subrow, shift_row in zip(self.keys, self.subkeys, self.shift_keys):
             if len(row) == 10:
                 first_row_width = len(row) * key_width + (len(row) - 1) * key_spacing + 6
@@ -209,8 +206,9 @@ class QwertyKeyboard(FloatLayout):
                 padding=3,
                 size_hint_x=None,
                 width= width,
-                pos_hint={'center_x': 0.5}
+                pos = (0, 450- row_number*80)
             )
+            row_number += 1
             ## Based on the key, create different buttons with functions 
             for key, sub_key, shift_key in zip(row, subrow, shift_row):
                 btn = None
@@ -237,8 +235,8 @@ class QwertyKeyboard(FloatLayout):
                 else:
                     btn = RoundedButton(text=key, sub_key=sub_key, font_size=24, font_name='fonts/Roboto-Bold.ttf',
                                         size_hint_x=None, width=key_width, shift_key=shift_key)
-                self.english_buttons.append(btn)
                 btn.bind(on_release=self.on_key_release)
+                self.english_buttons.append(btn)
                 row_layout.add_widget(btn)
             self.main_layout.add_widget(row_layout)
     
@@ -249,7 +247,7 @@ class QwertyKeyboard(FloatLayout):
         self.entered = False # Flag to indicate if the Enter key has not been pressed to determine the word conversion 
         self.language_mode = 'japanese'  # Set the language mode to Japanese
         self.last_click_space = False
-
+        row_num = 0
         for row, subrow in zip(self.japanese_keys, self.japanese_subkeys):
             num_keys = len(row)
             row_layout = GridLayout(
@@ -259,8 +257,10 @@ class QwertyKeyboard(FloatLayout):
                 spacing=key_spacing,
                 padding=3,
                 size_hint_x=None,
-                width=num_keys * key_width + (num_keys - 1) * key_spacing
+                width=num_keys * key_width + (num_keys - 1) * key_spacing,
+                pos = (0,450 - row_num*80)
             )
+            row_num += 1
             # Based on the key, create different buttons with functions
             for key, sub_key in zip(row, subrow):
                 btn = None
