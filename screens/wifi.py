@@ -48,7 +48,7 @@ class WifiLoadingScreen(SafeScreen):
         self.add_widget(self.header)
         if hasattr(self, 'loading_circle'):
             self.remove_widget(self.loading_circle)
-        list_box = GridLayout(cols=1, size=(465, 440), size_hint=(None,None), pos_hint=(None, None),)
+        list_box = GridLayout(cols=1, size=(465, 1100), size_hint=(None,None), pos_hint=(None, None),)
         for wifi in wifi_list:
             button = SelectableButton(text=wifi, font_size=40,
                                                 font_name='fonts/MPLUS1p-Regular.ttf', size_hint_y=None, 
