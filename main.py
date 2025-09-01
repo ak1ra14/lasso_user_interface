@@ -151,7 +151,7 @@ class MyApp(App):
             self._timer_event.cancel()
             if self.sm.current != 'dark' and self.sm.current != 'monitor':
                 self.sm.current = 'menu'  # Switch to menu screen when time runs out
-                # self.reset_screensaver_timer()  # Reset screensaver timer
+                self.reset_screensaver_timer()  # Reset screensaver timer
             elif self.sm.current == 'menu' or self.sm.current == 'menu2':
                 self.sm.current = 'monitor'
             else:
