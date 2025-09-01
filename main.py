@@ -155,7 +155,7 @@ class MyApp(App):
                 self.sm.current = 'menu'  # Switch to menu screen when time runs out
                 self.reset_screensaver_timer()  # Reset screensaver timer
                 self.reset_timer()
-            else:
+            else: 
                 return 
 
     def reset_timer(self, *args):
@@ -173,6 +173,8 @@ class MyApp(App):
         Handle screen changes to show/hide the time bar and manage timers.'''
         if self.sm.current == 'dark' or self.sm.current == 'monitor':
             self.time_bar.opacity = 0  # Hide time bar in dark screen
+            if self._timer_event:
+                self._timer_event.cancel()
         else:
             self.time_bar.opacity = 1
 
