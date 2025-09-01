@@ -298,7 +298,8 @@ class MenuScreen2(SafeScreen):
     def on_pre_enter(self):
         self.config = load_config('config/settings.json', 'v3_json')
         self.screen_saver = f"{self.config.get('screensaver', 160)} {update_text_language('second')}"
-        self.wifi_ssid = self.config.get('wifi_ssid', 'N/A')
+        self.wifi_ssid = self.config.get('wifi_ssid', 'N/A') 
+        self.wifi_ssid = update_text_language('not_connected') if self.wifi_ssid == 'Not connected' else self.wifi_ssid
         self.timezone = self.config.get('timezone', 'N/A')
         self.region_address = self.config.get('region_address', 'N/A')
         self.config_status = [self.screen_saver, self.wifi_ssid, self.timezone, self.region_address]

@@ -68,9 +68,7 @@ class MonitorScreen(SafeScreen):
         ip_address = self.ip_label.text.split(": ")[1]
         if ip_address == "Not connected" or ip_address == "接続されていません":
             self.ip_label.text = f"{update_text_language('ip_address')}: {update_text_language('not_connected')}"
-            self.config = load_config('config/settings.json', 'v3_json')
-            self.config['wifi_ssid'] = update_text_language('not_connected')
-            save_config('config/settings.json', 'v3_json', data=self.config)
+
         else:
             self.ip_label.text = f"{update_text_language('ip_address')}: {ip_address}"
 
