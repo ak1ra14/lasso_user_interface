@@ -149,11 +149,11 @@ class MyApp(App):
         self.time_bar.value = self.time_left
         if self.time_left <= 0:
             self._timer_event.cancel()
-            if self.sm.current != 'dark' and self.sm.current != 'monitor':
+            if self.sm.current == 'menu' or self.sm.current == 'menu2':
+                self.sm.current = 'monitor'
+            elif self.sm.current != 'dark' and self.sm.current != 'monitor':
                 self.sm.current = 'menu'  # Switch to menu screen when time runs out
                 self.reset_screensaver_timer()  # Reset screensaver timer
-            elif self.sm.current == 'menu' or self.sm.current == 'menu2':
-                self.sm.current = 'monitor'
             else:
                 return 
 
