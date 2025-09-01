@@ -114,7 +114,7 @@ class SelectableButton(Button):
         self.rect.size = self.size
 
     def update_color(self):
-        print(self.text, "selected:", self.selected)
+        # print(self.text, "selected:", self.selected)
         if self.selected:
             self.color = (1, 1, 1, 1)
             self.background_color = (0.2, 0.6, 0.8, 1)
@@ -128,7 +128,7 @@ class SelectableButton(Button):
         """
         super().on_press()
         self.selection.selected_timezone = self.text
-        print(f"Selected timezone: {self.text}")
+        # print(f"Selected timezone: {self.text}")
         self.selection.select_timezone(self)
 
 class TZSaveButton(IconTextButton):
@@ -143,7 +143,7 @@ class TZSaveButton(IconTextButton):
     def on_press(self):
         super().on_press()
         App.get_running_app().show_saved_popup()  # Show a popup indicating the settings have been saved
-        print(f"Saving timezone: {self.tz_screen.selected_timezone}")
+        # print(f"Saving timezone: {self.tz_screen.selected_timezone}")
         config = load_config('config/settings.json', 'v3_json')
         config['timezone'] = self.tz_screen.selected_timezone
         save_config('config/settings.json', 'v3_json', data=config)

@@ -567,8 +567,6 @@ class RoundedButton(Button):
                 source=self.image,
                 size_hint=(0.6, 0.6),
                 pos_hint={'center_x': 0.5, 'center_y': 0.5},
-                allow_stretch=True,
-                keep_ratio=True
             )
             self.float_layout.add_widget(img)
 
