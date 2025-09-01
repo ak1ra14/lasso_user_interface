@@ -360,7 +360,6 @@ class QwertyKeyboard(FloatLayout):
             self.start_index = self.text_input.cursor_index()  # Save the cursor position
             self.entered = False # Flag to indicate if the Enter key has not been pressed to determine the word conversion 
             self.last_click_space = False
-            self.last_click_space = False
         elif layout == 'flick':
             self.main_layout.add_widget(self.flick_grid)
             self.language_mode = 'japanese'

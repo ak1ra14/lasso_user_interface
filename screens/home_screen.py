@@ -280,7 +280,6 @@ class MenuScreen2(SafeScreen):
             content.add_widget(self.content_buttons[content_name])
 
 
-
         # Combine all layers
         self.main_layout.add_widget(header)
         self.main_layout.add_widget(Widget(size_hint_y=None, height=60))  # Spacer with 40px height
