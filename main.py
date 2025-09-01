@@ -210,10 +210,10 @@ class MyApp(App):
                 self.ip_address = get_ip_address()
                 monitor_screen = self.sm.get_screen('monitor')
                 monitor_screen.ip_label.text = f"{update_text_language('ip_address')}: {self.ip_address}"
-            else:
-                self.config['wifi_ssid'] = 'Not connected'
-                save_config('config/settings.json', 'v3_json', data=self.config)
-                print("Not connected to any Wi-Fi network.")
+        else:
+            self.config['wifi_ssid'] = 'Not connected'
+            save_config('config/settings.json', 'v3_json', data=self.config)
+            print("Not connected to any Wi-Fi network.")
         
 
 def is_connected(host="8.8.8.8", port=53, timeout=3):
