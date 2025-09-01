@@ -48,6 +48,7 @@
   "cancel": "Cancel",
   "connection_successful": "Successfully connected to",
   "connection_fail": "Fail to connect to",
+  "not_connected": "Not connected",
   "check_password": "Please check your password or try again",
   "try_again": "Try again",
   "region_server": "Region\nServer",

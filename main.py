@@ -213,6 +213,8 @@ class MyApp(App):
         else:
             self.config['wifi_ssid'] = 'Not connected'
             save_config('config/settings.json', 'v3_json', data=self.config)
+            monitor_screen = self.sm.get_screen('monitor')
+            monitor_screen.ip_label.text = f"{update_text_language('ip_address')}: {update_text_language('not_connected')}"
             print("Not connected to any Wi-Fi network.")
         
 

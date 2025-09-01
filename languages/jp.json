@@ -48,6 +48,7 @@
   "cancel": "キャンセル",
   "connection_successful": "接続完了しました",
   "connection_fail": "接続に失敗しました",
+  "not_connected": "接続されていません",
   "check_password": "パスワードを確認、または再試行してください",
   "try_again": "再試行",
   "region_server": "リージョン\nサーバー",
