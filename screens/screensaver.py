@@ -12,6 +12,8 @@ from kivy.core.audio import SoundLoader
 from kivy.app import App
 from utils.freeze_screen import freeze_ui
 from kivy.uix.floatlayout import FloatLayout
+from kivy.uix.slider import Slider
+
 import json
 import os
 
@@ -74,22 +76,25 @@ class ScreenSaverScreen(SafeScreen):
                                         screensaver_screen=self,  # Pass the screen instance
                                         pos_hint={'center_x': 0.5, 'center_y': 0.5},
                                         by=10, height=50))
-        self.min_button = MinMaxButtonScreensaver(
-            screensaver_screen=self,
-            text=update_text_language("minimum"),
-            size_hint=(None, None),
-            size=(120, 40),
-            pos_hint={'center_x': 0.11, 'center_y': 0.3}
-        )
-        float_layout.add_widget(self.min_button)
-        self.max_button = MinMaxButtonScreensaver(
-            screensaver_screen=self,
-            text=update_text_language("maximum"),
-            size_hint=(None, None),
-            size=(120, 40),
-            pos_hint={'center_x': 0.89, 'center_y': 0.3}
-        )
-        float_layout.add_widget(self.max_button)
+        self.slider = Slider(min=0, max=600, value=0, step=1, width = 800, pos_hint={'center_x': 0.5, 'center_y': 0.7})
+        self.slider.bind(value=self.on_slider_value_change)
+        float_layout.add_widget(self.slider)
+        # self.min_button = MinMaxButtonScreensaver(
+        #     screensaver_screen=self,
+        #     text=update_text_language("minimum"),
+        #     size_hint=(None, None),
+        #     size=(120, 40),
+        #     pos_hint={'center_x': 0.11, 'center_y': 0.3}
+        # )
+        # float_layout.add_widget(self.min_button)
+        # self.max_button = MinMaxButtonScreensaver(
+        #     screensaver_screen=self,
+        #     text=update_text_language("maximum"),
+        #     size_hint=(None, None),
+        #     size=(120, 40),
+        #     pos_hint={'center_x': 0.89, 'center_y': 0.3}
+        # )
+        # float_layout.add_widget(self.max_button)
         self.add_widget(self.header)
         self.add_widget(buttons)
 
@@ -118,8 +123,12 @@ class ScreenSaverScreen(SafeScreen):
         self.header.update_language()
         self.save_button.label.text = update_text_language("save")
         self.second.text = update_text_language("second")
-        self.min_button.label.text = update_text_language("minimum")
-        self.max_button.label.text = update_text_language("maximum")
+        # self.min_button.label.text = update_text_language("minimum")
+        # self.max_button.label.text = update_text_language("maximum")
+
+    def on_slider_value_change(self, instance, value):
+        self.screensaver_time = int(value)
+        self.screensaver_time_label.text = f"{int(value)}"
 
 
 class ChangeTime(IconTextButton):
@@ -146,12 +155,14 @@ class ChangeTime(IconTextButton):
         new_time = min(current_time + self.by, 600)
         self.screensaver_screen.screensaver_time = new_time
         self.screensaver_time_label.text = f"{new_time}"
+        self.screensaver_screen.slider.value = new_time
 
     def _decrease(self):
         current_time = self.screensaver_screen.screensaver_time
         new_time = max(current_time - self.by, 0)
         self.screensaver_screen.screensaver_time = new_time
         self.screensaver_time_label.text = f"{new_time}"
+        self.screensaver_screen.slider.value = new_time
 
 class SaveButton(IconTextButton):
     def __init__(self, screensaver_screen=None, **kwargs):
