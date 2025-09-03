@@ -132,7 +132,8 @@ class MyApp(App):
         if self.screensaver_event:
             self.screensaver_event.cancel()
         timeout = self.config.get('screensaver', 60)
-        self.screensaver_event = Clock.schedule_once(self.activate_screensaver, timeout)
+        if timeout != 0:
+            self.screensaver_event = Clock.schedule_once(self.activate_screensaver, timeout)
 
     def activate_screensaver(self, *args):
         '''
