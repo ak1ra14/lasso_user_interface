@@ -31,7 +31,7 @@ class HeaderBar(BoxLayout):
         #self.add_widget(Widget())  # Spacer
         if second_button:
             self.add_widget(second_button)
-            self.add_widget(Widget(size_hint_x=None, width=10))  # Spacer
+            self.add_widget(Widget(size_hint_x=None, width=5))  # Spacer
         self.top_right_button = IconTextButton(
             icon_path=icon_path,
             text=update_text_language(button_text),
