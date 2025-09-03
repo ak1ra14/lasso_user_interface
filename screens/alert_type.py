@@ -44,7 +44,7 @@ class AlertTypeScreen(SafeScreen):
             size=(70,70),
             pos = (70, 300)
         )
-        y_axis = [260, 215, 170, 125, 80]
+        y_axis = [260, 210, 160, 110, 60]
         bed_types = ["alert_with_video", "sit_up","bed_exit","sit_to_stand","fall_besides_bed"]
         for i, bed_type in enumerate(bed_types):
             if i == 0:
