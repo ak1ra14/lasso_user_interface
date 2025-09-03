@@ -25,7 +25,15 @@ class ScreenSaverScreen(SafeScreen):
         
         super().__init__(**kwargs)
         self.screensaver_time = load_config('config/V3.json').get('screensaver', 60)
-        self.header = HeaderBar(title="screensaver", icon_path="images/home.png", button_text="home", button_screen="menu2")
+        self.save_button = SaveButton(
+            icon_path="images/save.png",
+            screensaver_screen=self,  # Pass the screen instance
+            text=update_text_language("save"),  
+            size_hint=(None, None),
+            size=(120, 120),
+            pos_hint={'center_x': 0.5, 'center_y': 0.23}
+        )
+        self.header = HeaderBar(title="screensaver", icon_path="images/home.png", button_text="home", button_screen="menu2", second_button=self.save_button)
         buttons = BoxLayout(orientation='horizontal', spacing=15, size_hint_y=0.3, pos_hint={'center_x': 0.5, 'center_y': 0.55}, padding=[50,0,50,0])  # Only left and right padding
         float_layout = FloatLayout(
             size_hint=(1, 1))
@@ -99,17 +107,6 @@ class ScreenSaverScreen(SafeScreen):
         # float_layout.add_widget(self.max_button)
         self.add_widget(self.header)
         self.add_widget(buttons)
-
-        self.save_button = SaveButton(
-            icon_path="images/save.png",
-            screensaver_screen=self,  # Pass the screen instance
-            text=update_text_language("save"),  
-            size_hint=(None, None),
-            size=(120, 120),
-            pos_hint={'center_x': 0.5, 'center_y': 0.23}
-        )
-        self.add_widget(self.save_button)
-
         self.add_widget(float_layout)
 
     def on_pre_enter(self):

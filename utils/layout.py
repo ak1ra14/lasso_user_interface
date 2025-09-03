@@ -14,7 +14,7 @@ class HeaderBar(BoxLayout):
     '''
     A header bar with a title and a top-right button for menu navigation.
     '''
-    def __init__(self, title="Language", icon_path="images/home.png", button_text="home", button_screen="menu", padding=[50, 0, 50, 0], spacing=10, **kwargs):
+    def __init__(self, title="Language", icon_path="images/home.png", button_text="home", button_screen="menu", padding=[50, 0, 50, 0], spacing=10, second_button=None, **kwargs,):
         super().__init__(orientation='horizontal', size_hint_y=0.30, pos_hint={'top': 1}, padding=padding, spacing=spacing, **kwargs)
         self.button_text = button_text
         self.title = title
@@ -29,6 +29,8 @@ class HeaderBar(BoxLayout):
         self.title_label.bind(size=lambda inst, val: setattr(inst, 'text_size', val))
         self.add_widget(self.title_label)
         #self.add_widget(Widget())  # Spacer
+        if second_button:
+            self.add_widget(second_button)
         self.top_right_button = IconTextButton(
             icon_path=icon_path,
             text=update_text_language(button_text),
