@@ -99,7 +99,7 @@ class ScreenSaverScreen(SafeScreen):
             text=update_text_language("save"),  
             size_hint=(None, None),
             size=(120, 120),
-            pos_hint={'center_x': 0.5, 'center_y': 0.2}
+            pos_hint={'center_x': 0.5, 'center_y': 0.3}
         )
         self.add_widget(self.save_button)
 
