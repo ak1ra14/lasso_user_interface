@@ -60,6 +60,7 @@ class QwertyKeyboard(FloatLayout):
         self.visibility = True  # Flag to indicate password visibility
         self.last_cursor_index = 0  # Track the last cursor position
         self.last_click_space = False  # Track if the last click was on space
+        self.start_index = 0  # Start index for conversion
 
         ###layout for the keyboard screen
         self.main_layout = BoxLayout(
@@ -89,6 +90,7 @@ class QwertyKeyboard(FloatLayout):
                                     multiline=False,  # Single line input
                                     halign='left',
                                     )
+        self.text_input.bind(cursor=self.on_cursor_change)
         
         partition = SeparatorLine(
             size_hint=(0.6, 0.05),
@@ -386,7 +388,9 @@ class QwertyKeyboard(FloatLayout):
                 ti.text = ti.text[:cursor_pos] + instance.sub_key + ti.text[cursor_pos:]
             else:
                 ti.text = ti.text[:cursor_pos] + '*' * len(instance.sub_key) + ti.text[cursor_pos:]
+            self.programmatic_cursor_change = True
             ti.cursor = (cursor_pos + len(instance.sub_key), 0)
+            self.programmatic_cursor_change = False
             self.last_cursor_index = ti.cursor_index()
         # if the same flick key is pressed within one second cycle through the options
         elif hasattr(instance,'mappings'):
@@ -425,7 +429,9 @@ class QwertyKeyboard(FloatLayout):
                 print(f"{self.converted_text[0]}, starting from {self.start_index}, ending at{cursor_pos},cursor pos {ti.cursor_index()}")
                 suggested_text = self.converted_text.pop() if self.converted_text else ti.text[self.start_index:cursor_pos]
                 ti.text = ti.text[:self.start_index] + suggested_text + ti.text[cursor_pos:]
+                self.programmatic_cursor_change = True
                 ti.cursor = (self.start_index + len(suggested_text), 0)
+                self.programmatic_cursor_change = False
                 self.last_cursor_index = ti.cursor_index()
             else:
                 print("Inserting space")
@@ -437,14 +443,19 @@ class QwertyKeyboard(FloatLayout):
                     ti.text = ti.text[:cursor_pos] + ' ' + ti.text[cursor_pos:]
                 else:
                     ti.text = ti.text[:cursor_pos] + '*' + ti.text[cursor_pos:]
+                self.programmatic_cursor_change = True
                 ti.cursor = (cursor_pos + 1, 0)
+                self.programmatic_cursor_change = False
+                self.start_index = ti.cursor_index()  # Update the start index
                 #self.last_cursor_index = ti.cursor_index()
             self.last_click_space = True
         elif instance.function == 'Backspace':
             if cursor_pos > 0:
                 self.actual_text_input = self.actual_text_input[:cursor_pos-1] + self.actual_text_input[cursor_pos:]
                 ti.text = ti.text[:cursor_pos-1] + ti.text[cursor_pos:]
+                self.programmatic_cursor_change = True
                 ti.cursor = (cursor_pos - 1, 0)
+                self.programmatic_cursor_change = False
                 self.last_cursor_index = ti.cursor_index()
                 #ti.cursor = ti.cursor  # Update the cursor position
                 ti.scroll_x = 1
@@ -467,7 +478,7 @@ class QwertyKeyboard(FloatLayout):
                 self.text_input.text = self.text_input.text[:-1] + self.change_dakuon(self.text_input.text[-1]) # Add Daku-on character
         else:
             print(f"Normal key pressed: {instance.text},self.converting: {self.converting}, cursor pos: {cursor_pos}, last cursor index: {self.last_cursor_index}")
-            if self.language_mode == 'japanese' and self.last_click_space:
+            if self.language_mode == 'japanese' and self.last_click_space or self.start_index == cursor_pos:
                 self.japanese_space_button.text = '変換'
                 self.flick_space_button.text = '変換'
             if self.converting:
@@ -481,7 +492,9 @@ class QwertyKeyboard(FloatLayout):
                     self.text_input.text = self.text_input.text[:cursor_pos] + instance.text + self.text_input.text[cursor_pos:]
             else:
                 self.text_input.text = self.text_input.text[:cursor_pos] + '*' * len(instance.text) + self.text_input.text[cursor_pos:]
+            self.programmatic_cursor_change = True
             ti.cursor = (cursor_pos + len(instance.text), 0)
+            self.programmatic_cursor_change = False
             self.last_cursor_index = ti.cursor_index()
 
     def press_enter(self, instance):
@@ -531,6 +544,11 @@ class QwertyKeyboard(FloatLayout):
     def limit_text_length(self, instance, value):
         if len(value) > self.MAX_CHARS:
             instance.text = value[:self.MAX_CHARS]
+
+    def on_cursor_change(self, instance, value):
+        if getattr(self, '_programmatic_cursor_change', False):
+            self.start_index = instance.cursor_index()  # Update the start index to the new cursor position
+            print(f"Cursor changed to index: {self.start_index}")
 
 
 class RoundedButton(Button):
