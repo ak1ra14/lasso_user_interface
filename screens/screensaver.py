@@ -26,7 +26,7 @@ class ScreenSaverScreen(SafeScreen):
         super().__init__(**kwargs)
         self.screensaver_time = load_config('config/V3.json').get('screensaver', 60)
         self.header = HeaderBar(title="screensaver", icon_path="images/home.png", button_text="home", button_screen="menu2")
-        buttons = BoxLayout(orientation='horizontal', spacing=15, size_hint_y=0.3, pos_hint={'center_x': 0.5, 'center_y': 0.65}, padding=[50,0,50,0])  # Only left and right padding
+        buttons = BoxLayout(orientation='horizontal', spacing=15, size_hint_y=0.3, pos_hint={'center_x': 0.5, 'center_y': 0.55}, padding=[50,0,50,0])  # Only left and right padding
         float_layout = FloatLayout(
             size_hint=(1, 1))
         #time = BoxLayout(orientation='vertical', spacing=30, pos_hint={'center_x': 0.5, 'center_y': 0.5}, padding=[50,0,50,0])
@@ -36,7 +36,7 @@ class ScreenSaverScreen(SafeScreen):
             font_name='fonts/Roboto-Bold.ttf',
             size_hint_y=0.8,
             valign='middle',
-            pos_hint={'center_x': 0.5, 'center_y': 0.67},
+            pos_hint={'center_x': 0.5, 'center_y': 0.57},
         ))
         float_layout.add_widget(self.screensaver_time_label)
         self.second = Label(
@@ -44,7 +44,7 @@ class ScreenSaverScreen(SafeScreen):
             font_size=20,
             font_name='fonts/MPLUS1p-Regular.ttf',
             valign='bottom',
-            pos_hint={'center_x': 0.5, 'center_y': 0.55},
+            pos_hint={'center_x': 0.5, 'center_y': 0.45},
         )
         float_layout.add_widget(self.second)
 
