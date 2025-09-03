@@ -79,7 +79,7 @@ class ScreenSaverScreen(SafeScreen):
             text=update_text_language("minimum"),
             size_hint=(None, None),
             size=(120, 40),
-            pos_hint={'center_x': 0.3, 'center_y': 0.3}
+            pos_hint={'center_x': 0.1, 'center_y': 0.3}
         )
         float_layout.add_widget(self.min_button)
         self.max_button = MinMaxButtonScreensaver(
@@ -87,7 +87,7 @@ class ScreenSaverScreen(SafeScreen):
             text=update_text_language("maximum"),
             size_hint=(None, None),
             size=(120, 40),
-            pos_hint={'center_x': 0.7, 'center_y': 0.3}
+            pos_hint={'center_x': 0.9, 'center_y': 0.3}
         )
         float_layout.add_widget(self.max_button)
         self.add_widget(self.header)
@@ -118,6 +118,8 @@ class ScreenSaverScreen(SafeScreen):
         self.header.update_language()
         self.save_button.label.text = update_text_language("save")
         self.second.text = update_text_language("second")
+        self.min_button.label.text = update_text_language("minimum")
+        self.max_button.label.text = update_text_language("maximum")
 
 
 class ChangeTime(IconTextButton):
@@ -193,9 +195,9 @@ class MinMaxButtonScreensaver(IconTextButton):
     def on_press(self):
         super().on_press()
         # Set screensaver time to min or max value based on the button type
-        if self.label == update_text_language("min"):
+        if self.label.text == update_text_language("minimum"):
             self.screensaver_screen.screensaver_time = 0
-        elif self.label == update_text_language("max"):
+        elif self.label.text == update_text_language("maximum"):
             self.screensaver_screen.screensaver_time = 600
         self.screensaver_screen.screensaver_time_label.text = f"{self.screensaver_screen.screensaver_time}"
 
