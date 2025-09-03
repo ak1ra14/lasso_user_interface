@@ -117,6 +117,7 @@ class ScreenSaverScreen(SafeScreen):
         update_current_page('screensaver')
         self.screensaver_time = load_config('config/V3.json').get('screensaver', 60)
         self.screensaver_time_label.text = f"{self.screensaver_time}"
+        self.slider.value = self.screensaver_time
 
     def update_language(self):
         self.header.update_language()
