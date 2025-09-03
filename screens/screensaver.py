@@ -79,7 +79,7 @@ class ScreenSaverScreen(SafeScreen):
             text=update_text_language("minimum"),
             size_hint=(None, None),
             size=(120, 40),
-            pos_hint={'center_x': 0.1, 'center_y': 0.3}
+            pos_hint={'center_x': 0.12, 'center_y': 0.3}
         )
         float_layout.add_widget(self.min_button)
         self.max_button = MinMaxButtonScreensaver(
@@ -87,7 +87,7 @@ class ScreenSaverScreen(SafeScreen):
             text=update_text_language("maximum"),
             size_hint=(None, None),
             size=(120, 40),
-            pos_hint={'center_x': 0.9, 'center_y': 0.3}
+            pos_hint={'center_x': 0.88, 'center_y': 0.3}
         )
         float_layout.add_widget(self.max_button)
         self.add_widget(self.header)
