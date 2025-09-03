@@ -76,7 +76,7 @@ class ScreenSaverScreen(SafeScreen):
                                         screensaver_screen=self,  # Pass the screen instance
                                         pos_hint={'center_x': 0.5, 'center_y': 0.5},
                                         by=10, height=50))
-        self.slider = Slider(min=0, max=600, value=0, step=1, width = 800, pos_hint={'center_x': 0.5, 'center_y': 0.7})
+        self.slider = Slider(min=0, max=600, value=0, step=1, width = 600, pos_hint={'center_x': 0.5, 'center_y': 0.7})
         self.slider.bind(value=self.on_slider_value_change)
         float_layout.add_widget(self.slider)
         # self.min_button = MinMaxButtonScreensaver(
