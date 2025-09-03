@@ -60,8 +60,6 @@ class ScreenSaverScreen(SafeScreen):
                                         by=1, height=50))
         screensaver = BoxLayout(orientation='vertical', spacing=30, size_hint_y=0.3, pos_hint={'center_x': 0.5, 'center_y': 0.5}, padding=[20,0,20,0])
 
-        # screensaver.add_widget(time)
-
         buttons.add_widget(screensaver)
         buttons.add_widget(ChangeTime(icon_path="images/increase.png",
                                         screensaver_time_label=self.screensaver_time_label,
@@ -76,6 +74,22 @@ class ScreenSaverScreen(SafeScreen):
                                         screensaver_screen=self,  # Pass the screen instance
                                         pos_hint={'center_x': 0.5, 'center_y': 0.5},
                                         by=10, height=50))
+        self.min_button = MinMaxButtonScreensaver(
+            screensaver_screen=self,
+            text=update_text_language("minimum"),
+            size_hint=(None, None),
+            size=(120, 40),
+            pos_hint={'center_x': 0.3, 'center_y': 0.3}
+        )
+        float_layout.add_widget(self.min_button)
+        self.max_button = MinMaxButtonScreensaver(
+            screensaver_screen=self,
+            text=update_text_language("maximum"),
+            size_hint=(None, None),
+            size=(120, 40),
+            pos_hint={'center_x': 0.7, 'center_y': 0.3}
+        )
+        float_layout.add_widget(self.max_button)
         self.add_widget(self.header)
         self.add_widget(buttons)
 
@@ -170,6 +184,20 @@ class HomeButtonScreensaver(IconTextButton):
         self.screensaver_screen.screensaver_time_label.text = f"{self.config.get('screensaver', 50)}s"
         self.screensaver_screen.screensaver_time = self.config.get('screensaver', 50)
           # Reset screensaver time to saved value
+
+class MinMaxButtonScreensaver(IconTextButton):
+    def __init__(self, screensaver_screen=None, **kwargs):
+        super().__init__(**kwargs)
+        self.screensaver_screen = screensaver_screen
+
+    def on_press(self):
+        super().on_press()
+        # Set screensaver time to min or max value based on the button type
+        if self.label == update_text_language("min"):
+            self.screensaver_screen.screensaver_time = 0
+        elif self.label == update_text_language("max"):
+            self.screensaver_screen.screensaver_time = 600
+        self.screensaver_screen.screensaver_time_label.text = f"{self.screensaver_screen.screensaver_time}"
 
 class DarkScreen(SafeScreen):
     """

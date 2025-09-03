@@ -64,5 +64,7 @@
   "reboot": "Reboot",
   "english": "English",
   "japanese": "Japanese",
-  "saved": "Saved successfully"
+  "saved": "Saved successfully",
+  "minimum": "Minimum",
+  "maximum": "Maximum"
 }
