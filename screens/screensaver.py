@@ -51,13 +51,13 @@ class ScreenSaverScreen(SafeScreen):
                                         change="decrease",
                                         screensaver_screen=self,
                                         pos_hint={'center_x': 0.5, 'center_y': 0.5},
-                                        by=60, height=50))
+                                        by=10, height=50))
         buttons.add_widget(ChangeTime(icon_path="images/decrease.png",
                                         screensaver_time_label=self.screensaver_time_label,
                                         change="decrease",
                                         screensaver_screen=self,  # Pass the screen instance
                                         pos_hint={'center_x': 0.5, 'center_y': 0.5},
-                                        by=10, height=50))
+                                        by=1, height=50))
         screensaver = BoxLayout(orientation='vertical', spacing=30, size_hint_y=0.3, pos_hint={'center_x': 0.5, 'center_y': 0.5}, padding=[20,0,20,0])
 
         # screensaver.add_widget(time)
@@ -66,7 +66,7 @@ class ScreenSaverScreen(SafeScreen):
         buttons.add_widget(ChangeTime(icon_path="images/increase.png",
                                         screensaver_time_label=self.screensaver_time_label,
                                         change="increase",  # Pass the label to update
-                                        by=10,
+                                        by=1,
                                         pos_hint={'center_x': 0.5, 'center_y': 0.5},
                                         screensaver_screen=self,  # Pass the screen instance
                                         height=50))
@@ -75,7 +75,7 @@ class ScreenSaverScreen(SafeScreen):
                                         change="increase",  # Pass the label to update
                                         screensaver_screen=self,  # Pass the screen instance
                                         pos_hint={'center_x': 0.5, 'center_y': 0.5},
-                                        by=60, height=50))
+                                        by=10, height=50))
         self.add_widget(self.header)
         self.add_widget(buttons)
 
@@ -133,7 +133,7 @@ class ChangeTime(IconTextButton):
 
     def _decrease(self):
         current_time = self.screensaver_screen.screensaver_time
-        new_time = max(current_time - self.by, 10)
+        new_time = max(current_time - self.by, 0)
         self.screensaver_screen.screensaver_time = new_time
         self.screensaver_time_label.text = f"{new_time}"
 
