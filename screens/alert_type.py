@@ -62,7 +62,7 @@ class AlertTypeScreen(SafeScreen):
             self.add_widget(button)
             self.buttons.append(button)
         partition = SeparatorLine(
-            points=[370, 340, 370, 80],
+            points=[370, 340, 370, 60],
             size_hint=(None, None),
         )
         
