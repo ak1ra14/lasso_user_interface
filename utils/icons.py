@@ -154,6 +154,7 @@ class IconTextButton(Button):
         App.get_running_app().play_sound()  # Play sound on button press
         self.color_instruction.rgba = (0.2, 0.8, 0.2, 1) # Change color to green on press
         Clock.schedule_once(self._reset_color, 0.3)  # Reset color after 0.3 seconds
+        freeze_ui(0.3)
         # Only navigate if screen_name is set and no custom handler is bound
 
     def on_release(self):
