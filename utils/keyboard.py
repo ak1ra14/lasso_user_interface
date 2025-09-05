@@ -180,7 +180,6 @@ class QwertyKeyboard(FloatLayout):
             ('Daku-on',),
             ('わ', 'を', 'ん', 'ー', ''),
             ('、', '。', '?', '!', ''),
-            ('English',)
         ]
         
         self.add_widget(self.main_layout)
@@ -336,7 +335,9 @@ class QwertyKeyboard(FloatLayout):
         # self.last_cursor_index = self.text_input.cursor_index() # Save the cursor position
         # self.last_click_space = False
 
-        self.flick_grid = GridLayout(cols=4, spacing=6, padding=(100,0,100,0), size_hint_y=None, height=300)
+        self.flick_grid = GridLayout(cols=4, spacing=6, 
+                                     padding=(100,0,100,0), size_hint_y=None,
+                                      height=300)
         # Create buttons based on flick mappings
         for mapping in self.flick_mappings:
             if len(mapping) == 5 and type(mapping[0]) is str:
@@ -586,9 +587,6 @@ class QwertyKeyboard(FloatLayout):
 
 class LanguageTextButton(IconTextButton):
 
-    def on_press(self):
-        super().on_press()
-        freeze_ui(0.3)
 
     def on_release(self):
         super().on_release()
