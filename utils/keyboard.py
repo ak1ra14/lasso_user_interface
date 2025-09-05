@@ -585,7 +585,12 @@ class QwertyKeyboard(FloatLayout):
 
 
 class LanguageTextButton(IconTextButton):
+    def on_press(self):
+        return super().on_press()
+        freeze_ui(0.2)  # freeze the UI for 0.2 seconds to prevent multiple presses
+
     def on_release(self):
+        super().on_release()
         print("Language button pressed")
         self.parent.parent.keyboard_index = (self.parent.parent.keyboard_index + 1) % len(self.parent.parent.keyboard_mode)
         self.parent.parent.language_mode = 'english' if self.parent.parent.keyboard_mode[self.parent.parent.keyboard_index] == 'english' else 'japanese'
@@ -597,7 +602,6 @@ class LanguageTextButton(IconTextButton):
         else: 
             self.parent.parent.show_layout('flick')
             self.image.source = 'images/english.png'
-        freeze_ui(0.3)
 
 
 class RoundedButton(Button):
