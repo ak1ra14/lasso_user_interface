@@ -179,7 +179,7 @@ class QwertyKeyboard(FloatLayout):
             icon_path='images/japanese.png',
             size_hint=(None, None),
             size=(110, 110),
-            pos_hint={'top': 0.95, 'right': 0.80},
+            pos_hint={'top': 0.95, 'right': 0.85},
         )
 
         self.overlay.add_widget(self.home_button)
