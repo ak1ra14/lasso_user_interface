@@ -37,9 +37,28 @@ class KeyboardScreen(SafeScreen):
         self.keyboard.label.text = update_text_language(self.title)
         self.keyboard.home_button.label.text = update_text_language("home")
 
-    def pre_enter(self):
+    def on_pre_enter(self):
         self.last_cursor_index = len(self.keyboard.actual_text_input)
-        
+        try:
+            print('checking if language button exists')
+            if not self.keyboard.language_button and App.get_running_app().language == 'jp':
+                print('adding the button if language is japanese')
+                self.keyboard.language_button = LanguageTextButton(
+                    icon_path='images/japanese.png',
+                    size_hint=(None, None),
+                    size=(110, 110),
+                    pos_hint={'top': 0.95, 'right': 0.85},
+                )
+                self.keyboard.overlay.add_widget(self.keyboard.language_button)
+            if self.keyboard.language_button and App.get_running_app().language == 'en':
+                print('removing the button if language is english')
+                self.keyboard.overlay.remove_widget(self.keyboard.language_button)
+                self.keyboard.language_button = None
+                print('removed the button')
+                self.keyboard.show_layout('english')
+
+        except AttributeError:
+            pass
 class QwertyKeyboard(FloatLayout):
     '''
     A full QWERTY keyboard with English and Japanese input modes, including flick input for Japanese.
@@ -63,6 +82,7 @@ class QwertyKeyboard(FloatLayout):
         self.last_cursor_index = 0  # Track the last cursor position
         self.last_click_space = False  # Track if the last click was on space
         self.start_index = 0  # Start index for conversion
+        self.language_button = None
 
         ###layout for the keyboard screen
         self.main_layout = BoxLayout(
@@ -175,15 +195,17 @@ class QwertyKeyboard(FloatLayout):
             pos_hint={'top': 0.95, 'right': 0.97},
             screen_name='menu',
         )
-        self.language_button = LanguageTextButton(
-            icon_path='images/japanese.png',
-            size_hint=(None, None),
-            size=(110, 110),
-            pos_hint={'top': 0.95, 'right': 0.85},
-        )
+        if App.get_running_app().language == 'jp':
+            self.language_button = LanguageTextButton(
+                icon_path='images/japanese.png',
+                size_hint=(None, None),
+                size=(110, 110),
+                pos_hint={'top': 0.95, 'right': 0.85},
+            )
+            self.overlay.add_widget(self.language_button)
+
 
         self.overlay.add_widget(self.home_button)
-        self.overlay.add_widget(self.language_button)
         self.add_widget(self.overlay)  # Add flick overlay for Japanese input
         self.build_all_keyboards()  # Build all keyboards
         self.show_layout('english')  # Show the default keyboard layout
@@ -226,7 +248,7 @@ class QwertyKeyboard(FloatLayout):
                                         background_color = (0.22, 0.45, 0.91, 1), size_hint_x=None, width=key_width*1.5,
                                         function='Shift',  shift_key='')
                 elif key == 'English':
-                    btn = RoundedButton(text='', sub_key=sub_key, image=f'images/english.png', font_size=24, font_name='fonts/Roboto-Bold.ttf',
+                    btn = RoundedButton(text='', sub_key=sub_key, image=f'images/switch.png', font_size=24, font_name='fonts/Roboto-Bold.ttf',
                                         background_color=(0.22, 0.45, 0.91, 1), size_hint_x=None, width=key_width*1.5,
                                         function='English',  shift_key='')
                 elif key == 'Backspace':
@@ -275,7 +297,7 @@ class QwertyKeyboard(FloatLayout):
             for key, sub_key in zip(row, subrow):
                 btn = None
                 if key == 'Japanese':
-                    btn = RoundedButton(text='', sub_key=sub_key, image=f'images/japanese.png', font_size=24, font_name='fonts/MPLUS1p-Regular.ttf',
+                    btn = RoundedButton(text='', sub_key=sub_key, image=f'images/switch.png', font_size=24, font_name='fonts/MPLUS1p-Regular.ttf',
                                         background_color=(0.22, 0.45, 0.91, 1), size_hint_x=None, width=key_width*1.5,
                                         function='Japanese')
                 elif key == 'Backspace':
@@ -467,7 +489,6 @@ class QwertyKeyboard(FloatLayout):
                 btn.sub_key = temp
                 try:
                     btn.sub_key_label.text = temp
-                    print(f"Subkey label updated to {temp}")
                 except AttributeError: pass
         elif instance.function == "English":
             for btn in self.english_buttons:
@@ -476,7 +497,6 @@ class QwertyKeyboard(FloatLayout):
                 btn.sub_key = temp
                 try:
                     btn.sub_key_label.text = temp
-                    print(f"Subkey label updated to {temp}")
                 except AttributeError: pass
                                 
         elif instance.function == "Enter":
