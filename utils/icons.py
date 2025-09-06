@@ -159,7 +159,13 @@ class IconTextButton(Button):
 
     def on_release(self):
         if self.screen_name and not self.has_custom_handler():
-            App.get_running_app().sm.current = self.screen_name
+            if self.screen_name == 'servers' and App.get_running_app().sm.current in ['menu','menu2']:
+                password_screen = App.get_running_app().sm.get_screen('password screen')
+                password_screen.screen_name = 'servers'
+                App.get_running_app().sm.current = 'password screen'
+ 
+            else:
+                App.get_running_app().sm.current = self.screen_name
 
     def _reset_color(self, dt):
         self.color_instruction.rgba = (0.22, 0.45, 0.91, 1)

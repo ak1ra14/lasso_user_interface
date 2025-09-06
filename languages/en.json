@@ -66,5 +66,8 @@
   "japanese": "Japanese",
   "saved": "Saved successfully",
   "minimum": "Off",
-  "maximum": "Maximum"
+  "maximum": "Maximum",
+  "incorrect_password": "Incorrect Password",
+  "correct_password": "Authentication Successful",
+  "enter_password": "Please enter the password"
 }

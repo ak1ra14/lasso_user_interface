@@ -18,6 +18,7 @@ import mozcpy
 from kivy.app import App
 from utils.config_loader import load_config, update_text_language
 import time 
+from kivy.uix.popup import Popup
 
 class KeyboardScreen(SafeScreen):
     '''
@@ -541,7 +542,8 @@ class QwertyKeyboard(FloatLayout):
                 return 
         if self.enter_callback:
             self.enter_callback(instance)
-        App.get_running_app().show_saved_popup()  # Show a popup indicating the settings have been saved
+        if isinstance(App.get_running_app().sm.current, KeyboardScreen):
+            show_saved_popup('saved')  # Show a popup indicating the settings have been saved
 
     def change_dakuon(self, char):
         dakuon_map = {
@@ -693,3 +695,19 @@ class SeparatorLine(Widget):
 
     def update_line(self, *args):
         self.line.points = [self.x, self.center_y, self.x + self.width, self.center_y]
+
+######################
+def show_saved_popup(text='saved'):
+    '''
+    Show a popup notification that settings have been saved. when buttons are pressed 
+    '''
+
+    content = BoxLayout(orientation='vertical', padding=20)
+    content.add_widget(Label(text=update_text_language(text), font_name="fonts/MPLUS1p-Regular.ttf", font_size=24))
+    popup = Popup(title='Notification',
+                    content=content,
+                    size_hint=(None, None), size=(400, 200),
+                    auto_dismiss=True)
+    popup.open()
+    # Auto-dismiss after 1.5 seconds
+    Clock.schedule_once(lambda dt: popup.dismiss(), 1.5)

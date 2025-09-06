@@ -78,6 +78,8 @@ class ServerScreen(SafeScreen):
         This method is called before the screen is displayed.
         It can be used to update the UI or perform any necessary actions.
         """
+        App.get_running_app().sm.get_screen('password screen').screen_name = 'servers'
+        App.get_running_app().sm.current_screen = 'password screen'
         update_current_page('server')
         self.config = load_config('config/settings.json', 'v3_json')
         for key, button in self.buttons.items():
@@ -87,17 +89,6 @@ class ServerScreen(SafeScreen):
     def update_language(self):
         self.clear_widgets()
         self.build_ui()
-        # self.header.update_language()
-        # for key, button in self.buttons.items():
-        #     button.label.text = update_text_language(key)
-        #     button.button.label.text = update_text_language('edit')
-        #     button.label.bind(size=lambda inst, val: setattr(inst, 'text_size', (inst.width, None)))
-        #     button.button.bind(text=lambda inst, val: setattr(inst, 'text', update_text_language('edit')))
-        # self.region_server.text = update_text_language("region_server")
-        # self.mqtt.text = update_text_language('mqtt')
-        # self.mqtt_broker_ip.text = update_text_language('mqtt_broker_ip')
-        # self.mqtt_topic.text = update_text_language('mqtt_topic')
-        # self.alert_lights.text = update_text_language("alert_lights")
 
 class EditSetting(FloatLayout):
     def __init__(self, status, screen_name,**kwargs):

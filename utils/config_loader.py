@@ -62,4 +62,11 @@ def update_text_language(variable_name=None):
         return app.en_dictionary.get(variable_name, variable_name)
     elif app.language == 'jp':
         return app.jp_dictionary.get(variable_name, variable_name)
+    
+def read_txt_file(file_path):
+    """
+    Read and return the contents of a text file.
+    """
+    with open(file_path, "r", encoding="utf-8") as f:
+        return f.read()
         

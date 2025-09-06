@@ -35,6 +35,7 @@ from kivy.uix.label import Label
 from kivy.uix.boxlayout import BoxLayout
 from kivy.clock import Clock
 from utils.config_loader import update_text_language
+from utils.password import PasswordScreen
 
 
 class MyApp(App):
@@ -80,6 +81,7 @@ class MyApp(App):
         self.sm.add_widget(WifiConnectingScreen(name='wifi connecting'))
         self.sm.add_widget(WifiConnectedScreen(name='wifi connected'))
         self.sm.add_widget(WifiErrorScreen(name='wifi error'))
+        self.sm.add_widget(PasswordScreen(name='password screen'))
 
         # Add the dark screen for screensaver
         self.sm.add_widget(DarkScreen(name='dark'))
@@ -186,13 +188,13 @@ class MyApp(App):
         self.time_bar.value = self.time_limit
         self._timer_event = Clock.schedule_interval(self._update_time_bar, 1)
 
-    def show_saved_popup(self):
+    def show_saved_popup(self, text='saved'):
         '''
         Show a popup notification that settings have been saved. when buttons are pressed 
         '''
 
         content = BoxLayout(orientation='vertical', padding=20)
-        content.add_widget(Label(text=update_text_language('saved'), font_name="fonts/MPLUS1p-Regular.ttf", font_size=24))
+        content.add_widget(Label(text=update_text_language(text), font_name="fonts/MPLUS1p-Regular.ttf", font_size=24))
         popup = Popup(title='Notification',
                       content=content,
                       size_hint=(None, None), size=(400, 200),

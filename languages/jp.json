@@ -66,5 +66,8 @@
   "japanese": "日本語",
   "saved": "保存されました",
   "minimum": "オフ",
-  "maximum": "最大"
+  "maximum": "最大",
+  "incorrect_password": "パスワードが違います",
+  "correct_password": "認証完了",
+  "enter_password": "パスワードを入力してください"
 }
