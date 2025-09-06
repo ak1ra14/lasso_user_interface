@@ -78,8 +78,6 @@ class ServerScreen(SafeScreen):
         This method is called before the screen is displayed.
         It can be used to update the UI or perform any necessary actions.
         """
-        App.get_running_app().sm.get_screen('password screen').screen_name = 'servers'
-        App.get_running_app().sm.current_screen = 'password screen'
         update_current_page('server')
         self.config = load_config('config/settings.json', 'v3_json')
         for key, button in self.buttons.items():

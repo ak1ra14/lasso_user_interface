@@ -4,6 +4,7 @@ from kivy.uix.popup import Popup
 from kivy.clock import Clock
 from kivy.uix.label import Label
 from utils.keyboard import show_saved_popup
+from kivy.app import App
 
 class PasswordScreen(KeyboardScreen):
     def __init__(self,title = 'enter_password', **kwargs):
@@ -17,7 +18,7 @@ class PasswordScreen(KeyboardScreen):
         """    
         if self.keyboard.text_input.text == self.password:
             show_saved_popup(text = 'correct_password')
-            self.manager.current = self.screen_name
+            App.get_running_app().sm.current = self.screen_name
         else:
             show_saved_popup(text = 'incorrect_password')
             self.keyboard.text_input.text = ''
