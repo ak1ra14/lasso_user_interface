@@ -19,11 +19,17 @@ class PasswordScreen(KeyboardScreen):
         if self.keyboard.text_input.text == self.password:
             show_saved_popup(text = 'correct_password')
             App.get_running_app().sm.current = self.screen_name
+
         else:
             show_saved_popup(text = 'incorrect_password')
             self.keyboard.text_input.text = ''
             self.keyboard.actual_text_input = ''
     
+    def on_pre_enter(self):
+        super().on_pre_enter()
+        self.keyboard.text_input.text = ''
+        self.keyboard.actual_text_input = ''
+
     
     
 
