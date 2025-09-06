@@ -69,5 +69,7 @@
   "maximum": "Maximum",
   "incorrect_password": "Incorrect Password",
   "correct_password": "Authentication Successful",
-  "enter_password": "Please enter the password"
+  "enter_password": "Please enter the password",
+  "default": "Default",
+  "change_to_default": "Changed to Default"
 }

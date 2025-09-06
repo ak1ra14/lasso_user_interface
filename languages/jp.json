@@ -69,5 +69,7 @@
   "maximum": "最大",
   "incorrect_password": "パスワードが違います",
   "correct_password": "認証完了",
-  "enter_password": "パスワードを入力してください"
+  "enter_password": "パスワードを入力してください",
+  "default": "デフォルト",
+  "change_to_default": "デフォルトに変更しました"
 }

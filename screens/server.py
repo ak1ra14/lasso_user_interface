@@ -11,17 +11,20 @@ from utils.config_loader import save_config, update_current_page, update_text_la
 from utils.layout import SeparatorLine
 from utils.num_pad import NumberPadScreen
 from kivy.app import App
+from utils.password import show_saved_popup
 
 
 class ServerScreen(SafeScreen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.config = load_config('config/settings.json', 'v3_json')
+        self.default_config = load_config('config/settings.json', 'v3_json')
         self.buttons = {}
         self.build_ui()
 
     def build_ui(self):
-        self.header = HeaderBar(title="servers", icon_path="images/home.png", button_text="home", button_screen="menu2")
+        self.default_button = DefaultButton()
+        self.header = HeaderBar(title="servers", icon_path="images/home.png", button_text="home", button_screen="menu2", second_button=self.default_button)
         self.main_layout = FloatLayout(size_hint=(1, 1))
         self.main_layout.add_widget(self.header)
 
@@ -254,3 +257,31 @@ class MQTTTopicKeyboardScreen(KeyboardScreen):
         self.config = load_config("config/settings.json", "v3_json")
         self.keyboard.text_input.text = self.config.get("mqtt_topic", "")
         self.keyboard.actual_text_input = self.keyboard.text_input.text
+
+class DefaultButton(IconTextButton):
+    def __init__(self, **kwargs):
+        super().__init__(
+            text=update_text_language("default"),
+            icon_path="images/reboot.png",
+            font_size=20,
+            radius=[10,],
+            size_hint=(None, None),
+            size=(110, 110),
+            pos_hint = {'center_x': 0.5, 'center_y': 0.5},
+            on_release=self.reset_to_default,
+            **kwargs
+        )
+
+    def reset_to_default(self, instance):
+        app = App.get_running_app()
+        current_screen = app.sm.current_screen
+        for key in current_screen.buttons.keys():
+            if key in current_screen.default_config:
+                current_screen.config[key] = current_screen.default_config[key]
+                current_screen.buttons[key].status = current_screen.default_config[key]
+        save_config("config/settings.json", "v3_json", data=current_screen.config)
+    
+    def on_press(self):
+        super().on_press()
+        show_saved_popup("change_to_default")
+
