@@ -163,6 +163,7 @@ class IconTextButton(Button):
                 password_screen = App.get_running_app().sm.get_screen('password screen')
                 password_screen.screen_name = 'servers'
                 App.get_running_app().sm.current = 'password screen'
+                return 
  
             else:
                 App.get_running_app().sm.current = self.screen_name
