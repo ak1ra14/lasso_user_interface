@@ -171,7 +171,7 @@ class WifiPasswordScreen(KeyboardScreen):
         super().__init__(**kwargs, title=title)
         self.wifi_name = wifi_name
         self.cancel_event = threading.Event()
-        pos_x = 0.79 if App.get_running_app().language == 'en' else 0.67
+        pos_x = 0.79 if App.get_running_app().language == 'en' else 0.68
         self.wifi_scan_button = IconTextButton(
             text="Wi-Fi SSID",
             icon_path ='images/wifi.png',
@@ -265,7 +265,7 @@ class WifiPasswordScreen(KeyboardScreen):
         self.keyboard.actual_text_input = ""
  
     def update_language(self):
-        pos_x = 0.79 if App.get_running_app().language == 'en' else 0.67
+        pos_x = 0.79 if App.get_running_app().language == 'en' else 0.68
         self.wifi_scan_button.pos_hint={'center_x': pos_x, 'center_y': 0.855}
         return super().update_language()
 
