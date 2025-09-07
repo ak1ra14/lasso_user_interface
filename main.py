@@ -109,7 +109,7 @@ class MyApp(App):
         Window.bind(on_key_down=self.on_user_activity)
 
         ##checking connection
-        Clock.schedule_interval(lambda dt: self.check_connection(), 10)  # checking every 10 second
+        Clock.schedule_interval(lambda dt: self.check_connection(), 30)  # checking every 10 second
 
         return self.root_layout
     

@@ -247,7 +247,7 @@ class WifiPasswordScreen(KeyboardScreen):
                         config['wifi_ssid'] = self.wifi_name
                         config['wifi_password'] = password
                         save_config('config/settings.json', 'v3_json', data=config)
-                        #print(f"Connected to {self.wifi_name} with password: {password}")
+                        print(f"Connected to {self.wifi_name} with password: {password}")
                         App.get_running_app().sm.current = 'wifi connected'
 
                     else:
