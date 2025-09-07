@@ -188,21 +188,6 @@ class MyApp(App):
         self.time_bar.value = self.time_limit
         self._timer_event = Clock.schedule_interval(self._update_time_bar, 1)
 
-    def show_saved_popup(self, text='saved'):
-        '''
-        Show a popup notification that settings have been saved. when buttons are pressed 
-        '''
-
-        content = BoxLayout(orientation='vertical', padding=20)
-        content.add_widget(Label(text=update_text_language(text), font_name="fonts/MPLUS1p-Regular.ttf", font_size=24))
-        popup = Popup(title='Notification',
-                      content=content,
-                      size_hint=(None, None), size=(400, 200),
-                      auto_dismiss=True)
-        popup.open()
-        # Auto-dismiss after 1.5 seconds
-        Clock.schedule_once(lambda dt: popup.dismiss(), 1.5)
-
     def check_connection(self, *args):
         '''
         Check network connection and update Wi-Fi SSID in config if connected.'''
@@ -221,7 +206,6 @@ class MyApp(App):
             monitor_screen = self.sm.get_screen('monitor')
             monitor_screen.ip_label.text = f"{update_text_language('ip_address')}: {update_text_language('not_connected')}"
             print("Not connected to any Wi-Fi network.")
-        
 
 def is_connected(host="8.8.8.8", port=53, timeout=3):
     """

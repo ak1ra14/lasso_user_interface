@@ -264,7 +264,6 @@ class DefaultButton(IconTextButton):
             text=update_text_language("default"),
             icon_path="images/reboot.png",
             font_size=20,
-            radius=[10,],
             size_hint=(None, None),
             size=(110, 110),
             pos_hint = {'center_x': 0.5, 'center_y': 0.5},
