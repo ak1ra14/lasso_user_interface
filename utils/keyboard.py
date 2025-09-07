@@ -110,7 +110,7 @@ class QwertyKeyboard(FloatLayout):
                                     background_color=(0, 0, 0, 0),   # transparent background
                                     foreground_color=(1, 1, 0, 1),
                                     size_hint_x=None,
-                                    width=565,
+                                    width=560,
                                     font_name='fonts/MPLUS1p-Regular.ttf',
                                     pos = (20, 420),
                                     multiline=False,  # Single line input
@@ -119,7 +119,7 @@ class QwertyKeyboard(FloatLayout):
         self.text_input.bind(cursor=self.on_cursor_change)
         
         partition = SeparatorLine(
-            size_hint=(0.55, 0.05),
+            size_hint=(0.54, 0.05),
             pos  = (20,440),
         )
         self.add_widget(self.label)
