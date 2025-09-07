@@ -1,8 +1,4 @@
-from kivy.uix.screenmanager import Screen
-from kivy.uix.label import Label
-from kivy.uix.boxlayout import BoxLayout
 from utils.icons import IconTextButton, ToggleButton
-from kivy.uix.widget import Widget
 from kivy.uix.image import Image
 from kivy.uix.floatlayout import FloatLayout
 from kivy.properties import BooleanProperty
@@ -12,6 +8,8 @@ from utils.layout import SeparatorLine
 from utils.layout import HeaderBar, SafeScreen
 from utils.icons import ToggleButton, CustomSwitch
 from utils.config_loader import load_config, save_config, update_current_page, update_text_language
+from utils.keyboard import show_saved_popup
+
 class AlertTypeScreen(SafeScreen):
     def __init__(self, **kwargs):
         super(AlertTypeScreen, self).__init__(**kwargs)
@@ -180,7 +178,7 @@ class SaveButtonAT(IconTextButton):
         config_fall['alert_checking'] = alert_checking_fall
         save_config("config/settings.json", 'fall_json', data=config_fall)
 
-        App.get_running_app().show_saved_popup()  # Show a popup indicating the settings have been saved
+        show_saved_popup(update_text_language('saved'))  # Show a popup indicating the settings have been saved
         sound = SoundLoader.load('sound/tap.wav')
         if sound:
             sound.play()

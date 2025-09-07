@@ -1,10 +1,5 @@
-from kivy.uix.screenmanager import Screen
-from kivy.uix.label import Label
 from kivy.uix.boxlayout import BoxLayout
 from utils.icons import IconTextButton, CircularImageButton
-from kivy.uix.anchorlayout import AnchorLayout
-from kivy.uix.image import Image
-from kivy.uix.button import Button
 from kivy.uix.widget import Widget
 from utils.config_loader import load_config, update_current_page, save_config, update_text_language
 from utils.layout import HeaderBar, SafeScreen

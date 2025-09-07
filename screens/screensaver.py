@@ -1,21 +1,13 @@
-from kivy.uix.screenmanager import Screen
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
-from kivy.uix.widget import Widget  
 from utils.icons import IconTextButton
-from kivy.uix.image import Image
-from kivy.uix.anchorlayout import AnchorLayout
 from kivy.uix.button import Button
-from kivy.uix.gridlayout import GridLayout
-from kivy.clock import Clock
 from kivy.core.audio import SoundLoader
 from kivy.app import App
 from utils.freeze_screen import freeze_ui
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.slider import Slider
-
-import json
-import os
+from utils.keyboard import show_saved_popup
 
 from utils.config_loader import load_config, save_config, update_current_page, update_text_language
 from utils.layout import HeaderBar, SafeScreen
@@ -89,22 +81,7 @@ class ScreenSaverScreen(SafeScreen):
         self.slider.bind(value=self.on_slider_value_change)
         self.slider.cursor_size = (40, 40)  # Adjust as needed
         float_layout.add_widget(self.slider)
-        # self.min_button = MinMaxButtonScreensaver(
-        #     screensaver_screen=self,
-        #     text=update_text_language("minimum"),
-        #     size_hint=(None, None),
-        #     size=(120, 40),
-        #     pos_hint={'center_x': 0.11, 'center_y': 0.3}
-        # )
-        # float_layout.add_widget(self.min_button)
-        # self.max_button = MinMaxButtonScreensaver(
-        #     screensaver_screen=self,
-        #     text=update_text_language("maximum"),
-        #     size_hint=(None, None),
-        #     size=(120, 40),
-        #     pos_hint={'center_x': 0.89, 'center_y': 0.3}
-        # )
-        # float_layout.add_widget(self.max_button)
+
         self.add_widget(self.header)
         self.add_widget(buttons)
         self.add_widget(float_layout)
@@ -176,7 +153,7 @@ class SaveButton(IconTextButton):
         """
         # Save the current screensaver time to the config file
         super().on_press()
-        App.get_running_app().show_saved_popup()  # Show a popup indicating the settings have been saved
+        show_saved_popup('saved')  # Show a popup indicating the settings have been saved
         config = load_config('config/settings.json','v3_json')
         config['screensaver'] = self.screensaver_screen.screensaver_time
         save_config('config/settings.json', 'v3_json', data=config)
@@ -197,20 +174,6 @@ class HomeButtonScreensaver(IconTextButton):
         self.screensaver_screen.screensaver_time_label.text = f"{self.config.get('screensaver', 50)}s"
         self.screensaver_screen.screensaver_time = self.config.get('screensaver', 50)
           # Reset screensaver time to saved value
-
-class MinMaxButtonScreensaver(IconTextButton):
-    def __init__(self, screensaver_screen=None, **kwargs):
-        super().__init__(**kwargs)
-        self.screensaver_screen = screensaver_screen
-
-    def on_press(self):
-        super().on_press()
-        # Set screensaver time to min or max value based on the button type
-        if self.label.text == update_text_language("minimum"):
-            self.screensaver_screen.screensaver_time = 0
-        elif self.label.text == update_text_language("maximum"):
-            self.screensaver_screen.screensaver_time = 600
-        self.screensaver_screen.screensaver_time_label.text = f"{self.screensaver_screen.screensaver_time}"
 
 class DarkScreen(SafeScreen):
     """

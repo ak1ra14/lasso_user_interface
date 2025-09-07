@@ -1,10 +1,6 @@
-from kivy.uix.screenmanager import Screen
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.image import Image
-from kivy.uix.label import Label
-from kivy.uix.button import Button  
 from kivy.uix.widget import Widget
-from kivy.uix.gridlayout import GridLayout
 from kivy.uix.anchorlayout import AnchorLayout
 from utils.icons import IconTextButton, CircularImageButton, PageIndicator
 from utils.config_loader import load_config, update_current_page, update_text_language
@@ -60,6 +56,9 @@ class MenuScreen(SafeScreen):
         self.header.add_widget(right_buttons)
     
     def build_footer(self, screen_name, num_pages, current_page):
+        '''
+        Build the footer components of the Menu Screen.
+        It contains navigation buttons to go to other menu screens and page indicator.'''
         self.footer = FooterBar(screen_name=screen_name)  # Pass screen name for navigation
         self.main_layout.add_widget(self.footer)
         # Page indicator
@@ -80,11 +79,11 @@ class MenuScreen1(MenuScreen):
         self.alerts = self.has_any_alert()
         self.content_buttons = {}
         self.config_status = [self.location, self.volume, self.mode, self.alerts]
-
         self.build_ui()
         self.add_widget(self.main_layout)
 
     def build_ui(self):
+        #header
         self.build_header()
 
         # Layer: Middle content
@@ -141,6 +140,9 @@ class MenuScreen1(MenuScreen):
     
     
     def has_any_alert(self):
+        '''
+        checks if the current config has any alert enabled and return the appropriate string
+        '''
         bed_config = load_config("config/settings.json", 'bed_json')
         fall_config = load_config("config/settings.json", 'fall_json')
         bed_alerts = bed_config.get("alert_checking", [])
@@ -194,6 +196,9 @@ class MenuScreen1(MenuScreen):
         self.content_buttons['alerts'].status.text = update_text_language(self.alerts)
 
     def go_to_location(self, instance):
+        '''
+        depending on the current mode, go to device or location screen
+        '''
         self.config = load_config('config/settings.json', 'v3_json')
         if self.config.get('previous_mode', 'fall.json') == 'fall.json':
             self.manager.current = 'device'

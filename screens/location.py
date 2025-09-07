@@ -1,10 +1,9 @@
-from kivy.uix.screenmanager import Screen
 from utils.layout import HeaderBar, SafeScreen
 from utils.config_loader import load_config, save_config, update_current_page, update_text_language
-from kivy.uix.floatlayout import FloatLayout
 from utils.icons import IconTextButton
 from utils.num_pad import NumberPadScreen
-from utils.keyboard import KeyboardScreen
+from utils.keyboard import KeyboardScreen, show_saved_popup
+
 
 class LocationScreen(SafeScreen):
     def __init__(self, **kwargs):
@@ -104,6 +103,7 @@ class Bed1Screen(KeyboardScreen):
         """    
         self.config['nbeds'][1][0] = self.keyboard.text_input.text
         save_config("config/settings.json", "bed_json", self.config)
+        show_saved_popup(update_text_language('saved'))  # Show a popup indicating the settings have been saved
 
     def on_pre_enter(self):
         """
@@ -131,6 +131,7 @@ class Bed2Screen(KeyboardScreen):
         """    
         self.config['nbeds'][1][1] = self.keyboard.text_input.text
         save_config("config/settings.json", "bed_json", self.config)
+        show_saved_popup(update_text_language('saved'))
 
     def on_pre_enter(self):
         """
@@ -156,6 +157,7 @@ class DeviceKeyboardScreen(KeyboardScreen):
         """
         self.config['location'] = self.keyboard.text_input.text
         save_config("config/settings.json", "v3_json", data=self.config)
+        show_saved_popup(update_text_language('saved'))
 
     def on_pre_enter(self):
         """

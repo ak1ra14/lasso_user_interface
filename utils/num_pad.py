@@ -1,10 +1,8 @@
-from kivy.uix.screenmanager import Screen, ScreenManager
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.button import Button
 from kivy.uix.label import Label
 from kivy.uix.widget import Widget
-from kivy.uix.anchorlayout import AnchorLayout
 from kivy.uix.textinput import TextInput
 from kivy.uix.floatlayout import FloatLayout
 from utils.config_loader import update_text_language
@@ -14,6 +12,7 @@ from utils.keyboard import SeparatorLine
 from utils.layout import SafeScreen
 from utils.freeze_screen import freeze_ui
 from kivy.app import App
+from utils.keyboard import show_saved_popup
 
 class NumberPadScreen(SafeScreen):
     '''
@@ -87,7 +86,7 @@ class NumberPadScreen(SafeScreen):
         self.add_widget(partition)
         
     def on_save(self, instance):
-        App.get_running_app().show_saved_popup()
+        show_saved_popup(update_text_language('saved'))
 
     def set_cursor_at_end(self, instance, value):
         if value:  # If focused

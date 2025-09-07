@@ -4,10 +4,7 @@ from kivy.uix.label import Label
 from utils.icons import IconTextButton, ToggleButton, CustomSwitch
 from kivy.uix.widget import Widget
 from kivy.app import App
-from kivy.uix.button import Button
-from kivy.uix.switch import Switch
 from kivy.uix.floatlayout import FloatLayout
-from kivy.core.audio import SoundLoader
 from kivy.properties import BooleanProperty
 from utils.layout import SeparatorLine
 from utils.layout import HeaderBar, SafeScreen
@@ -126,6 +123,7 @@ class AlertModeButton(IconTextButton):
     def on_press(self):
         freeze_ui(0.3)  # Freeze UI for 0.3 seconds
         App.get_running_app().play_sound()  # Play sound on button press
+        # Change colour of icon when active and update config file
         if not self.active:
             self.active = True
             self.screen.modes = f"{self.mode}.json"

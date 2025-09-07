@@ -1,8 +1,5 @@
 from utils.keyboard import KeyboardScreen
 from utils.config_loader import read_txt_file, update_text_language
-from kivy.uix.popup import Popup
-from kivy.clock import Clock
-from kivy.uix.label import Label
 from utils.keyboard import show_saved_popup
 from kivy.app import App
 

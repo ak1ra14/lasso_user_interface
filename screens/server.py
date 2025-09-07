@@ -11,7 +11,7 @@ from utils.config_loader import save_config, update_current_page, update_text_la
 from utils.layout import SeparatorLine
 from utils.num_pad import NumberPadScreen
 from kivy.app import App
-from utils.password import show_saved_popup
+from utils.keyboard import show_saved_popup
 
 
 class ServerScreen(SafeScreen):
@@ -147,7 +147,7 @@ class EditSetting(FloatLayout):
 
 class RegionServerScreen(NumberPadScreen):
     def __init__(self, **kwargs):
-        super().__init__(title="region_address", **kwargs)
+        super().__init__(title="region_address",screen_name='servers', **kwargs)
         self.config = load_config("config/settings.json", "v3_json")
         self.text = self.config.get('region_address', '')
 
@@ -170,7 +170,7 @@ class RegionServerScreen(NumberPadScreen):
 
 class MQTTBrokerIPScreen(NumberPadScreen):
     def __init__(self, **kwargs):
-        super().__init__(title="mqtt_broker_ip", **kwargs)
+        super().__init__(title="mqtt_broker_ip", screen_name='servers',**kwargs)
         self.config = load_config("config/settings.json", "v3_json")
         self.text = self.config.get('mqtt_address', '')
 
@@ -192,7 +192,7 @@ class MQTTBrokerIPScreen(NumberPadScreen):
 
 class AlertLight1Screen(NumberPadScreen):
     def __init__(self, **kwargs):
-        super().__init__(title="alert_lights_ip1", **kwargs)
+        super().__init__(title="alert_lights_ip1",screen_name='servers', **kwargs)
         self.config = load_config("config/settings.json", "v3_json")
         self.text = self.config.get('alert_lights_ip1', '')
 
@@ -215,7 +215,7 @@ class AlertLight1Screen(NumberPadScreen):
 
 class AlertLight2Screen(NumberPadScreen):
     def __init__(self, **kwargs):
-        super().__init__(title="alert_lights_ip2", **kwargs)
+        super().__init__(title="alert_lights_ip2", screen_name='servers',**kwargs)
         self.config = load_config("config/settings.json", "v3_json")
         self.text = self.config.get('alert_lights_ip2', '')
 
@@ -238,7 +238,7 @@ class AlertLight2Screen(NumberPadScreen):
 
 class MQTTTopicKeyboardScreen(KeyboardScreen):
     def __init__(self, **kwargs):
-        super().__init__(title="mqtt_topic", **kwargs)
+        super().__init__(title="mqtt_topic",screen_name='servers', **kwargs)
         self.config = load_config("config/settings.json", "v3_json")
         self.text = self.config.get('mqtt_topic', '')
 
@@ -246,8 +246,10 @@ class MQTTTopicKeyboardScreen(KeyboardScreen):
         """
         Override the on_enter method to set the keyboard title.
         """
+        super().press_enter(instance)
         self.config['mqtt_topic'] = self.keyboard.text_input.text
         save_config("config/settings.json", "v3_json", data=self.config)
+        show_saved_popup(update_text_language('saved'))
 
     def on_pre_enter(self):
         """
@@ -279,6 +281,7 @@ class DefaultButton(IconTextButton):
                 current_screen.config[key] = current_screen.default_config[key]
                 current_screen.buttons[key].status = current_screen.default_config[key]
         save_config("config/settings.json", "v3_json", data=current_screen.config)
+        current_screen.on_pre_enter()
     
     def on_press(self):
         super().on_press()

@@ -1,12 +1,9 @@
-from kivy.uix.screenmanager import Screen
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.image import Image
 from kivy.uix.button import Button
 from kivy.uix.widget import Widget
 from utils.icons import ColoredLabel
-from kivy.core.audio import SoundLoader
 from kivy.app import App
-from kivy.clock import Clock
 from utils.config_loader import load_config, update_current_page, update_text_language, save_config
 from utils.layout import HeaderBar, SafeScreen
 import socket

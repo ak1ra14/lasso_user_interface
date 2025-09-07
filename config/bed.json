@@ -9,7 +9,7 @@
     ],
     "alert_checking": [
         [
-            0,
+            1,
             "sit_up"
         ],
         [
@@ -25,7 +25,7 @@
             "fall_besides_bed"
         ]
     ],
-    "attach_video": 0,
+    "attach_video": 1,
     "max_dist": 3000,
     "rtsp_recording": {
         "on": 0

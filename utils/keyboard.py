@@ -24,10 +24,11 @@ class KeyboardScreen(SafeScreen):
     '''
     A screen that provides a full keyboard functionalities for user input.
     '''
-    def __init__(self, title, **kwargs):
+    def __init__(self, title, screen_name = 'menu', **kwargs):
         super().__init__(**kwargs)
         self.title = title
-        self.keyboard = QwertyKeyboard(title=self.title, enter_callback=self.press_enter)
+        self.screen_name = screen_name
+        self.keyboard = QwertyKeyboard(title=self.title, screen_name=self.screen_name, enter_callback=self.press_enter)
         self.add_widget(self.keyboard)
     
     def press_enter(self, instance):
@@ -60,6 +61,7 @@ class KeyboardScreen(SafeScreen):
 
         except AttributeError:
             pass
+
 class QwertyKeyboard(FloatLayout):
     '''
     A full QWERTY keyboard with English and Japanese input modes, including flick input for Japanese.
@@ -67,9 +69,10 @@ class QwertyKeyboard(FloatLayout):
     shift_activate = BooleanProperty(False)
     MAX_CHARS = 100  # Maximum characters allowed in the text input
 
-    def __init__(self, title, enter_callback=None, **kwargs):
+    def __init__(self, title, screen_name='menu', enter_callback=None, **kwargs):
         super().__init__(**kwargs)
         self.enter_callback = enter_callback
+        self.screen_name = screen_name
         self.english_buttons = []
         self.japanese_buttons = []
         self.keyboard_mode = ['english', 'japanese','flick']
@@ -193,7 +196,7 @@ class QwertyKeyboard(FloatLayout):
             size_hint=(None, None),
             size=(110, 110),
             pos_hint={'top': 0.95, 'right': 0.97},
-            screen_name='menu',
+            screen_name=self.screen_name,
         )
         if App.get_running_app().language == 'jp':
             self.language_button = LanguageTextButton(
@@ -438,8 +441,6 @@ class QwertyKeyboard(FloatLayout):
             if self.language_mode == 'japanese' and self.start_index < cursor_pos and not self.converting:
                 # Convert the text to Kanji using the converter
                 self.converting = True
-                self.japanese_space_button.text = '変換'
-                self.flick_space_button.text = '変換'
                 self.converted_text = self.kanji_converter.convert(ti.text[self.start_index:cursor_pos],n_best=20)
             if self.last_cursor_index != ti.cursor_index():
                 print("Cursor moved, reset converting")
@@ -506,14 +507,12 @@ class QwertyKeyboard(FloatLayout):
         elif instance.function == 'Flick':
             self.show_layout('flick')
         elif instance.function == "Daku-on":
-            print(self.actual_text_input)
-            print(self.text_input.text)
             self.actual_text_input = self.actual_text_input[:-1] + self.change_dakuon(self.actual_text_input[-1])  # Add Daku-on character
             if self.visibility:
                 self.text_input.text = self.text_input.text[:-1] + self.change_dakuon(self.text_input.text[-1]) # Add Daku-on character
         else:
             print(f"Normal key pressed: {instance.text},self.converting: {self.converting}, cursor pos: {cursor_pos}, last cursor index: {self.last_cursor_index}")
-            if self.language_mode == 'japanese' and self.last_click_space or self.start_index == cursor_pos:
+            if self.language_mode == 'japanese' or self.start_index == cursor_pos:
                 self.japanese_space_button.text = '変換'
                 self.flick_space_button.text = '変換'
             if self.converting:
@@ -531,6 +530,7 @@ class QwertyKeyboard(FloatLayout):
             ti.cursor = (cursor_pos + len(instance.text), 0)
             self.programmatic_cursor_change = False
             self.last_cursor_index = ti.cursor_index()
+            self.last_click_space = False
 
     def press_enter(self, instance):
         if self.language_mode == 'japanese':
@@ -539,12 +539,10 @@ class QwertyKeyboard(FloatLayout):
                 self.flick_space_button.text = '空白'
                 self.converting = False
                 self.start_index = self.text_input.cursor_index()  # Reset the start index
-                return 
+                return
         if self.enter_callback:
             self.enter_callback(instance)
-        if isinstance(App.get_running_app().sm.current, KeyboardScreen):
-            show_saved_popup('saved')  # Show a popup indicating the settings have been saved
-
+        
     def change_dakuon(self, char):
         dakuon_map = {
             'か': 'が', 'き': 'ぎ', 'く': 'ぐ', 'け': 'げ', 'こ': 'ご',
@@ -588,8 +586,6 @@ class QwertyKeyboard(FloatLayout):
 
 
 class LanguageTextButton(IconTextButton):
-
-
     def on_release(self):
         super().on_release()
         self.parent.parent.keyboard_index = (self.parent.parent.keyboard_index + 1) % len(self.parent.parent.keyboard_mode)

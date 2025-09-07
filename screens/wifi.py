@@ -233,6 +233,7 @@ class WifiPasswordScreen(KeyboardScreen):
         connecting_screen = app.sm.get_screen('wifi connecting')
         connecting_screen.cancel_event = self.cancel_event  # Pass the event
         connecting_screen.process_holder = {}  
+        
 
         # Connect in a background thread
         def do_connect():

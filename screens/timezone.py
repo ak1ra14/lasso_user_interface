@@ -11,7 +11,7 @@ from kivy.app import App
 from kivy.uix.button import Button
 from kivy.graphics import Color, Rectangle
 from utils.layout import HeaderBar, SafeScreen
-import json
+from utils.keyboard import show_saved_popup
 
 class TimezoneScreen(SafeScreen):
     def __init__(self, **kwargs):
@@ -142,13 +142,8 @@ class TZSaveButton(IconTextButton):
     
     def on_press(self):
         super().on_press()
-        App.get_running_app().show_saved_popup()  # Show a popup indicating the settings have been saved
+        show_saved_popup(update_text_language('saved'))  # Show a popup indicating the settings have been saved
         # print(f"Saving timezone: {self.tz_screen.selected_timezone}")
         config = load_config('config/settings.json', 'v3_json')
         config['timezone'] = self.tz_screen.selected_timezone
         save_config('config/settings.json', 'v3_json', data=config)
-
-
-
-        
-

@@ -1,14 +1,6 @@
-from kivy.uix.screenmanager import Screen
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
-from kivy.uix.widget import Widget  
 from utils.icons import IconTextButton
-from kivy.uix.image import Image
-from kivy.uix.anchorlayout import AnchorLayout
-from kivy.uix.button import Button
-from kivy.uix.gridlayout import GridLayout
-from kivy.clock import Clock
-from kivy.core.audio import SoundLoader
 from kivy.app import App
 from kivy.uix.floatlayout import FloatLayout
 from utils.freeze_screen import freeze_ui
@@ -16,6 +8,7 @@ import os, sys
 
 from utils.config_loader import load_config, save_config, update_current_page, update_text_language
 from utils.layout import HeaderBar, SafeScreen
+from utils.keyboard import show_saved_popup
 
 
 class VolumeScreen(SafeScreen):
@@ -132,7 +125,7 @@ class SaveButton(IconTextButton):
         """
         # Save the current volume to the config file
         super().on_press()
-        App.get_running_app().show_saved_popup()  # Show a popup indicating the settings have been saved
+        show_saved_popup(update_text_language('saved'))  # Show a popup indicating the settings have been saved
         config = load_config('config/settings.json', 'v3_json')
         config['volume'] = self.volume_screen.volume
         save_config('config/settings.json', 'v3_json', data=config)
