@@ -184,6 +184,7 @@ class QwertyKeyboard(FloatLayout):
             ('Daku-on',),
             ('わ', 'を', 'ん', 'ー', ''),
             ('、', '。', '?', '!', ''),
+            ('Flick',)
         ]
         
         self.add_widget(self.main_layout)
@@ -370,10 +371,10 @@ class QwertyKeyboard(FloatLayout):
                         text='', sub_key='', image='images/daku-on.png', font_size=24, font_name='fonts/MPLUS1p-Regular.ttf',
                         size_hint=(None, None), size=(90, 90), function='Daku-on'
                     )
-                elif mapping[0] == 'English':
+                elif mapping[0] == 'Flick':
                     btn = RoundedButton(
-                        text='', sub_key='', image='images/english.png', font_size=24, font_name='fonts/MPLUS1p-Regular.ttf',
-                        size_hint=(None, None), size=(120, 90), function='English'
+                        text='', sub_key='', image='images/switch.png', font_size=24, font_name='fonts/MPLUS1p-Regular.ttf',
+                        size_hint=(None, None), size=(120, 90), function='Flick'
                     )
                 btn.bind(on_release=self.on_key_release)
             self.flick_grid.add_widget(btn)
@@ -407,6 +408,7 @@ class QwertyKeyboard(FloatLayout):
             self.last_click_time = 0  # Timestamp of the last flick key click
             self.last_cursor_index = self.text_input.cursor_index() # Save the cursor position
             self.last_click_space = False
+            self.flick_is_katakana = False  
 
     def on_key_release(self, instance):
         '''
@@ -505,7 +507,22 @@ class QwertyKeyboard(FloatLayout):
         elif instance.function == "Enter":
             pass
         elif instance.function == 'Flick':
-            self.show_layout('flick')
+            if not self.flick_is_katakana:
+                # Convert to Katakana
+                for btn in self.flick_grid.children:
+                    if isinstance(btn, FlickKey):
+                        new_mappings = tuple(self.to_katakana(char) if char else '' for char in btn.mappings)
+                        btn.mappings = new_mappings
+                        btn.text = new_mappings[0] if new_mappings and new_mappings[0] else ''
+                self.flick_is_katakana = True
+            else:
+                # Convert back to Hiragana
+                for btn in self.flick_grid.children:
+                    if isinstance(btn, FlickKey):
+                        new_mappings = tuple(self.to_hiragana(char) if char else '' for char in btn.mappings)
+                        btn.mappings = new_mappings
+                        btn.text = new_mappings[0] if new_mappings and new_mappings[0] else ''
+                self.flick_is_katakana = False
         elif instance.function == "Daku-on":
             self.actual_text_input = self.actual_text_input[:-1] + self.change_dakuon(self.actual_text_input[-1])  # Add Daku-on character
             if self.visibility:
@@ -542,6 +559,23 @@ class QwertyKeyboard(FloatLayout):
                 return
         if self.enter_callback:
             self.enter_callback(instance)
+
+    def to_katakana(self, char):
+        # Simple Hiragana to Katakana conversion
+        # Only works for single characters; extend as needed
+        hira = 'ぁあぃいぅうぇえぉおかがきぎくぐけげこごさざしじすずせぜそぞただちぢっつづてでとどなにぬねのはばぱひびぴふぶぷへべぺほぼぽまみむめもやゃゆゅよょらりるれろわをん'
+        kata = 'ァアィイゥウェエォオカガキギクグケゲコゴサザシジスズセゼソゾタダチヂッツヅテデトドナニヌネノハバパヒビピフブプヘベペホボポマミムメモヤャユュヨョラリルレロワヲン'
+        if char in hira:
+            return kata[hira.index(char)]
+        return char
+    
+    def to_hiragana(self, char):
+        # Simple Katakana to Hiragana conversion
+        kata = 'ァアィイゥウェエォオカガキギクグケゲコゴサザシジスズセゼソゾタダチヂッツヅテデトドナニヌネノハバパヒビピフブプヘベペホボポマミムメモヤャユュヨョラリルレロワヲン'
+        hira = 'ぁあぃいぅうぇえぉおかがきぎくぐけげこごさざしじすずせぜそぞただちぢっつづてでとどなにぬねのはばぱひびぴふぶぷへべぺほぼぽまみむめもやゃゆゅよょらりるれろわをん'
+        if char in kata:
+            return hira[kata.index(char)]
+        return char
         
     def change_dakuon(self, char):
         dakuon_map = {
