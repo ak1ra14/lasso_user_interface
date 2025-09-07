@@ -162,12 +162,9 @@ class IconTextButton(Button):
             if self.screen_name == 'servers' and App.get_running_app().sm.current in ['menu','menu2']:
                 password_screen = App.get_running_app().sm.get_screen('password screen')
                 password_screen.screen_name = self.screen_name
-                print(type(App.get_running_app().sm.current))
                 App.get_running_app().sm.current = 'password screen'
 
             else:
-                print(f"Navigating to {self.screen_name}")
-                print(type(App.get_running_app().sm.current))
                 App.get_running_app().sm.current = self.screen_name
 
     def _reset_color(self, dt):
