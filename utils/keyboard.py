@@ -119,7 +119,7 @@ class QwertyKeyboard(FloatLayout):
         self.text_input.bind(cursor=self.on_cursor_change)
         
         partition = SeparatorLine(
-            size_hint=(0.58, 0.05),
+            size_hint=(0.59, 0.05),
             pos  = (20,440),
         )
         self.add_widget(self.label)
