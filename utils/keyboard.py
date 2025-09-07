@@ -413,7 +413,7 @@ class QwertyKeyboard(FloatLayout):
     def on_key_release(self, instance):
         '''
          Handle key release events for various keyboard buttons.'''
-        print(f"Key released: {instance.text if instance.text else instance.function}")
+        #print(f"Key released: {instance.text if instance.text else instance.function}")
         ti = self.text_input #to indicate the position of the input in a word
         ti.focus = True  # Keep the text input focused
         cursor_pos = ti.cursor_index()
@@ -438,20 +438,20 @@ class QwertyKeyboard(FloatLayout):
                 self.flick_index = 0
         # Space key function 
         elif instance.function == 'Space':
-            print(f"Space key pressed, converting: {self.converting}, start index: {self.start_index}, cursor pos: {cursor_pos}, last cursor index: {self.last_cursor_index}")
+            #print(f"Space key pressed, converting: {self.converting}, start index: {self.start_index}, cursor pos: {cursor_pos}, last cursor index: {self.last_cursor_index}")
             #if japanese keyboard, the space key is used for both word conversion and space insertion
             if self.language_mode == 'japanese' and self.start_index < cursor_pos and not self.converting:
                 # Convert the text to Kanji using the converter
                 self.converting = True
                 self.converted_text = self.kanji_converter.convert(ti.text[self.start_index:cursor_pos],n_best=20)
             if self.last_cursor_index != ti.cursor_index():
-                print("Cursor moved, reset converting")
+                #print("Cursor moved, reset converting")
                 self.converting = False  # Reset the converting flag if cursor has moved
                 self.japanese_space_button.text = '空白'
                 self.flick_space_button.text = '空白'
                 self.start_index = cursor_pos  # Reset the start index
             if self.converting and len(self.converted_text) > 0 and cursor_pos == self.last_cursor_index:
-                print(f"{self.converted_text[0]}, starting from {self.start_index}, ending at{cursor_pos},cursor pos {ti.cursor_index()}")
+                #print(f"{self.converted_text[0]}, starting from {self.start_index}, ending at{cursor_pos},cursor pos {ti.cursor_index()}")
                 suggested_text = self.converted_text.pop() if self.converted_text else ti.text[self.start_index:cursor_pos]
                 ti.text = ti.text[:self.start_index] + suggested_text + ti.text[cursor_pos:]
                 self.programmatic_cursor_change = True
@@ -459,7 +459,7 @@ class QwertyKeyboard(FloatLayout):
                 self.programmatic_cursor_change = False
                 self.last_cursor_index = ti.cursor_index()
             else:
-                print("Inserting space")
+                #print("Inserting space")
                 self.converting = False  # Reset the converting flag
                 self.japanese_space_button.text = '空白'
                 self.flick_space_button.text = '空白'
@@ -528,12 +528,12 @@ class QwertyKeyboard(FloatLayout):
             if self.visibility:
                 self.text_input.text = self.text_input.text[:-1] + self.change_dakuon(self.text_input.text[-1]) # Add Daku-on character
         else:
-            print(f"Normal key pressed: {instance.text},self.converting: {self.converting}, cursor pos: {cursor_pos}, last cursor index: {self.last_cursor_index}")
+            #print(f"Normal key pressed: {instance.text},self.converting: {self.converting}, cursor pos: {cursor_pos}, last cursor index: {self.last_cursor_index}")
             if self.language_mode == 'japanese' or self.start_index == cursor_pos:
                 self.japanese_space_button.text = '変換'
                 self.flick_space_button.text = '変換'
             if self.converting:
-                print('index reset due to normal key press')
+                #print('index reset due to normal key press')
                 self.converting = False  # Reset the converting flag
                 self.japanese_space_button.text = '空白'
                 self.flick_space_button.text = '空白'
@@ -616,7 +616,7 @@ class QwertyKeyboard(FloatLayout):
     def on_cursor_change(self, instance, value):
         if getattr(self, '_programmatic_cursor_change', False):
             self.start_index = instance.cursor_index()  # Update the start index to the new cursor position
-            print(f"Cursor changed to index: {self.start_index}")
+            #print(f"Cursor changed to index: {self.start_index}")
 
 
 class LanguageTextButton(IconTextButton):
