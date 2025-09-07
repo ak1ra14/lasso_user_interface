@@ -110,7 +110,7 @@ class QwertyKeyboard(FloatLayout):
                                     background_color=(0, 0, 0, 0),   # transparent background
                                     foreground_color=(1, 1, 0, 1),
                                     size_hint_x=None,
-                                    width=570,
+                                    width=565,
                                     font_name='fonts/MPLUS1p-Regular.ttf',
                                     pos = (20, 420),
                                     multiline=False,  # Single line input
