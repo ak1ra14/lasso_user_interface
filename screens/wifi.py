@@ -182,7 +182,7 @@ class WifiPasswordScreen(KeyboardScreen):
         self.visibility_button = IconTextButton(
             icon_path ='images/visibility_on.png',
             size = (50,50),
-            pos_hint={'center_x': 0.60, 'center_y': 0.81},
+            pos_hint={'center_x': 0.58, 'center_y': 0.81},
             on_press=self.freeze_ui,  # Freeze UI on press
             on_release=self.password_visibility
         )
