@@ -10,33 +10,27 @@ from utils.icons import IconTextButton, CircularImageButton, PageIndicator
 from utils.config_loader import load_config, update_current_page, update_text_language
 from utils.layout import HeaderBar,  SafeScreen , FooterBar
 
-
-class MenuScreen1(SafeScreen):
+class MenuScreen(SafeScreen):
+    '''
+    Menu Screen Base Class (Without the main icon part)
+    '''
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.config = load_config('config/settings.json', 'v3_json')
-        self.location = self.config.get("location", "")
-        volume = self.config.get("volume", 50)
-        self.volume = f"{volume}%"
-        self.mode = self.check_mode()
-        self.alerts = self.has_any_alert()
-        self.content_buttons = {}
-        self.config_status = [self.location, self.volume, self.mode, self.alerts]
-
-        self.build_ui()
-        self.add_widget(self.main_layout)
-
-    def build_ui(self):
         self.main_layout = BoxLayout(orientation='vertical', padding= [30, 30, 30, 10], spacing=10)
 
+    def build_header(self):
+        '''
+        Build the header components of the Menu Screen.
+        It contains soundeye logo with three button s to go language, monitor and power screen.
+        '''
         # Layer 1: Header
-        header = BoxLayout(orientation='horizontal', size_hint_y=0.20, padding=[0,0,0,0], spacing=10)
+        self.header = BoxLayout(orientation='horizontal', size_hint_y=0.20, padding=[0,0,0,0], spacing=10)
         # Left-aligned widget
-        header.add_widget(Image(source='images/soundeye.png', 
+        self.header.add_widget(Image(source='images/soundeye.png', 
                                 size=(110,110), size_hint_x=None,
                                 ))
         # Spacer
-        header.add_widget(Widget(size_hint_x=1))  # Spacer
+        self.header.add_widget(Widget(size_hint_x=1))  # Spacer
 
         # Right-aligned buttons in a horizontal BoxLayout
         right_buttons = BoxLayout(orientation='horizontal', padding=0, spacing=20, size_hint_x=None, width=370)
@@ -62,13 +56,38 @@ class MenuScreen1(SafeScreen):
             screen_name='power'  # Navigate to power screen
         )
         right_buttons.add_widget(self.power_button)
-        
         right_buttons.bind(minimum_width=right_buttons.setter('width'))  # Let width fit content
+        self.header.add_widget(right_buttons)
+    
+    def build_footer(self, screen_name, num_pages, current_page):
+        self.footer = FooterBar(screen_name=screen_name)  # Pass screen name for navigation
+        self.main_layout.add_widget(self.footer)
+        # Page indicator
+        page_indicator = PageIndicator(num_pages=num_pages, current_page=current_page, size_hint=(None, None), width=200, height=80)
+        page_indicator.pos_hint = {'center_x': 0.5, 'center_y': 0.23}
+        self.add_widget(page_indicator)
+        time_bar = AnchorLayout(size_hint_y=0.05)
+        self.main_layout.add_widget(time_bar)
 
+class MenuScreen1(MenuScreen):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.config = load_config('config/settings.json', 'v3_json')
+        self.location = self.config.get("location", "")
+        volume = self.config.get("volume", 50)
+        self.volume = f"{volume}%"
+        self.mode = self.check_mode()
+        self.alerts = self.has_any_alert()
+        self.content_buttons = {}
+        self.config_status = [self.location, self.volume, self.mode, self.alerts]
 
-        header.add_widget(right_buttons)
+        self.build_ui()
+        self.add_widget(self.main_layout)
 
-        # Layer 2: Middle content (e.g., 4 buttons)
+    def build_ui(self):
+        self.build_header()
+
+        # Layer: Middle content
         content = BoxLayout(orientation='horizontal', spacing=50, size_hint_y=0.35)
         self.content_names = ["Location", "Volume", "Mode", "Alerts"]
         for i in range(4):
@@ -92,26 +111,13 @@ class MenuScreen1(SafeScreen):
             content.add_widget(self.content_buttons[content_name])
 
         # Combine all layers
-        self.main_layout.add_widget(header)
+        self.main_layout.add_widget(self.header)
         self.main_layout.add_widget(Widget(size_hint_y=None, height=60))  # Spacer with 40px height
         self.main_layout.add_widget(content)
         self.main_layout.add_widget(Widget(size_hint_y=None, height=30))  # Spacer with 20px height
 
         #footer
-        self.footer = FooterBar(screen_name='menu2')
-        self.main_layout.add_widget(self.footer)
-
-
-        page_indicator = PageIndicator(num_pages=2, current_page=1, size_hint=(None, None), width=200, height=80)
-        page_indicator.pos_hint = {'center_x': 0.5, 'center_y': 0.23}
-        self.add_widget(page_indicator)
-
-        time_bar = AnchorLayout(size_hint_y=0.05, )
-        self.main_layout.add_widget(time_bar)
-
-    def _update_bg(self, *args):
-        self.bg.size = self.size
-        self.bg.pos = self.pos
+        self.build_footer(num_pages=2, current_page=1, screen_name='menu2')
 
     def check_mode(self):
         """
@@ -171,9 +177,6 @@ class MenuScreen1(SafeScreen):
         self.update_status()
         update_current_page('menu')
         return [self.location, self.volume, self.mode, self.alerts]
-        
-        # Update labels or other UI elements if necessary
-        # For example, you might have labels to display these values
     
     def update_status(self):
         """
@@ -206,7 +209,7 @@ class MenuScreen1(SafeScreen):
         self.footer.update_language()
 
 
-class MenuScreen2(SafeScreen):
+class MenuScreen2(MenuScreen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
@@ -227,41 +230,7 @@ class MenuScreen2(SafeScreen):
 
         
     def build_ui(self):
-        self.main_layout = BoxLayout(orientation='vertical', padding= [30, 30, 30, 10], spacing=10)
-        # Layer 1: Header
-        header = BoxLayout(orientation='horizontal', size_hint_y=0.20, padding=0, spacing=40)
-        # Left-aligned widget
-        header.add_widget(Image(source='images/soundeye.png', 
-                                size=(110,110), size_hint_x=None,
-                                ))
-
-        header.add_widget(Widget(size_hint_x=1))  # Spacer
-        # Spacer
-        right_buttons = BoxLayout(orientation='horizontal', padding=0, spacing=20, size_hint_x=None, width=370)
-        self.language_button = IconTextButton(
-            icon_path='images/language.png',
-            text=update_text_language("language"),
-            size=(110, 110),
-            screen_name='language'  # Navigate to language screen
-        )
-        right_buttons.add_widget(self.language_button)
-        self.monitor_button = IconTextButton(
-            icon_path='images/monitor.png',
-            text=update_text_language("monitor"),
-            size=(110, 110),
-            screen_name='monitor',  # Navigate to monitor screen
-        )
-        right_buttons.add_widget(self.monitor_button)
-        self.power_button = IconTextButton(
-            icon_path='images/power.png',
-            text=update_text_language("power"),
-            size=(110, 110),
-            screen_name='power'  # Navigate to power screen
-        )
-        right_buttons.add_widget(self.power_button)
-        right_buttons.bind(minimum_width=right_buttons.setter('width'))
-
-        header.add_widget(right_buttons)
+        self.build_header()
 
         # Layer 2: Middle content (e.g., 4 buttons)
                 # Layer 2: Middle content (e.g., 4 buttons)
@@ -279,21 +248,14 @@ class MenuScreen2(SafeScreen):
             )
             content.add_widget(self.content_buttons[content_name])
 
-
         # Combine all layers
-        self.main_layout.add_widget(header)
+        self.main_layout.add_widget(self.header)
         self.main_layout.add_widget(Widget(size_hint_y=None, height=60))  # Spacer with 40px height
         self.main_layout.add_widget(content)
         self.main_layout.add_widget(Widget(size_hint_y=None, height=30))  # Spacer with 20px height
-        self.footer = FooterBar(screen_name='menu')  # Pass screen name for navigation
-        self.main_layout.add_widget(self.footer)
-
-        # Page indicator
-        page_indicator = PageIndicator(num_pages=2, current_page=2, size_hint=(None, None), width=200, height=80)
-        page_indicator.pos_hint = {'center_x': 0.5, 'center_y': 0.23}
-        self.add_widget(page_indicator)
-        time_bar = AnchorLayout(size_hint_y=0.05)
-        self.main_layout.add_widget(time_bar)
+        
+        #footer
+        self.build_footer(screen_name='menu', num_pages=2, current_page=2)
 
     def on_pre_enter(self):
         self.config = load_config('config/settings.json', 'v3_json')
@@ -305,7 +267,6 @@ class MenuScreen2(SafeScreen):
         self.config_status = [self.screen_saver, self.wifi_ssid, self.timezone, self.region_address]
         self.update_config_status()
         update_current_page('menu2')
-
 
     def update_config_status(self):
         """

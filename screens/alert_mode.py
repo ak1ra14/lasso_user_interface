@@ -67,7 +67,6 @@ class AlertModeScreen(Screen):
         self.add_widget(self.header)
         self.add_widget(toggle_layout)
         self.add_widget(partition)
-
         self.add_widget(main_layout)
 
     def on_pre_enter(self):
