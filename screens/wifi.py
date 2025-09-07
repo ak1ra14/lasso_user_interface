@@ -220,7 +220,7 @@ class WifiPasswordScreen(KeyboardScreen):
             self.keyboard.text_input.text = self.keyboard.actual_text_input
 
     def press_enter(self, instance):
-        password = self.keyboard.text_input.text.strip()
+        password = self.keyboard.actual_text_input.strip()
         print(f"Entered password: {password}")
         if not password:
             print("Password cannot be empty")
