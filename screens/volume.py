@@ -109,6 +109,7 @@ class ChangeVolume(IconTextButton):
         new_volume = min(current_volume + self.by, 100)
         self.volume_screen.volume = new_volume
         self.volume_label.text = f"{new_volume}%"
+        self.volume_screen.slider.value =  new_volume
         set_system_volume(new_volume)
 
     def _decrease(self):
@@ -116,6 +117,7 @@ class ChangeVolume(IconTextButton):
         new_volume = max(current_volume - self.by, 0)
         self.volume_screen.volume = new_volume
         self.volume_label.text = f"{new_volume}%"
+        self.volume_screen.slider.value = new_volume
         set_system_volume(new_volume)
 
 
