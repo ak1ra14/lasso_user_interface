@@ -159,7 +159,7 @@ class IconTextButton(Button):
 
     def on_release(self):
         if self.screen_name and not self.has_custom_handler():
-            if self.screen_name == 'servers' and App.get_running_app().sm.current in ['menu','menu2']:
+            if self.screen_name in ['servers','power'] and App.get_running_app().sm.current in ['menu','menu2']:
                 password_screen = App.get_running_app().sm.get_screen('password screen')
                 password_screen.screen_name = self.screen_name
                 App.get_running_app().sm.current = 'password screen'
