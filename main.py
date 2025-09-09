@@ -13,8 +13,9 @@ from utils.config_loader import load_config, save_config
 from kivy.clock import Clock
 from kivy.uix.progressbar import ProgressBar
 from kivy.uix.floatlayout import FloatLayout
+from kivy.logger import Logger
 
-import sys, Logger
+import sys
 import socket
 from screens.home_screen import MenuScreen1, MenuScreen2
 from screens.language import LanguageScreen
