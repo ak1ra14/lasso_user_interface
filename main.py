@@ -14,7 +14,7 @@ from kivy.clock import Clock
 from kivy.uix.progressbar import ProgressBar
 from kivy.uix.floatlayout import FloatLayout
 
-import sys
+import sys, Logger
 import socket
 from screens.home_screen import MenuScreen1, MenuScreen2
 from screens.language import LanguageScreen
@@ -36,6 +36,7 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.clock import Clock
 from utils.config_loader import update_text_language
 from utils.password import PasswordScreen
+from utils.connection_manager import ConnectionManager
 
 
 class MyApp(App):
@@ -109,7 +110,8 @@ class MyApp(App):
         Window.bind(on_key_down=self.on_user_activity)
 
         ##checking connection
-        Clock.schedule_interval(lambda dt: self.check_connection(), 30)  # checking every 10 second
+        #Clock.schedule_interval(lambda dt: self.check_connection(), 30)  # checking every 10 second
+        integrate_connection_manager(self)
 
         return self.root_layout
     
@@ -217,6 +219,28 @@ def is_connected(host="8.8.8.8", port=53, timeout=3):
         return True
     except Exception:
         return False
+    
+
+def integrate_connection_manager(app_instance):
+    """
+    Helper function to integrate ConnectionManager into your MyApp
+    Call this in your MyApp.build() method
+    """
+    # Create and start connection manager
+    app_instance.connection_manager = ConnectionManager(app_instance)
+    app_instance.connection_manager.start_monitoring()
+    
+    # Add cleanup method to app
+    original_on_stop = getattr(app_instance, 'on_stop', lambda: None)
+    
+    def enhanced_on_stop():
+        if hasattr(app_instance, 'connection_manager'):
+            app_instance.connection_manager.stop_monitoring()
+        original_on_stop()
+    
+    app_instance.on_stop = enhanced_on_stop
+    
+    Logger.info("ConnectionManager: Integration completed")
 
 if __name__ == '__main__':
     Window.size = (1024, 600)  # Set the window size to 1024x600 pixels
