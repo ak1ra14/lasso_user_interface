@@ -170,8 +170,7 @@ class MenuScreen1(MenuScreen):
         """
         self.config = load_config('config/settings.json', 'v3_json')
         self.location = self.config.get("location", "Room 101")
-        volume = self.config.get("volume", 50)
-        self.volume = f"{volume}%"
+        self.volume = self.config.get("volume", 50)
         self.mode = self.check_mode()
         self.alerts = self.has_any_alert()
         # Update the config status labels or other UI elements if necessary
@@ -187,7 +186,8 @@ class MenuScreen1(MenuScreen):
         """
         # Example: Assuming you have labels for each config status
         self.content_buttons['location'].status.text = self.location
-        self.content_buttons['volume'].status.text = str(self.volume)
+        self.content_buttons['volume'].status.text = f"{str(self.volume)}%"
+        self.content_buttons['volume'].image.source = "images/volume.png" if self.volume != 0 else "images/volume_mute.png"
         self.content_buttons['mode'].status.text = self.mode
         mode_path = self.check_mode_for_image(self.mode)
         # Update the icon image directly if possible
@@ -222,12 +222,12 @@ class MenuScreen2(MenuScreen):
         config = load_config('config/settings.json','v3_json')   
         self.device_id = config.get('sensor_ID', 'N/A')
         self.version = config.get('version', 'N/A')
-        screen_saver = config.get('screensaver', 160)
-        self.screen_saver = f"{screen_saver} {update_text_language('second')}"
+        screensaver = config.get('screensaver', 160)
+        self.screensaver = f"{screensaver} {update_text_language('second')}"
         self.wifi_ssid = config.get('wifi_ssid', 'N/A')
         self.timezone = config.get('timezone', 'N/A')
         self.region_address = config.get('region_address', 'N/A')
-        self.config_status = [self.screen_saver, self.wifi_ssid, self.timezone, self.region_address]
+        self.config_status = [self.screensaver, self.wifi_ssid, self.timezone, self.region_address]
         self.content_buttons = {}
 
         self.build_ui()
@@ -264,23 +264,25 @@ class MenuScreen2(MenuScreen):
 
     def on_pre_enter(self):
         self.config = load_config('config/settings.json', 'v3_json')
-        self.screen_saver = f"{self.config.get('screensaver', 160)} {update_text_language('second')}"
+        self.screensaver =self.config.get('screensaver', 160)
         self.wifi_ssid = self.config.get('wifi_ssid', 'N/A') 
         self.wifi_ssid = update_text_language('not_connected') if self.wifi_ssid == 'Not connected' else self.wifi_ssid
         self.timezone = self.config.get('timezone', 'N/A')
         self.region_address = self.config.get('region_address', 'N/A')
-        self.config_status = [self.screen_saver, self.wifi_ssid, self.timezone, self.region_address]
-        self.update_config_status()
+        self.config_status = [self.screensaver, self.wifi_ssid, self.timezone, self.region_address]
+        self.update_status()
         update_current_page('menu2')
 
-    def update_config_status(self):
+    def update_status(self):
         """
         Update the configuration status labels or other UI elements.
         This method can be customized based on how you want to display the config status.
         """
         # Example: Assuming you have labels for each config status
-        self.content_buttons['screensaver'].status.text = self.screen_saver
+        self.content_buttons['screensaver'].status.text = f"{self.screensaver} {update_text_language('second')}"
+        self.content_buttons['screensaver'].image.source = "images/screensaver.png" if self.screensaver != 0 else "images/screensaver_off.png"
         self.content_buttons['wi-fi'].status.text = self.wifi_ssid
+        self.content_buttons['wi-fi'].image.source = "images/wifi_not_connected.png" if self.wifi_ssid == update_text_language('not_connected') else "images/wifi.png"
         self.content_buttons['timezone'].status.text = self.timezone
         self.content_buttons['servers'].status.text = self.region_address
 
