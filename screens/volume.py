@@ -5,6 +5,7 @@ from kivy.app import App
 from kivy.uix.floatlayout import FloatLayout
 from utils.freeze_screen import freeze_ui
 import os, sys
+from kivy.uix.slider import Slider
 
 from utils.config_loader import load_config, save_config, update_current_page, update_text_language
 from utils.layout import HeaderBar, SafeScreen
@@ -15,7 +16,15 @@ class VolumeScreen(SafeScreen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.volume = load_config('config/settings.json', 'v3_json').get('volume', 50)
-        self.header = HeaderBar(title='volume', icon_path="images/home.png", button_text="home", button_screen="menu")
+        self.save_button = SaveButton(
+            icon_path="images/save.png",
+            volume_screen=self,
+            text=update_text_language("save"),  
+            size_hint=(None, None),
+            size=(110, 110),
+            pos_hint={'center_x': 0.5, 'center_y': 0.5}
+        )
+        self.header = HeaderBar(title='volume', icon_path="images/home.png", button_text="home", button_screen="menu", second_button=self.save_button)
         buttons = BoxLayout(orientation='horizontal', spacing=15, size_hint_y=0.3, pos_hint={'center_x': 0.5, 'center_y': 0.5}, padding=[50,0,50,0])  # Only left and right padding
 
         self.volume_label = (Label(
@@ -55,18 +64,12 @@ class VolumeScreen(SafeScreen):
                                          volume_screen=self,  # Pass the screen instance
                                         pos_hint={'center_x': 0.5, 'center_y': 0.5},
                                           by=10, height=50))
+        self.slider = Slider(min=0, max=100, value=0, step=1, size_hint_x=None, size_hint_y=None, width=900, pos_hint={'center_x': 0.5, 'center_y': 0.3})
+        self.slider.bind(value=self.on_slider_value_change)
+        self.add_widget(self.slider)
         self.add_widget(self.header)
         self.add_widget(buttons)
         float_layout = FloatLayout(size_hint=(1, 1))
-        self.save_button = SaveButton(
-            icon_path="images/save.png",
-            volume_screen = self,  # Pass the screen instance
-            text=update_text_language('save'),
-            size_hint=(None, None),
-            size=(120, 120),
-            pos_hint={'center_x': 0.5, 'center_y': 0.2}
-        )
-        float_layout.add_widget(self.save_button)
         self.add_widget(float_layout)
 
 
@@ -76,7 +79,11 @@ class VolumeScreen(SafeScreen):
         self.volume_label.text = f"{self.volume}%"
         self.header.update_language()
         self.save_button.label.text = update_text_language('save')
+        self.slider.value = self.volume
 
+    def on_slider_value_change(self, instance, value):
+        self.volume = int(value)
+        self.volume_label.text = f"{int(value)}%"
 
 class ChangeVolume(IconTextButton):
     def __init__(self, by=1, volume_label=None, change="increase", volume_screen=None, **kwargs):
@@ -104,7 +111,6 @@ class ChangeVolume(IconTextButton):
         self.volume_label.text = f"{new_volume}%"
         set_system_volume(new_volume)
 
-
     def _decrease(self):
         current_volume = self.volume_screen.volume
         new_volume = max(current_volume - self.by, 0)
@@ -125,6 +131,7 @@ class SaveButton(IconTextButton):
         """
         # Save the current volume to the config file
         super().on_press()
+        set_system_volume(self.volume_screen.volume)
         show_saved_popup(update_text_language('saved'))  # Show a popup indicating the settings have been saved
         config = load_config('config/settings.json', 'v3_json')
         config['volume'] = self.volume_screen.volume
