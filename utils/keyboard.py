@@ -135,7 +135,7 @@ class QwertyKeyboard(FloatLayout):
             ['English', ',', 'Space','.', 'Enter']
         ]
         self.keys = [
-            ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'],
+            ['1', '2', '3', '4', '5', '6', '7', '8', '9' , '0'],
             ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p'],
             ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l'],
             ['Shift', 'z', 'x', 'c', 'v', 'b', 'n', 'm', 'Backspace'],
@@ -222,6 +222,7 @@ class QwertyKeyboard(FloatLayout):
         key_width = 90
         key_spacing = 8
         self.english_keyboard = []
+        self.shift_lock = False
 
         for row, subrow, shift_row in zip(self.keys, self.subkeys, self.shift_keys):
             if len(row) == 10:
@@ -229,9 +230,7 @@ class QwertyKeyboard(FloatLayout):
             num_keys = len(row)
             if 'Shift' in row or 'Enter' in row:
                 width = first_row_width
-            #     width = (num_keys - 2) * key_width + 2* key_width*1.4 + (num_keys - 1) * key_spacing + 6
-            # elif 'Enter' in row:
-            #     width = (num_keys-3) * key_width + 2 * key_width*1.4 + key_width*5 + (num_keys - 1) * key_spacing + 15
+
             else:
                 width = num_keys * key_width + (num_keys - 1) * key_spacing + 6
             row_layout = GridLayout(
@@ -279,11 +278,6 @@ class QwertyKeyboard(FloatLayout):
     def build_japanese_keyboard(self):
         key_width = 77
         key_spacing = 8
-        #self.main_layout.clear_widgets()  # Clear the main layout
-        # self.start_index = self.text_input.cursor_index()  # Save the cursor position
-        # self.entered = False # Flag to indicate if the Enter key has not been pressed to determine the word conversion 
-        # self.language_mode = 'japanese'  # Set the language mode to Japanese
-        # self.last_click_space = False
         self.japanese_keyboard = []
 
         for row, subrow in zip(self.japanese_keys, self.japanese_subkeys):
@@ -334,11 +328,6 @@ class QwertyKeyboard(FloatLayout):
         # Example flick mappings for common Japanese columns (10 columns)
         self.language_mode = 'japanese'  # Set the language mode to Japanese
         self.main_layout.clear_widgets()  # Clear the main layout
-        # self.flick_index = 0 # Index to track the current selection in flick mappings
-        # self.selected_flick_mappings = None # Currently selected flick mapping
-        # self.last_click_time = 0  # Timestamp of the last flick key click
-        # self.last_cursor_index = self.text_input.cursor_index() # Save the cursor position
-        # self.last_click_space = False
 
         self.flick_grid = GridLayout(cols=4, spacing=6, 
                                      padding=(100,0,100,0), size_hint_y=None,
@@ -485,8 +474,10 @@ class QwertyKeyboard(FloatLayout):
                 #ti.cursor = ti.cursor  # Update the cursor position
                 ti.scroll_x = 1
         elif instance.function == "Shift":
+            if not self.shift_lock:
                 for btn in self.english_buttons:
                     btn.update_shift_text()
+
         elif instance.function == "Japanese":
             for btn in self.japanese_buttons:
                 temp = btn.text
@@ -496,6 +487,7 @@ class QwertyKeyboard(FloatLayout):
                     btn.sub_key_label.text = temp
                 except AttributeError: pass
         elif instance.function == "English":
+            self.shift_lock = not self.shift_lock
             for btn in self.english_buttons:
                 temp = btn.text
                 btn.text = btn.sub_key if btn.sub_key else btn.text
