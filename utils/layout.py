@@ -176,7 +176,7 @@ class SafeScreen(Screen):
     touch_enabled = False
 
     def on_enter(self):
-        # Delay touch activation by 0.5s
+        # Delay touch activation by 0.3s
         self.touch_enabled = False
         Clock.schedule_once(self.enable_touch, 0.3)
 
