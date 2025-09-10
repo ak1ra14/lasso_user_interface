@@ -6,6 +6,7 @@ import subprocess
 import re
 from kivy.clock import Clock
 from kivy.logger import Logger
+from kivy.app import App
 
 class ConnectionManager:
     """
@@ -274,6 +275,8 @@ class ConnectionManager:
             # Update app configuration
             if connection_info['is_connected'] and connection_info['ssid']:
                 self.app.config['wifi_ssid'] = connection_info['ssid']
+                menu_screen = App.get_screen().screen_name('menu2')
+                menu_screen.content_buttons['wi-fi'].status.text = self.wifi_ssid
                 if connection_info['ip_address']:
                     self.app.ip_address = connection_info['ip_address']
                     ip_text = f"{update_text_language('ip_address')}: {connection_info['ip_address']}"

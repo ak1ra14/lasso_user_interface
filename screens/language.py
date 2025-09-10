@@ -1,5 +1,5 @@
 from kivy.uix.boxlayout import BoxLayout
-from utils.icons import IconTextButton, CircularImageButton
+from utils.icons import IconTextButton
 from kivy.uix.widget import Widget
 from utils.config_loader import load_config, update_current_page, save_config, update_text_language
 from utils.layout import HeaderBar, SafeScreen
