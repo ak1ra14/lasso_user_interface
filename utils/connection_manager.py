@@ -276,7 +276,7 @@ class ConnectionManager:
             if connection_info['is_connected'] and connection_info['ssid']:
                 self.app.config['wifi_ssid'] = connection_info['ssid']
                 menu_screen = App.get_screen().screen_name('menu2')
-                menu_screen.content_buttons['wi-fi'].status.text = self.wifi_ssid
+                menu_screen.content_buttons['wi-fi'].status.text = connection_info['wifi_ssid']
                 if connection_info['ip_address']:
                     self.app.ip_address = connection_info['ip_address']
                     ip_text = f"{update_text_language('ip_address')}: {connection_info['ip_address']}"
