@@ -290,7 +290,8 @@ class ConnectionManager:
             
             # Update monitor screen if available
             try:
-                menu_screen = self.app.sm.screen_name('menu2')
+                Logger.debug("updating icons")
+                menu_screen = self.app.sm.get_screen('menu2')
                 menu_screen.content_buttons['wi-fi'].status.text = connection_info['ssid'] if connection_info['ssid'] else update_text_language('not_connected')
                 menu_screen.content_buttons['wi-fi'].image.source = "images/wifi.png" if connection_info['ssid'] else "images.wifi_not_connected"
                 Logger.debug("wifi updated")
