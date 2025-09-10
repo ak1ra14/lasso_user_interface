@@ -282,7 +282,7 @@ class ConnectionManager:
                 else:
                     ip_text = f"{update_text_language('ip_address')}: {update_text_language('connected')}"
             else:
-                self.app.config['wifi_ssid'] = None
+                self.app.config['wifi_ssid'] = 'Not Connected'
                 ip_text = f"{update_text_language('ip_address')}: {update_text_language('not_connected')}"
             
             # Save configuration
@@ -293,6 +293,7 @@ class ConnectionManager:
                 menu_screen = self.app.sm.screen_name('menu2')
                 menu_screen.content_buttons['wi-fi'].status.text = connection_info['ssid'] if connection_info['ssid'] else update_text_language('not_connected')
                 menu_screen.content_buttons['wi-fi'].image.source = "images/wifi.png" if connection_info['ssid'] else "images.wifi_not_connected"
+                Logger.debug("wifi updated")
                 monitor_screen = self.app.sm.get_screen('monitor')
                 if hasattr(monitor_screen, 'ip_label'):
                     monitor_screen.ip_label.text = ip_text
