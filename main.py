@@ -57,6 +57,9 @@ class MyApp(App):
         self.default_wifi_password = 'afafafafaf'
         self.ip_address = get_ip_address()
 
+        self.screen_before_screensaver = None
+        self.screensaver_was_activated = False
+
         # Add all screens to the ScreenManager
         self.sm.add_widget(MonitorScreen(name='monitor'))
         self.sm.add_widget(MenuScreen1(name='menu'))
@@ -126,6 +129,17 @@ class MyApp(App):
     def on_user_activity(self, *args):
         '''
         Reset the screensaver timer and the time bar timer on user activity.'''
+        # If we're coming back from screensaver, return to the previous screen
+        if self.sm.current == 'dark' and self.screensaver_was_activated:
+            if self.screen_before_screensaver and self.screen_before_screensaver != 'dark':
+                self.sm.current = self.screen_before_screensaver
+            else:
+                # Fallback to monitor if no valid screen was stored
+                self.sm.current = 'monitor'
+                
+            self.screensaver_was_activated= False
+            self.screen_before_screensaver = None
+            
         self.reset_screensaver_timer()
         self.reset_timer()
     
@@ -145,6 +159,9 @@ class MyApp(App):
         Activate the screensaver by switching to the dark screen.
         '''
         if self.sm.current != 'dark':
+            # Store the current screen before activating screensaver
+            self.screen_before_screensaver = self.sm.current
+            self.screensaver_was_activated = True
             self.sm.current = 'dark'
 
     def _update_time_bar(self, dt):
@@ -155,6 +172,8 @@ class MyApp(App):
         self.time_bar.value = self.time_left
         if self.time_left <= 0:
             self._timer_event.cancel()
+            if self.sm.current == 'dark':
+                return 
             if self.sm.current == 'menu' or self.sm.current == 'menu2':
                 self.sm.current = 'monitor'
             elif self.sm.current != 'dark' and self.sm.current != 'monitor':
