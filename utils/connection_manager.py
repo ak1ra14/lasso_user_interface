@@ -472,7 +472,7 @@ class ConnectionManager:
 
             menu_screen = self.app.sm.get_screen('menu2')
             menu_screen.content_buttons['wi-fi'].status.text = config['wifi_ssid'] if config['wifi_ssid'] != 'Not connected' else update_text_language('not_connected')
-            menu_screen.content_buttons['wi-fi'].image.source = "images/wifi.png" if config['wifi_ssid'] != 'Not connected' else "images.wifi_not_connected"
+            menu_screen.content_buttons['wi-fi'].image.source = "images/wifi.png" if config['wifi_ssid'] != 'Not connected' else "images/wifi_not_connected.png"
 
             # Save updated config
             save_config('config/settings.json', 'v3_json', data=config)
