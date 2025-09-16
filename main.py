@@ -173,15 +173,22 @@ class MyApp(App):
         if self.time_left <= 0:
             self._timer_event.cancel()
             if self.sm.current == 'dark':
+                if self.screen_before_screensaver  == 'menu' or self.screen_before_screensaver ==  'menu2':
+                    self.screen_before_screensaver = 'monitor'
+                    print('switched to monitor')
+                    return
+                elif self.screen_before_screensaver != 'monitor':
+                    self.screen_before_screensaver = 'menu'
+                print('screen switched in bg')
+                self.reset_timer()
                 return 
             if self.sm.current == 'menu' or self.sm.current == 'menu2':
                 self.sm.current = 'monitor'
-            elif self.sm.current != 'dark' and self.sm.current != 'monitor':
+            elif self.sm.current != 'monitor':
                 self.sm.current = 'menu'  # Switch to menu screen when time runs out
                 self.reset_screensaver_timer()  # Reset screensaver timer
                 self.reset_timer()
-            else: 
-                return 
+    
 
     def reset_timer(self, *args):
         '''
@@ -198,8 +205,8 @@ class MyApp(App):
         Handle screen changes to show/hide the time bar and manage timers.'''
         if self.sm.current == 'dark' or self.sm.current == 'monitor':
             self.time_bar.opacity = 0  # Hide time bar in dark screen
-            if self._timer_event:
-                self._timer_event.cancel()
+            # if self._timer_event and self.sm.current == 'dark':
+            #     self._timer_event.cancel()
         else:
             self.time_bar.opacity = 1
 

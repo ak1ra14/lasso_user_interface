@@ -15,6 +15,9 @@ from utils.keyboard import KeyboardScreen
 from utils.freeze_screen import freeze_ui
 
 class WifiLoadingScreen(SafeScreen):
+    """
+    A wifi screen that initially shows a loading screen with a list of available wifis on the list. 
+    """
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.config = load_config("config/settings.json", "v3_json")
@@ -167,6 +170,9 @@ def get_available_wifi():
 
 
 class WifiPasswordScreen(KeyboardScreen):
+    """
+    A password screen that allows users to enter a password for the selected wifi 
+    """
     def __init__(self, title = 'wifi_password', wifi_name = None, **kwargs):
         super().__init__(**kwargs, title=title)
         self.wifi_name = wifi_name
