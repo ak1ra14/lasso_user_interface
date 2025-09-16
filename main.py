@@ -215,38 +215,7 @@ class MyApp(App):
             self._timer_event.cancel()
         self.time_left = self.time_limit
         self.time_bar.value = self.time_limit
-        self._timer_event = Clock.schedule_interval(self._update_time_bar, 1)
-
-    # def check_connection(self, *args):
-    #     '''
-    #     Check network connection and update Wi-Fi SSID in config if connected.'''
-    #     if is_connected():
-    #         ssid = get_connected_wifi()
-    #         if ssid:
-    #             #print(f"Connected to Wi-Fi: {ssid}")
-    #             self.config['wifi_ssid'] = ssid
-    #             save_config('config/settings.json', 'v3_json', data=self.config)
-    #             self.ip_address = get_ip_address()
-    #             monitor_screen = self.sm.get_screen('monitor')
-    #             monitor_screen.ip_label.text = f"{update_text_language('ip_address')}: {self.ip_address}"
-    #     else:
-    #         self.config['wifi_ssid'] = 'Not connected'
-    #         save_config('config/settings.json', 'v3_json', data=self.config)
-    #         monitor_screen = self.sm.get_screen('monitor')
-    #         monitor_screen.ip_label.text = f"{update_text_language('ip_address')}: {update_text_language('not_connected')}"
-    #         print("Not connected to any Wi-Fi network.")
-
-# def is_connected(host="8.8.8.8", port=53, timeout=3):
-#     """
-#     Returns True if there is a network connection, False otherwise.
-#     """
-#     try:
-#         socket.setdefaulttimeout(timeout)
-#         socket.socket(socket.AF_INET, socket.SOCK_STREAM).connect((host, port))
-#         return True
-#     except Exception:
-#         return False
-    
+        self._timer_event = Clock.schedule_interval(self._update_time_bar, 1)    
 
 def integrate_connection_manager(app_instance):
     """
