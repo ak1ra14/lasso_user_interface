@@ -7,7 +7,8 @@ from kivy.uix.widget import Widget
 from kivy.graphics import Color, RoundedRectangle, Ellipse, Line
 from kivy.properties import BooleanProperty
 from kivy.uix.floatlayout import FloatLayout
-from utils.icons import IconTextButton, FlickKey
+from utils.icons import IconTextButton
+from utils.flick_key import FlickKey
 from utils.layout import SafeScreen
 from utils.freeze_screen import freeze_ui
 from kivy.uix.image import Image
@@ -19,6 +20,8 @@ from kivy.app import App
 from utils.config_loader import load_config, update_text_language
 import time 
 from kivy.uix.popup import Popup
+from kivy.logger import Logger
+
 
 class KeyboardScreen(SafeScreen):
     '''
@@ -41,10 +44,9 @@ class KeyboardScreen(SafeScreen):
 
     def on_pre_enter(self):
         self.last_cursor_index = len(self.keyboard.actual_text_input)
+        self.start_index = len(self.keyboard.actual_text_input)
         try:
-            print('checking if language button exists')
             if not self.keyboard.language_button and App.get_running_app().language == 'jp':
-                print('adding the button if language is japanese')
                 self.keyboard.language_button = LanguageTextButton(
                     icon_path='images/japanese.png',
                     size_hint=(None, None),
@@ -53,10 +55,8 @@ class KeyboardScreen(SafeScreen):
                 )
                 self.keyboard.overlay.add_widget(self.keyboard.language_button)
             if self.keyboard.language_button and App.get_running_app().language == 'en':
-                print('removing the button if language is english')
                 self.keyboard.overlay.remove_widget(self.keyboard.language_button)
                 self.keyboard.language_button = None
-                print('removed the button')
                 self.keyboard.show_layout('english')
 
         except AttributeError:
@@ -382,6 +382,7 @@ class QwertyKeyboard(FloatLayout):
             for row in self.english_keyboard:
                 self.main_layout.add_widget(row)
             self.language_mode = 'english'
+            self.cursor_pos = None
         elif layout == 'japanese':
             for row in self.japanese_keyboard:
                 self.main_layout.add_widget(row)
@@ -389,15 +390,22 @@ class QwertyKeyboard(FloatLayout):
             self.start_index = self.text_input.cursor_index()  # Save the cursor position
             self.entered = False # Flag to indicate if the Enter key has not been pressed to determine the word conversion 
             self.last_click_space = False
+            self.last_click_backspace = False
+            self.last_cursor_index = self.text_input.cursor_index()
+            self.cursor_pos = None
         elif layout == 'flick':
             self.main_layout.add_widget(self.flick_grid)
             self.language_mode = 'japanese'
             self.flick_index = 0 # Index to track the current selection in flick mappings
+            self.start_index = self.text_input.cursor_index()  # Save the cursor position
             self.selected_flick_mappings = None # Currently selected flick mapping
             self.last_click_time = 0  # Timestamp of the last flick key click
             self.last_cursor_index = self.text_input.cursor_index() # Save the cursor position
             self.last_click_space = False
             self.flick_is_katakana = False  
+            self.last_click_backspace = False
+            self.last_cursor_index = self.text_input.cursor_index()
+            self.cursor_pos = None
 
     def on_key_release(self, instance):
         '''
@@ -405,8 +413,10 @@ class QwertyKeyboard(FloatLayout):
         #print(f"Key released: {instance.text if instance.text else instance.function}")
         ti = self.text_input #to indicate the position of the input in a word
         ti.focus = True  # Keep the text input focused
-        cursor_pos = ti.cursor_index()
-        self.text_input.bind(text=self.limit_text_length)  # Bind the text input to limit its length
+        self.cursor_pos = ti.cursor_index()
+
+        #checking if the cursor hasbeen shifted to a new position manually 
+        self.text_input.bind(text=self.limit_text_length)  # Bind the text input to limit its length        
        
         # if the same flick key is pressed within one second cycle through the options
         if hasattr(instance,'mappings'):
@@ -418,61 +428,74 @@ class QwertyKeyboard(FloatLayout):
                     self.flick_index = (self.flick_index + 1) % 5
                     if instance.mappings[self.flick_index]:
                         break
-                ti.text = ti.text[:cursor_pos - 2] + instance.mappings[self.flick_index] + ti.text[cursor_pos:]
-                self.actual_text_input = self.actual_text_input[:cursor_pos - 2] + instance.mappings[self.flick_index] + self.actual_text_input[cursor_pos:]
+                ti.text = ti.text[:self.cursor_pos - 2] + instance.mappings[self.flick_index] + ti.text[self.cursor_pos:]
+                self.actual_text_input = self.actual_text_input[:self.cursor_pos - 2] + instance.mappings[self.flick_index] + self.actual_text_input[self.cursor_pos:]
             # If the flick key is pressed for the first time, initialize the flick index
             else:
                 self.last_click_time = now
                 self.selected_flick_mappings = instance.mappings
                 self.flick_index = 0
+
         # Space key function 
         elif instance.function == 'Space':
             #print(f"Space key pressed, converting: {self.converting}, start index: {self.start_index}, cursor pos: {cursor_pos}, last cursor index: {self.last_cursor_index}")
             #if japanese keyboard, the space key is used for both word conversion and space insertion
-            if self.language_mode == 'japanese' and self.start_index < cursor_pos and not self.converting:
+            if self.language_mode == 'japanese' and self.start_index < self.last_cursor_index and not self.converting and not self.last_click_backspace:
                 # Convert the text to Kanji using the converter
                 self.converting = True
-                self.converted_text = self.kanji_converter.convert(ti.text[self.start_index:cursor_pos],n_best=20)
+                self.converted_text = self.kanji_converter.convert(ti.text[self.start_index:self.cursor_pos],n_best=20)
             if self.last_cursor_index != ti.cursor_index():
-                #print("Cursor moved, reset converting")
+                Logger.info("Cursor moved, reset converting")
                 self.converting = False  # Reset the converting flag if cursor has moved
                 self.japanese_space_button.text = '空白'
                 self.flick_space_button.text = '空白'
-                self.start_index = cursor_pos  # Reset the start index
-            if self.converting and len(self.converted_text) > 0 and cursor_pos == self.last_cursor_index:
-                #print(f"{self.converted_text[0]}, starting from {self.start_index}, ending at{cursor_pos},cursor pos {ti.cursor_index()}")
-                suggested_text = self.converted_text.pop() if self.converted_text else ti.text[self.start_index:cursor_pos]
-                ti.text = ti.text[:self.start_index] + suggested_text + ti.text[cursor_pos:]
+                self.start_index = self.cursor_pos  # Reset the start index
+            print(f"self.converting{self.converting},self.cursorpos{self.cursor_pos},self.last_cursor_index{self.last_cursor_index}")
+            if self.converting and len(self.converted_text) > 0 and self.cursor_pos == self.last_cursor_index:
+                Logger.info(f"{self.converted_text[0]}, starting from {self.start_index}, ending at{self.cursor_pos},cursor pos {ti.cursor_index()}")
+                suggested_text = self.converted_text.pop() if self.converted_text else ti.text[self.start_index:self.cursor_pos]
+                ti.text = ti.text[:self.start_index] + suggested_text + ti.text[self.cursor_pos:]
                 self.programmatic_cursor_change = True
                 ti.cursor = (self.start_index + len(suggested_text), 0)
                 self.programmatic_cursor_change = False
                 self.last_cursor_index = ti.cursor_index()
             else:
-                #print("Inserting space")
+                Logger.info("Inserting space")
                 self.converting = False  # Reset the converting flag
                 self.japanese_space_button.text = '空白'
                 self.flick_space_button.text = '空白'
-                self.actual_text_input = self.actual_text_input[:cursor_pos] + ' ' + self.actual_text_input[cursor_pos:]
+                self.actual_text_input = self.actual_text_input[:self.cursor_pos] + ' ' + self.actual_text_input[self.cursor_pos:]
                 if self.visibility:
-                    ti.text = ti.text[:cursor_pos] + ' ' + ti.text[cursor_pos:]
+                    ti.text = ti.text[:self.cursor_pos] + ' ' + ti.text[self.cursor_pos:]
                 else:
-                    ti.text = ti.text[:cursor_pos] + '*' + ti.text[cursor_pos:]
+                    ti.text = ti.text[:self.cursor_pos] + '*' + ti.text[self.cursor_pos:]
                 self.programmatic_cursor_change = True
-                ti.cursor = (cursor_pos + 1, 0)
+                ti.cursor = (self.cursor_pos + 1, 0)
                 self.programmatic_cursor_change = False
                 self.start_index = ti.cursor_index()  # Update the start index
-                #self.last_cursor_index = ti.cursor_index()
+            if self.last_click_backspace:
+                self.last_click_backspace = False
             self.last_click_space = True
+
         elif instance.function == 'Backspace':
-            if cursor_pos > 0:
-                self.actual_text_input = self.actual_text_input[:cursor_pos-1] + self.actual_text_input[cursor_pos:]
-                ti.text = ti.text[:cursor_pos-1] + ti.text[cursor_pos:]
+            self.japanese_space_button.text = '空白'
+            self.flick_space_button.text = '空白'
+            if self.cursor_pos > 0:
+                if  self.converting:
+                    self.converting = False                
+                self.actual_text_input = self.actual_text_input[:self.cursor_pos-1] + self.actual_text_input[self.cursor_pos:]
+                ti.text = ti.text[:self.cursor_pos-1] + ti.text[self.cursor_pos:]
                 self.programmatic_cursor_change = True
-                ti.cursor = (cursor_pos - 1, 0)
+                ti.cursor = (self.cursor_pos - 1, 0)
                 self.programmatic_cursor_change = False
                 self.last_cursor_index = ti.cursor_index()
                 #ti.cursor = ti.cursor  # Update the cursor position
                 ti.scroll_x = 1
+                self.cursor_pos = ti.cursor_index
+            self.last_click_backspace = True
+            self.start_index = ti.cursor_index()
+            Logger.info(f"start pos{self.start_index}, current pos{self.last_cursor_index}")
+
         elif instance.function == "Shift":
             if not self.shift_lock:
                 for btn in self.english_buttons:
@@ -515,35 +538,95 @@ class QwertyKeyboard(FloatLayout):
                         btn.mappings = new_mappings
                         btn.text = new_mappings[0] if new_mappings and new_mappings[0] else ''
                 self.flick_is_katakana = False
+
         elif instance.function == "Daku-on":
-            self.actual_text_input = self.actual_text_input[:-1] + self.change_dakuon(self.actual_text_input[-1])  # Add Daku-on character
-            if self.visibility:
-                self.text_input.text = self.text_input.text[:-1] + self.change_dakuon(self.text_input.text[-1]) # Add Daku-on character
+            try: 
+                # Store current cursor position
+                current_cursor = self.cursor_pos
+                
+                # Check if there's a character to convert
+                if current_cursor > 0:
+                    # Get the character before cursor
+                    char_to_convert = self.actual_text_input[current_cursor-1]
+                    converted_char = self.change_dakuon(char_to_convert)
+                    
+                    # Only proceed if the character actually changed
+                    if converted_char != char_to_convert:
+                        self.programmatic_cursor_change = True
+                        
+                        # Update actual text input
+                        self.actual_text_input = (
+                            self.actual_text_input[:current_cursor-1] + 
+                            converted_char + 
+                            self.actual_text_input[current_cursor:]
+                        )
+                        
+                        # Update visible text input
+                        if self.visibility:
+                            self.text_input.text = (
+                                self.text_input.text[:current_cursor-1] + 
+                                converted_char + 
+                                self.text_input.text[current_cursor:]
+                            )
+                        else:
+                            # For password mode, maintain asterisks
+                            self.text_input.text = (
+                                self.text_input.text[:current_cursor-1] + 
+                                '*' + 
+                                self.text_input.text[current_cursor:]
+                            )
+                        
+                        # CRITICAL: Reset cursor to same position
+                        self.text_input.cursor = (current_cursor, 0)
+                        
+                        # Update tracking variables
+                        self.last_cursor_index = current_cursor
+                        self.cursor_pos = current_cursor
+                        
+                        self.programmatic_cursor_change = False
+                        
+                        Logger.info(f"Daku-on conversion: '{char_to_convert}' -> '{converted_char}'")
+                    else:
+                        Logger.info(f"No daku-on conversion available for '{char_to_convert}'")
+                else:
+                    Logger.info("No character to convert (cursor at beginning)")
+                    
+            except IndexError:
+                Logger.error("Daku-on conversion failed: Index out of range")
+            except Exception as e:
+                Logger.error(f"Daku-on conversion failed: {e}")
+
+
         else:
-            #print(f"Normal key pressed: {instance.text},self.converting: {self.converting}, cursor pos: {cursor_pos}, last cursor index: {self.last_cursor_index}")
-            if self.language_mode == 'japanese' or self.start_index == cursor_pos:
+            print(f"Normal key pressed: {instance.text},start index: {self.start_index}, self.converting: {self.converting}, cursor pos: {self.cursor_pos}, last cursor index: {self.last_cursor_index}")
+            #when a new character is added
+            if self.language_mode == 'japanese' or self.start_index == self.cursor_pos:
                 self.japanese_space_button.text = '変換'
                 self.flick_space_button.text = '変換'
+            
+            #when the conversion is done and the new word is stared being input 
             if self.converting:
                 #print('index reset due to normal key press')
                 self.converting = False  # Reset the converting flag
-                self.japanese_space_button.text = '空白'
-                self.flick_space_button.text = '空白'
-                self.start_index = cursor_pos  # Reset the start index
-            self.actual_text_input = self.actual_text_input[:cursor_pos] + instance.text + self.actual_text_input[cursor_pos:]
+                self.start_index = self.cursor_pos  # Reset the start index
+            self.actual_text_input = self.actual_text_input[:self.cursor_pos] + instance.text + self.actual_text_input[self.cursor_pos:]
+
+            #for the password screen when the visibility is off
             if self.visibility:
-                    self.text_input.text = self.text_input.text[:cursor_pos] + instance.text + self.text_input.text[cursor_pos:]
+                    self.text_input.text = self.text_input.text[:self.cursor_pos] + instance.text + self.text_input.text[self.cursor_pos:]
             else:
-                self.text_input.text = self.text_input.text[:cursor_pos] + '*' * len(instance.text) + self.text_input.text[cursor_pos:]
+                self.text_input.text = self.text_input.text[:self.cursor_pos] + '*' * len(instance.text) + self.text_input.text[self.cursor_pos:]
             self.programmatic_cursor_change = True
-            ti.cursor = (cursor_pos + len(instance.text), 0)
+            ti.cursor = (self.cursor_pos + len(instance.text), 0)
             self.programmatic_cursor_change = False
             self.last_cursor_index = ti.cursor_index()
             self.last_click_space = False
+            self.last_click_backspace = False
+            Logger.info(f"Normal key entered: {instance.text},start index: {self.start_index}, self.converting: {self.converting}, cursor pos: {self.cursor_pos}, last cursor index: {self.last_cursor_index}")
 
     def press_enter(self, instance):
         if self.language_mode == 'japanese':
-            if self.converting:
+            if (not self.last_click_space and not self.last_click_backspace) or self.converting:
                 self.japanese_space_button.text = '空白'
                 self.flick_space_button.text = '空白'
                 self.converting = False
@@ -606,10 +689,12 @@ class QwertyKeyboard(FloatLayout):
             instance.text = value[:self.MAX_CHARS]
 
     def on_cursor_change(self, instance, value):
-        if getattr(self, '_programmatic_cursor_change', False):
-            self.start_index = instance.cursor_index()  # Update the start index to the new cursor position
-            #print(f"Cursor changed to index: {self.start_index}")
-
+        # Prevent recursive calls during programmatic changes
+        if getattr(self, 'programmatic_cursor_change', True):
+            return
+        current_cursor_index = instance.cursor_index()
+        # Debug print to see cursor changes
+        Logger.info(f"Cursor changed - Old position: {getattr(self, 'last_cursor_index', 0)}, New position: {current_cursor_index}")
 
 class LanguageTextButton(IconTextButton):
     def on_release(self):
@@ -701,7 +786,7 @@ class RoundedButton(Button):
         return super().on_touch_up(touch)
 
     def on_press(self):
-        print(f"Button {self.text} pressed")
+        #print(f"Button {self.text} pressed")
         App.get_running_app().play_sound()
         freeze_ui(0.3)  # freeze the UI for 0.3 seconds to prevent multiple presses
 

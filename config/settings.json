@@ -2,5 +2,5 @@
     "v3_json": "config/V3.json",
     "bed_json": "config/bed.json",
     "fall_json": "config/fall.json",
-    "current_page": "alert_mode"
+    "current_page": "menu"
 }
