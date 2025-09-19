@@ -116,7 +116,7 @@ class QwertyKeyboard(FloatLayout):
                                     multiline=False,  # Single line input
                                     halign='left',
                                     )
-        self.text_input.bind(cursor=self.on_cursor_change)
+        #self.text_input.bind(cursor=self.on_cursor_change)
         
         partition = SeparatorLine(
             size_hint=(0.54, 0.05),
@@ -692,9 +692,6 @@ class QwertyKeyboard(FloatLayout):
         # Prevent recursive calls during programmatic changes
         if getattr(self, 'programmatic_cursor_change', True):
             return
-        current_cursor_index = instance.cursor_index()
-        # Debug print to see cursor changes
-        #Logger.info(f"Cursor changed - Old position: {getattr(self, 'last_cursor_index', 0)}, New position: {current_cursor_index}")
 
 class LanguageTextButton(IconTextButton):
     def on_release(self):
