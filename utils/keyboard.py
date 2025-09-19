@@ -694,7 +694,7 @@ class QwertyKeyboard(FloatLayout):
             return
         current_cursor_index = instance.cursor_index()
         # Debug print to see cursor changes
-        Logger.info(f"Cursor changed - Old position: {getattr(self, 'last_cursor_index', 0)}, New position: {current_cursor_index}")
+        #Logger.info(f"Cursor changed - Old position: {getattr(self, 'last_cursor_index', 0)}, New position: {current_cursor_index}")
 
 class LanguageTextButton(IconTextButton):
     def on_release(self):
