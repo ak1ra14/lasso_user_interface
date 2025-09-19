@@ -7,11 +7,12 @@ from kivy.app import App
 from utils.config_loader import load_config, update_current_page, update_text_language, save_config
 from utils.layout import HeaderBar, SafeScreen
 import socket
+from kivy.logger import Logger
 
 class MonitorScreen(SafeScreen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        print("MonitorScreen initialized")
+        Logger.info("MonitorScreen initialized")
         header = BoxLayout(orientation='horizontal', pos_hint={'top': 1}, size_hint_y=0.2, padding=10, spacing=10)
         self.ip_label = ColoredLabel(
             text=f"{update_text_language('ip_address')}: {App.get_running_app().ip_address}",
@@ -49,10 +50,8 @@ class MonitorScreen(SafeScreen):
         )
         
     def go_to_menu(self, instance):
-        print("Going to menu")
         App.get_running_app().play_sound()
         App.get_running_app().sm.current = 'menu'  # Change 'main' to the actual screen name for the menu
-        print("Menu screen activated")
 
     def on_pre_enter(self):
         update_current_page('monitor')

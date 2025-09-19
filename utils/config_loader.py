@@ -1,46 +1,55 @@
 import json
 import os
 from kivy.app import App
+from kivy.logger import Logger
 
 def load_config(file_path, variable_name=None):
     '''
     Load configuration from a JSON file. If variable_name is provided, it loads the JSON file
     specified by the value of that variable in the initial JSON file.
     '''
-    with open(file_path, "r") as f:
-        data = json.load(f)
-    if variable_name:
-        # Get the path from the variable in the config
-        next_path = data.get(variable_name)
-        if next_path:
-            with open(next_path, "r") as nf:
-                return json.load(nf)
-        else:
-            raise KeyError(f"Variable '{variable_name}' not found in {file_path}")
-    else:
+    try:
         with open(file_path, "r") as f:
             data = json.load(f)
-    return data
+        if variable_name:
+            # Get the path from the variable in the config
+            next_path = data.get(variable_name)
+            if next_path:
+                with open(next_path, "r") as nf:
+                    return json.load(nf)
+            else:
+                raise KeyError(f"Variable '{variable_name}' not found in {file_path}")
+        else:
+            with open(file_path, "r") as f:
+                data = json.load(f)
+        return data
+    except Exception as e:
+        Logger.exception("Failed to load config")
+        raise
+
 
 def save_config(file_path, variable_name=None, data=None):
     '''
     Save configuration to a JSON file. If variable_name is provided, it saves the data to
     the JSON file specified by the value of that variable in the initial JSON file.'''
-    with open(file_path,"r") as f:
-        paths = json.load(f)
-    if variable_name:
-        try:
-            next_path = paths.get(variable_name)
-            if next_path:
-                with open(next_path, "w") as f:
-                        json.dump(data, f, indent=4)
-        except:
-            raise KeyError(f"Variable '{variable_name}' not found in {file_path}")
-    else:
-        with open(file_path, "w") as f:
-            json.dump(data, f, indent=4)
-            return
-        
+    try:
+        with open(file_path,"r") as f:
+            paths = json.load(f)
+        if variable_name:
+            try:
+                next_path = paths.get(variable_name)
+                if next_path:
+                    with open(next_path, "w") as f:
+                            json.dump(data, f, indent=4)
+            except:
+                raise KeyError(f"Variable '{variable_name}' not found in {file_path}")
+        else:
+            with open(file_path, "w") as f:
+                json.dump(data, f, indent=4)
+                return
+    except Exception as e:
+        Logger.exception("Failed to save config")
+        raise
 
 def update_current_page(page_name):
     """

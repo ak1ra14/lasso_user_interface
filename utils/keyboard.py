@@ -494,7 +494,7 @@ class QwertyKeyboard(FloatLayout):
                 self.cursor_pos = ti.cursor_index
             self.last_click_backspace = True
             self.start_index = ti.cursor_index()
-            Logger.info(f"start pos{self.start_index}, current pos{self.last_cursor_index}")
+            Logger.debug(f"start pos{self.start_index}, current pos{self.last_cursor_index}")
 
         elif instance.function == "Shift":
             if not self.shift_lock:

@@ -8,9 +8,9 @@ from utils.freeze_screen import freeze_ui
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.slider import Slider
 from utils.keyboard import show_saved_popup
-
 from utils.config_loader import load_config, save_config, update_current_page, update_text_language
 from utils.layout import HeaderBar, SafeScreen
+from kivy.logger import Logger
 
 class ScreenSaverScreen(SafeScreen):
     def __init__(self, **kwargs):
@@ -125,7 +125,7 @@ class ChangeTime(IconTextButton):
             self._increase()
         elif self.change == "decrease":
             self._decrease()
-        print("Screensaver time changed by", self.by)
+        Logger.info("Screensaver time changed by", self.by)
 
     def _increase(self):
         current_time = self.screensaver_screen.screensaver_time
@@ -157,7 +157,7 @@ class SaveButton(IconTextButton):
         config = load_config('config/settings.json','v3_json')
         config['screensaver'] = self.screensaver_screen.screensaver_time
         save_config('config/settings.json', 'v3_json', data=config)
-        print("Screensaver settings saved:", config['screensaver'])
+        #print("Screensaver settings saved:", config['screensaver'])
         App.get_running_app().sm.current = 'menu2'
         App.get_running_app().reset_screensaver_timer()  # Reset screensaver timer
 
