@@ -118,10 +118,11 @@ class MyApp(App):
         return self.root_layout
     
     def play_sound(self):
-        if self.sound:
-            self.sound.stop()  # Stop if already playing
-            self.sound.play()
-        else:
+        try:
+            if self.sound:
+                self.sound.stop()  # Stop if already playing
+                self.sound.play()
+        except Exception as e:
             Logger.error("Sound file not found or unsupported format.")
     
     def on_user_activity(self, *args):
