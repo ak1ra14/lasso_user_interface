@@ -125,7 +125,6 @@ class ChangeTime(IconTextButton):
             self._increase()
         elif self.change == "decrease":
             self._decrease()
-        Logger.info("Screensaver time changed by", self.by)
 
     def _increase(self):
         current_time = self.screensaver_screen.screensaver_time
