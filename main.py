@@ -122,7 +122,7 @@ class MyApp(App):
             self.sound.stop()  # Stop if already playing
             self.sound.play()
         else:
-            print("Sound file not found or unsupported format.")
+            Logger.error("Sound file not found or unsupported format.")
     
     def on_user_activity(self, *args):
         '''
@@ -173,7 +173,6 @@ class MyApp(App):
             if self.sm.current == 'dark':
                 if self.screen_before_screensaver  == 'menu' or self.screen_before_screensaver ==  'menu2':
                     self.screen_before_screensaver = 'monitor'
-                    print('switched to monitor')
                     return
                 elif self.screen_before_screensaver != 'monitor':
                     self.screen_before_screensaver = 'menu'
