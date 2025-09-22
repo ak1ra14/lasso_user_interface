@@ -428,13 +428,44 @@ class QwertyKeyboard(FloatLayout):
                     self.flick_index = (self.flick_index + 1) % 5
                     if instance.mappings[self.flick_index]:
                         break
-                ti.text = ti.text[:self.cursor_pos - 2] + instance.mappings[self.flick_index] + ti.text[self.cursor_pos:]
-                self.actual_text_input = self.actual_text_input[:self.cursor_pos - 2] + instance.mappings[self.flick_index] + self.actual_text_input[self.cursor_pos:]
+                ti.text = ti.text[:self.cursor_pos - 1] + instance.mappings[self.flick_index] + ti.text[self.cursor_pos:]
+                self.actual_text_input = self.actual_text_input[:self.cursor_pos - 1] + instance.mappings[self.flick_index] + self.actual_text_input[self.cursor_pos:]
+                ti.cursor = (self.cursor_pos,0)
             # If the flick key is pressed for the first time, initialize the flick index
             else:
+                chosen = instance.chosen
+                try:
+                    insert_pos = self.text_input.cursor_index()
+                    if self.converting:
+                        self.converting = False
+                        self.start_index = insert_pos
+                    self.text_input.text = (
+                        self.text_input.text[:insert_pos] +
+                        chosen +
+                        self.text_input.text[insert_pos:]
+                    )
+                    self.actual_text_input = (
+                        self.actual_text_input[:insert_pos] +
+                        chosen +
+                        self.actual_text_input[insert_pos:]
+                    )
+                    self.last_click_backspace = False
+                    self.last_click_space = False
+                    self.japanese_space_button.text = '変換'
+                    self.flick_space_button.text = '変換'
+                except Exception:
+                    print('Error updating text input with chosen character')
+                    self.text_input += chosen
+
                 self.last_click_time = now
                 self.selected_flick_mappings = instance.mappings
                 self.flick_index = 0
+                self.programmatic_cursor_change = True
+                ti.cursor = (self.cursor_pos + len(instance.text), 0)
+                self.programmatic_cursor_change = False
+                self.last_cursor_index = ti.cursor_index()
+                self.last_click_space = False
+                self.last_click_backspace = False
 
         # Space key function 
         elif instance.function == 'Space':
@@ -450,7 +481,7 @@ class QwertyKeyboard(FloatLayout):
                 self.japanese_space_button.text = '空白'
                 self.flick_space_button.text = '空白'
                 self.start_index = self.cursor_pos  # Reset the start index
-            print(f"self.converting{self.converting},self.cursorpos{self.cursor_pos},self.last_cursor_index{self.last_cursor_index}")
+            #print(f"self.converting{self.converting},self.cursorpos{self.cursor_pos},self.last_cursor_index{self.last_cursor_index}")
             if self.converting and len(self.converted_text) > 0 and self.cursor_pos == self.last_cursor_index:
                 Logger.info(f"{self.converted_text[0]}, starting from {self.start_index}, ending at{self.cursor_pos},cursor pos {ti.cursor_index()}")
                 suggested_text = self.converted_text.pop() if self.converted_text else ti.text[self.start_index:self.cursor_pos]
@@ -522,6 +553,7 @@ class QwertyKeyboard(FloatLayout):
         elif instance.function == "Enter":
             pass
         elif instance.function == 'Flick':
+            Logger.debug('flick key pressed')
             if not self.flick_is_katakana:
                 # Convert to Katakana
                 for btn in self.flick_grid.children:
@@ -598,7 +630,7 @@ class QwertyKeyboard(FloatLayout):
 
 
         else:
-            print(f"Normal key pressed: {instance.text},start index: {self.start_index}, self.converting: {self.converting}, cursor pos: {self.cursor_pos}, last cursor index: {self.last_cursor_index}")
+            Logger.info("key pressed")
             #when a new character is added
             if self.language_mode == 'japanese' or self.start_index == self.cursor_pos:
                 self.japanese_space_button.text = '変換'
@@ -622,7 +654,7 @@ class QwertyKeyboard(FloatLayout):
             self.last_cursor_index = ti.cursor_index()
             self.last_click_space = False
             self.last_click_backspace = False
-            Logger.info(f"Normal key entered: {instance.text},start index: {self.start_index}, self.converting: {self.converting}, cursor pos: {self.cursor_pos}, last cursor index: {self.last_cursor_index}")
+            #Logger.info(f"Normal key entered: {instance.text},start index: {self.start_index}, self.converting: {self.converting}, cursor pos: {self.cursor_pos}, last cursor index: {self.last_cursor_index}")
 
     def press_enter(self, instance):
         if self.language_mode == 'japanese':
@@ -688,10 +720,10 @@ class QwertyKeyboard(FloatLayout):
         if len(value) > self.MAX_CHARS:
             instance.text = value[:self.MAX_CHARS]
 
-    def on_cursor_change(self, instance, value):
-        # Prevent recursive calls during programmatic changes
-        if getattr(self, 'programmatic_cursor_change', True):
-            return
+    # def on_cursor_change(self, instance, value):
+    #     # Prevent recursive calls during programmatic changes
+    #     if getattr(self, 'programmatic_cursor_change', True):
+    #         return
 
 class LanguageTextButton(IconTextButton):
     def on_release(self):

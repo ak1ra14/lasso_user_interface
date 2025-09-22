@@ -60,6 +60,7 @@ class FlickKey(Button):
         self.background_normal = ''
         self.background_down = ''
         self.background_color = (0,0,0,0)
+        self.chosen=None
         with self.canvas.before:
             self.color_instruction = Color(rgba=(0.2, 0.2, 0.2, 1))
             self.rounded_rect_instruction = RoundedRectangle(
@@ -115,37 +116,8 @@ class FlickKey(Button):
                 idx = 3 if dx > 0 else 1
             else:
                 idx = 2 if dy > 0 else 4
-        chosen = self.mappings[idx]
-        if chosen:
-            try:
-                insert_pos = self.keyboard.text_input.cursor_index()
-                if self.keyboard.converting:
-                    self.keyboard.converting = False
-                    self.keyboard.start_index = insert_pos
-                self.keyboard.text_input.text = (
-                    self.keyboard.text_input.text[:insert_pos] +
-                    chosen +
-                    self.keyboard.text_input.text[insert_pos:]
-                )
-                self.keyboard.actual_text_input = (
-                    self.keyboard.actual_text_input[:insert_pos] +
-                    chosen +
-                    self.keyboard.actual_text_input[insert_pos:]
-                )
-                self.keyboard.programmatic_cursor_change = True
-                self.keyboard.text_input.cursor = (insert_pos + len(chosen), 0)
-                self.keyboard.cursor_pos = self.keyboard.text_input.cursor[0]
-                self.keyboard.last_cursor_index = self.keyboard.text_input.cursor[0]
-                self.keyboard.programmatic_cursor_change = False
-                Logger.info(f"start index: {self.keyboard.start_index}, self.converting: {self.keyboard.converting}, cursor pos: {self.keyboard.cursor_pos}, last cursor index: {self.keyboard.last_cursor_index}")
-                self.keyboard.last_click_backspace = False
-                self.keyboard.last_click_space = False
-                self.keyboard.japanese_space_button.text = '変換'
-                self.keyboard.flick_space_button.text = '変換'
-            except Exception:
-                print('Error updating text input with chosen character')
-                self.keyboard.text_input += chosen
-
+        self.chosen = self.mappings[idx]
+            
         # Remove popup
         if self.popup and self.popup.parent:
             self.popup.parent.remove_widget(self.popup)
@@ -171,7 +143,7 @@ class FlickKey(Button):
             self.keyboard.japanese_space_button.text = '空白'
             self.keyboard.flick_space_button.text = '空白'
             self.keyboard.start_index = self.keyboard.text_input.cursor_index()
-        self.keyboard.last_cursor_index += 1
         freeze_ui(0.2)
+
 
 
