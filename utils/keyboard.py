@@ -469,10 +469,11 @@ class QwertyKeyboard(FloatLayout):
 
         # Space key function 
         elif instance.function == 'Space':
-            #print(f"Space key pressed, converting: {self.converting}, start index: {self.start_index}, cursor pos: {cursor_pos}, last cursor index: {self.last_cursor_index}")
             #if japanese keyboard, the space key is used for both word conversion and space insertion
+            Logger.info(f"start index{self.start_index},self.last cursor{self.last_cursor_index}, converting{self.converting},last click{self.last_click_backspace}")
             if self.language_mode == 'japanese' and self.start_index < self.last_cursor_index and not self.converting and not self.last_click_backspace:
                 # Convert the text to Kanji using the converter
+                Logger.info("conversion activated")
                 self.converting = True
                 self.converted_text = self.kanji_converter.convert(ti.text[self.start_index:self.cursor_pos],n_best=20)
             if self.last_cursor_index != ti.cursor_index():
@@ -637,10 +638,11 @@ class QwertyKeyboard(FloatLayout):
                 self.flick_space_button.text = '変換'
             
             #when the conversion is done and the new word is stared being input 
-            if self.converting:
+            if self.converting or ti.cursor_index() != self.last_cursor_index:
                 #print('index reset due to normal key press')
                 self.converting = False  # Reset the converting flag
                 self.start_index = self.cursor_pos  # Reset the start index
+                Logger.info(f"start{self.start_index},cursor{self.cursor_pos}")
             self.actual_text_input = self.actual_text_input[:self.cursor_pos] + instance.text + self.actual_text_input[self.cursor_pos:]
 
             #for the password screen when the visibility is off
@@ -654,7 +656,7 @@ class QwertyKeyboard(FloatLayout):
             self.last_cursor_index = ti.cursor_index()
             self.last_click_space = False
             self.last_click_backspace = False
-            #Logger.info(f"Normal key entered: {instance.text},start index: {self.start_index}, self.converting: {self.converting}, cursor pos: {self.cursor_pos}, last cursor index: {self.last_cursor_index}")
+            Logger.info(f"Normal key entered: {instance.text},start index: {self.start_index}, self.converting: {self.converting}, cursor pos: {self.cursor_pos}, last cursor index: {self.last_cursor_index}")
 
     def press_enter(self, instance):
         if self.language_mode == 'japanese':
