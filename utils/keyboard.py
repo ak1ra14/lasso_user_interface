@@ -423,6 +423,7 @@ class QwertyKeyboard(FloatLayout):
             now = time.time()
             #recurrent flick key pressed within one second to select other characters
             if self.selected_flick_mappings == instance.mappings and (now - self.last_click_time) < 1.0:
+                Logger.info('continuous click')
                 self.last_click_time = now
                 for _ in range(5):  # At most 5 tries to avoid infinite loop
                     self.flick_index = (self.flick_index + 1) % 5
@@ -434,6 +435,7 @@ class QwertyKeyboard(FloatLayout):
             # If the flick key is pressed for the first time, initialize the flick index
             else:
                 chosen = instance.chosen
+                Logger.info(f"chosen {chosen}")
                 try:
                     insert_pos = self.text_input.cursor_index()
                     if self.converting:

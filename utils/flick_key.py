@@ -116,14 +116,18 @@ class FlickKey(Button):
                 idx = 3 if dx > 0 else 1
             else:
                 idx = 2 if dy > 0 else 4
+        Logger.info(f"mapping{self.mappings[idx]}")       
         self.chosen = self.mappings[idx]
-            
+
         # Remove popup
         if self.popup and self.popup.parent:
             self.popup.parent.remove_widget(self.popup)
         self.popup = None
         self._touch_start = None
-        return super().on_touch_up(touch)
+
+        # Force a release event so on_key_release will always fire
+        self.dispatch('on_release')
+        return True
 
     def _update_rect(self, instance, value):
         """Callback to update the position and size of the rounded rectangle."""
@@ -135,7 +139,6 @@ class FlickKey(Button):
         self.color_instruction.rgba = value
 
     def on_press(self):
-        print(f"at position {self.keyboard.text_input.cursor_index()}. self.keyboard.last_cursor_index updated to {self.keyboard.last_cursor_index}")
         if self.keyboard.last_click_space:
             print('resetting index due to space key')
             self.keyboard.last_click_space = False
