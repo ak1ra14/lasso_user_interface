@@ -434,6 +434,10 @@ class QwertyKeyboard(FloatLayout):
                 ti.cursor = (self.cursor_pos,0)
             # If the flick key is pressed for the first time, initialize the flick index
             else:
+                #when the conversion is done and the new word is stared being input 
+                if self.converting or ti.cursor_index() != self.last_cursor_index:
+                    self.converting = False  # Reset the converting flag
+                    self.start_index = self.cursor_pos  # Reset the start index
                 chosen = instance.chosen
                 Logger.info(f"chosen {chosen}")
                 try:
