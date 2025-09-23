@@ -18,30 +18,7 @@ class LocationScreen(SafeScreen):
         self.header = HeaderBar(title="location", icon_path="images/home.png", button_text="home", button_screen="menu")
         self.add_widget(self.header)
 
-        if self.bed_no == 1:
-            self.location_icon2 = IconTextButton(
-                text=update_text_language('location'),
-                config = self.config.get('location', " "),
-                font_size=18,
-                icon_path="images/location.png",
-                size_hint=(None, None),
-                size=(200, 200),
-                pos_hint={'center_x': 0.3, 'center_y': 0.5},
-                screen_name='device'
-            )
-            self.add_widget(self.location_icon2)
-            self.bed1_icon1 = IconTextButton(
-                text=update_text_language('bed_1'),
-                config = self.bed_config.get('nbeds', [1,[' ']])[1][0],
-                font_size=18,
-                icon_path="images/bed.png",
-                size_hint=(None, None),
-                size=(200, 200),
-                pos_hint={'center_x': 0.7, 'center_y': 0.5},
-                screen_name='bed1'
-            )
-            self.add_widget(self.bed1_icon1)
-        elif self.bed_no == 2:
+        if self.bed_no == 2:
             self.location_icon2 = IconTextButton(
                 text=update_text_language('location'),
                 config = self.config.get('location', " "),

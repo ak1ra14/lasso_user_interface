@@ -1,3 +1,4 @@
+from kivy.logger import Logger
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.image import Image
 from kivy.uix.widget import Widget
@@ -200,7 +201,9 @@ class MenuScreen1(MenuScreen):
         depending on the current mode, go to device or location screen
         '''
         self.config = load_config('config/settings.json', 'v3_json')
-        if self.config.get('previous_mode', 'fall.json') == 'fall.json':
+        bed_config = load_config("config/settings.json", 'bed_json')
+        Logger.info(f"Current mode: {self.config.get('previous_mode', 'fall.json')}, mincount: {bed_config.get('mincount',1)}") 
+        if self.config.get('previous_mode', 'fall.json') == 'fall.json' or  (self.config.get('previous_mode', 'fall.json') == 'bed.json' and bed_config.get('nbeds')[0] == 1):
             self.manager.current = 'device'
         else:
             self.manager.current = 'location'
