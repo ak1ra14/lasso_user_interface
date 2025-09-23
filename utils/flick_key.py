@@ -116,7 +116,7 @@ class FlickKey(Button):
                 idx = 3 if dx > 0 else 1
             else:
                 idx = 2 if dy > 0 else 4
-        Logger.info(f"mapping{self.mappings[idx]}")       
+        self.idx = idx
         self.chosen = self.mappings[idx]
 
         # Remove popup

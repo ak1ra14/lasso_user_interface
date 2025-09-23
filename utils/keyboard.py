@@ -422,7 +422,7 @@ class QwertyKeyboard(FloatLayout):
         if hasattr(instance,'mappings'):
             now = time.time()
             #recurrent flick key pressed within one second to select other characters
-            if self.selected_flick_mappings == instance.mappings and (now - self.last_click_time) < 1.0:
+            if self.selected_flick_mappings == instance.mappings and (now - self.last_click_time) < 1.0 and instance.idx == 0:
                 Logger.info('continuous click')
                 self.last_click_time = now
                 for _ in range(5):  # At most 5 tries to avoid infinite loop
