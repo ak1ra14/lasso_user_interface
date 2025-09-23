@@ -443,16 +443,15 @@ class QwertyKeyboard(FloatLayout):
                     if self.converting:
                         self.converting = False
                         self.start_index = insert_pos
-                    self.text_input.text = (
-                        self.text_input.text[:insert_pos] +
-                        chosen +
-                        self.text_input.text[insert_pos:]
-                    )
                     self.actual_text_input = (
                         self.actual_text_input[:insert_pos] +
                         chosen +
-                        self.actual_text_input[insert_pos:]
-                    )
+                        self.actual_text_input[insert_pos:])
+                 #for the password screen when the visibility is off
+                    if self.visibility:
+                        self.text_input.text = self.text_input.text[:insert_pos] + chosen + self.text_input.text[insert_pos:]
+                    else:
+                        self.text_input.text = self.text_input.text[:insert_pos] + '*' * len(instance.text) + self.text_input.text[insert_pos:]
                     self.last_click_backspace = False
                     self.last_click_space = False
                     self.japanese_space_button.text = '変換'
