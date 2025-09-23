@@ -1,5 +1,7 @@
 import os, sys
 from kivy.config import Config
+from kivy.metrics import Metrics
+
 if sys.platform.startswith('linux'):
     Config.set('input', 'mouse', 'mouse,multitouch_on_demand')
     Config.set('graphics', 'show_cursor', 0) 
@@ -100,7 +102,7 @@ class MyApp(App):
         # Create the time bar
         self.time_limit = 60
         self.time_left = self.time_limit
-        self.time_bar = ProgressBar(max=self.time_limit, value=self.time_limit, size_hint=(0.94, None), height=20, pos_hint={'x': 0.03, 'y': 0.02})
+        self.time_bar = ProgressBar(max=self.time_limit, value=self.time_limit, size_hint=(0.94, None), height=20, pos_hint={'x': 0.03, 'y': 0})
         self.time_bar.opacity = 0
         self.root_layout.add_widget(self.time_bar)
 
@@ -237,4 +239,9 @@ if __name__ == '__main__':
     Window.size = (1024, 600)  # Set the window size to 1024x600 pixels
     if not (sys.platform.startswith('win') or sys.platform == 'darwin'):
         Window.fullscreen = 'auto'  # Enable full screen mode
+    else:
+        pass
+        # Simulate Raspberry Pi DPI (typical 96 DPI)
+        Metrics.density = 1  # Default is 1 for 160dpi
+        Metrics.dpi = 96      # Typical Raspberry Pi DPI
     MyApp().run()
