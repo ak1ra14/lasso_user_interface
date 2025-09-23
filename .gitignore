@@ -3,4 +3,3 @@ __pycache__/
 venv/
 .env
 *.log
-.cache/screens/home_screen_copy.py
