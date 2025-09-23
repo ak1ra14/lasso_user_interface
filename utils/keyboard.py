@@ -576,7 +576,7 @@ class QwertyKeyboard(FloatLayout):
                 current_cursor = self.cursor_pos
                 
                 # Check if there's a character to convert
-                if current_cursor > 0:
+                if current_cursor > 0 and not self.converting and current_cursor == self.last_cursor_index:
                     # Get the character before cursor
                     char_to_convert = self.actual_text_input[current_cursor-1]
                     converted_char = self.change_dakuon(char_to_convert)
