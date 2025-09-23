@@ -32,7 +32,7 @@ class AlertTypeScreen(SafeScreen):
             height=50,
             switch = AlertTypeButton(ack_button_text),
             text_size_l_r=(0,350),
-            pos=(50, 380),
+            pos=(50, 410),
         )
         self.buttons.append(ack_button)
 
@@ -40,9 +40,9 @@ class AlertTypeScreen(SafeScreen):
             source="images/bed_single.png",
             size_hint=(None, None),
             size=(70,70),
-            pos = (70, 300)
+            pos = (70, 330)
         )
-        y_axis = [260, 200, 160, 120, 80]
+        y_axis = [290, 230, 180, 130, 80]
         bed_types = ["alert_with_video", "sit_up","bed_exit","sit_to_stand","fall_besides_bed"]
         for i, bed_type in enumerate(bed_types):
             if i == 0:
@@ -60,7 +60,7 @@ class AlertTypeScreen(SafeScreen):
             self.add_widget(button)
             self.buttons.append(button)
         partition = SeparatorLine(
-            points=[370, 340, 370, 60],
+            points=[370, 370, 370, 60],
             size_hint=(None, None),
         )
         
@@ -68,7 +68,7 @@ class AlertTypeScreen(SafeScreen):
             source="images/fall_single.png",
             size_hint=(None, None),
             size=(50,50),
-            pos = (420, 305)
+            pos = (420, 335)
         )
         for i, bed_type in enumerate(["alert_with_video","sit_to_stand","fall"]):
             if i == 0:
