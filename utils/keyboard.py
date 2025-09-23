@@ -383,6 +383,7 @@ class QwertyKeyboard(FloatLayout):
                 self.main_layout.add_widget(row)
             self.language_mode = 'english'
             self.cursor_pos = None
+            self.last_click_enter = False
         elif layout == 'japanese':
             for row in self.japanese_keyboard:
                 self.main_layout.add_widget(row)
@@ -393,6 +394,7 @@ class QwertyKeyboard(FloatLayout):
             self.last_click_backspace = False
             self.last_cursor_index = self.text_input.cursor_index()
             self.cursor_pos = None
+            self.last_click_enter = False
         elif layout == 'flick':
             self.main_layout.add_widget(self.flick_grid)
             self.language_mode = 'japanese'
@@ -406,6 +408,7 @@ class QwertyKeyboard(FloatLayout):
             self.last_click_backspace = False
             self.last_cursor_index = self.text_input.cursor_index()
             self.cursor_pos = None
+            self.last_click_enter = False
 
     def on_key_release(self, instance):
         '''
@@ -469,6 +472,7 @@ class QwertyKeyboard(FloatLayout):
                 self.last_cursor_index = ti.cursor_index()
                 self.last_click_space = False
                 self.last_click_backspace = False
+                self.last_click_enter = False
 
         # Space key function 
         elif instance.function == 'Space':
@@ -508,6 +512,7 @@ class QwertyKeyboard(FloatLayout):
             if self.last_click_backspace:
                 self.last_click_backspace = False
             self.last_click_space = True
+            self.last_click_enter = False
 
         elif instance.function == 'Backspace':
             self.japanese_space_button.text = '空白'
@@ -525,6 +530,8 @@ class QwertyKeyboard(FloatLayout):
                 ti.scroll_x = 1
                 self.cursor_pos = ti.cursor_index
             self.last_click_backspace = True
+            self.last_click_space = False
+            self.last_click_enter = False
             self.start_index = ti.cursor_index()
 
         elif instance.function == "Shift":
@@ -652,13 +659,16 @@ class QwertyKeyboard(FloatLayout):
             self.last_cursor_index = ti.cursor_index()
             self.last_click_space = False
             self.last_click_backspace = False
+            self.last_click_enter = False
             Logger.info(f"Normal key entered: {instance.text},start index: {self.start_index}, self.converting: {self.converting}, cursor pos: {self.cursor_pos}, last cursor index: {self.last_cursor_index}")
 
     def press_enter(self, instance):
         if self.language_mode == 'japanese':
-            if (not self.last_click_space and not self.last_click_backspace) or self.converting:
+            if (not self.last_click_space and not self.last_click_backspace and not self.last_click_enter) or self.converting:
+                self.last_click_enter = True
                 self.japanese_space_button.text = '空白'
                 self.flick_space_button.text = '空白'
+                self.last_cursor_index = self.text_input.cursor_index()
                 self.converting = False
                 self.start_index = self.text_input.cursor_index()  # Reset the start index
                 return
