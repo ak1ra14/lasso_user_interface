@@ -423,7 +423,6 @@ class QwertyKeyboard(FloatLayout):
             now = time.time()
             #recurrent flick key pressed within one second to select other characters
             if self.selected_flick_mappings == instance.mappings and (now - self.last_click_time) < 1.0 and instance.idx == 0:
-                Logger.info('continuous click')
                 self.last_click_time = now
                 for _ in range(5):  # At most 5 tries to avoid infinite loop
                     self.flick_index = (self.flick_index + 1) % 5
@@ -439,7 +438,6 @@ class QwertyKeyboard(FloatLayout):
                     self.converting = False  # Reset the converting flag
                     self.start_index = self.cursor_pos  # Reset the start index
                 chosen = instance.chosen
-                Logger.info(f"chosen {chosen}")
                 try:
                     insert_pos = self.text_input.cursor_index()
                     if self.converting:
@@ -479,18 +477,15 @@ class QwertyKeyboard(FloatLayout):
             Logger.info(f"start index{self.start_index},self.last cursor{self.last_cursor_index}, converting{self.converting},last click{self.last_click_backspace}")
             if self.language_mode == 'japanese' and self.start_index < self.last_cursor_index and not self.converting and not self.last_click_backspace:
                 # Convert the text to Kanji using the converter
-                Logger.info("conversion activated")
                 self.converting = True
                 self.converted_text = self.kanji_converter.convert(ti.text[self.start_index:self.cursor_pos],n_best=20)
             if self.last_cursor_index != ti.cursor_index():
-                Logger.info("Cursor moved, reset converting")
                 self.converting = False  # Reset the converting flag if cursor has moved
                 self.japanese_space_button.text = '空白'
                 self.flick_space_button.text = '空白'
                 self.start_index = self.cursor_pos  # Reset the start index
             #print(f"self.converting{self.converting},self.cursorpos{self.cursor_pos},self.last_cursor_index{self.last_cursor_index}")
             if self.converting and len(self.converted_text) > 0 and self.cursor_pos == self.last_cursor_index:
-                Logger.info(f"{self.converted_text[0]}, starting from {self.start_index}, ending at{self.cursor_pos},cursor pos {ti.cursor_index()}")
                 suggested_text = self.converted_text.pop() if self.converted_text else ti.text[self.start_index:self.cursor_pos]
                 ti.text = ti.text[:self.start_index] + suggested_text + ti.text[self.cursor_pos:]
                 self.programmatic_cursor_change = True
@@ -532,7 +527,6 @@ class QwertyKeyboard(FloatLayout):
                 self.cursor_pos = ti.cursor_index
             self.last_click_backspace = True
             self.start_index = ti.cursor_index()
-            Logger.debug(f"start pos{self.start_index}, current pos{self.last_cursor_index}")
 
         elif instance.function == "Shift":
             if not self.shift_lock:
@@ -560,7 +554,6 @@ class QwertyKeyboard(FloatLayout):
         elif instance.function == "Enter":
             pass
         elif instance.function == 'Flick':
-            Logger.debug('flick key pressed')
             if not self.flick_is_katakana:
                 # Convert to Katakana
                 for btn in self.flick_grid.children:
@@ -637,7 +630,6 @@ class QwertyKeyboard(FloatLayout):
 
 
         else:
-            Logger.info("key pressed")
             #when a new character is added
             if self.language_mode == 'japanese' or self.start_index == self.cursor_pos:
                 self.japanese_space_button.text = '変換'
@@ -648,7 +640,6 @@ class QwertyKeyboard(FloatLayout):
                 #print('index reset due to normal key press')
                 self.converting = False  # Reset the converting flag
                 self.start_index = self.cursor_pos  # Reset the start index
-                Logger.info(f"start{self.start_index},cursor{self.cursor_pos}")
             self.actual_text_input = self.actual_text_input[:self.cursor_pos] + instance.text + self.actual_text_input[self.cursor_pos:]
 
             #for the password screen when the visibility is off
