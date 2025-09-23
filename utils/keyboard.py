@@ -248,19 +248,19 @@ class QwertyKeyboard(FloatLayout):
                 btn = None
                 if key == 'Shift':
                     btn = RoundedButton(text='', sub_key=sub_key, image=f'images/shift.png', font_size=24, font_name='fonts/Roboto-Bold.ttf',
-                                        background_color = (0.22, 0.45, 0.91, 1), size_hint_x=None, width=key_width*1.515,
+                                        background_color = (0.22, 0.45, 0.91, 1), size_hint_x=None, width=key_width*1.517,
                                         function='Shift',  shift_key='')
                 elif key == 'English':
                     btn = RoundedButton(text='', sub_key=sub_key, image=f'images/switch.png', font_size=24, font_name='fonts/Roboto-Bold.ttf',
-                                        background_color=(0.22, 0.45, 0.91, 1), size_hint_x=None, width=key_width*1.515,
+                                        background_color=(0.22, 0.45, 0.91, 1), size_hint_x=None, width=key_width*1.517,
                                         function='English',  shift_key='')
                 elif key == 'Backspace':
                     btn = RoundedButton(text='', sub_key=sub_key, image='images/backspace.png', font_size=24, font_name='fonts/Roboto-Bold.ttf',
-                                        background_color=(0.22, 0.45, 0.91, 1), size_hint_x=None, width=key_width*1.515,
+                                        background_color=(0.22, 0.45, 0.91, 1), size_hint_x=None, width=key_width*1.517,
                                         function='Backspace',  shift_key='')
                 elif key == 'Enter':
                     btn = RoundedButton(text='', sub_key=sub_key, image='images/enter.png', font_size=24, font_name='fonts/Roboto-Bold.ttf',
-                                        background_color=(0.22, 0.45, 0.91, 1), size_hint_x=None, width=key_width*1.515,
+                                        background_color=(0.22, 0.45, 0.91, 1), size_hint_x=None, width=key_width*1.517,
                                         function='Enter',  shift_key='',on_press=self.press_enter)
                 elif key == 'Space':
                     btn = RoundedButton(text='', sub_key=sub_key,  font_size=24, font_name='fonts/Roboto-Bold.ttf',
