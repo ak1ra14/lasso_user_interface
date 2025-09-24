@@ -67,7 +67,7 @@ class WifiLoadingScreen(SafeScreen):
             self.do_layout()
         total_height = sum([btn.height for btn in self.wifi_list])
         list_box.height = max(total_height, 300)
-        Logger.info(f"Total height of wifi list: {total_height}")
+        Logger.info(f"Total height of wifi list: {total_height}, number of wifi: {len(self.wifi_list)}")
         list_box.width = 465
             
         scroll = ScrollView(size_hint=(None, None),
@@ -579,7 +579,7 @@ class SelectableButton(Button):
         self.text_size = (self.width - 20, None)
 
     def _update_height(self, *args):
-        self.height = self.texture_size[1] 
+        self.height = self.texture_size[1] + 10 # 10px padding for aesthetics
     
     def _update_rect(self, *args):
         self.rect.pos = self.pos
