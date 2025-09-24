@@ -564,6 +564,11 @@ class SelectableButton(Button):
         with self.canvas.before:
             Color(1, 1, 1, 1)
             self.rect = Rectangle(pos=self.pos, size=self.size)
+        with self.canvas.after:
+            Color(0.8, 0.8, 0.8, 1)  # Light gray
+            self.separator = Rectangle(pos=(self.x, self.y), size=(self.width, 1))
+        self.bind(pos=self._update_rect, size=self._update_rect)
+        self.bind(pos=self._update_separator, size=self._update_separator)
         self.bind(pos=self._update_rect, size=self._update_rect)
         self.update_color()
         #self.bind(on_release=self.on_press)
@@ -575,11 +580,13 @@ class SelectableButton(Button):
         self.height = self.texture_size[1] + 10  # 10px padding for aesthetics
     
     def _update_rect(self, *args):
-        """
-        Update the rectangle size and position when the button is resized or moved.
-        """
         self.rect.pos = self.pos
         self.rect.size = self.size
+
+    def _update_separator(self, *args):
+        # Position separator at the bottom of the button
+        self.separator.pos = (self.x, self.y)
+        self.separator.size = (self.width, 1)
 
     def update_color(self):
         #print(self.text, "selected:", self.selected)
