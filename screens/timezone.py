@@ -107,7 +107,7 @@ class SelectableButton(Button):
             self.separator = Rectangle(pos=(self.x, self.y), size=(self.width, 1))
         self.bind(pos=self._update_rect, size=self._update_rect)
         self.bind(pos=self._update_separator, size=self._update_separator)
-        self.bind(pos=self._update_rect, size=self._update_rect)
+        self.bind(pos=self._update_height)
         self.update_color()
         #self.bind(on_release=self.on_press)
     
@@ -124,6 +124,12 @@ class SelectableButton(Button):
         """
         self.separator.pos = (self.x, self.y)
         self.separator.size = (self.width, 3)
+
+    def _update_height(self, *args):
+        """
+        Update the button height based on the text size.
+        """
+        self.height = self.texture_size[1] + 10  # 10px padding for aesthetics
 
     def update_color(self):
         # print(self.text, "selected:", self.selected)
