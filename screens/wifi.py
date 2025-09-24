@@ -53,13 +53,20 @@ class WifiLoadingScreen(SafeScreen):
         self.add_widget(self.header)
         if hasattr(self, 'loading_circle'):
             self.remove_widget(self.loading_circle)
-        list_box = GridLayout(cols=1, size=(465, max(len(wifi_list) * 110, 440)), size_hint=(None,None), pos_hint=(None, None),)
+            list_box = GridLayout(cols=1, size_hint=(None, None), pos_hint=(None, None))
+            total_height = 0
+            self.wifi_list = []
         for wifi in wifi_list:
             button = SelectableButton(text=wifi, font_size=40,
                                                 font_name='fonts/MPLUS1p-Regular.ttf', size_hint_y=None, 
                                                 height=55, selection=self)
             list_box.add_widget(button)
             self.wifi_list.append(button)
+            # After all buttons are added, sum their heights
+            self.do_layout()
+            total_height = sum([btn.height for btn in self.wifi_list])
+            list_box.height = max(total_height, 440)
+            list_box.width = 465
             
         scroll = ScrollView(size_hint=(None, None),
                             scroll_type=['bars', 'content'],
