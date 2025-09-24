@@ -31,7 +31,7 @@ class TimezoneScreen(SafeScreen):
         main.bind(minimum_height=main.setter('height'))  # Ensure height is set correctly
         main.bind(minimum_width=main.setter('width'))  # Ensure width is set correctly
         main.add_widget(Widget(size_hint_y=1))  # Spacer
-        list_box = GridLayout(cols=1, size=(465, 500), size_hint=(None,None), pos_hint=(None, None),)
+        list_box = GridLayout(cols=1, size=(465, 300), size_hint=(None,None), pos_hint=(None, None),)
         for tz in ["Singapore (GMT+8)", "Japan (GMT+9)", "Los Angeles (GMT-7)",]:
             button = SelectableButton(text=tz, font_size=40,
                                                 font_family='fonts/Roboto-Bold.ttf', size_hint_y=None, 
