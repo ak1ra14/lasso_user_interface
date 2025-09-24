@@ -579,6 +579,7 @@ class SelectableButton(Button):
         self.text_size = (self.width - 20, None)
 
     def _update_height(self, *args):
+        Logger.info(f"Button '{self.text}' texture size: {self.texture_size}")
         self.height = self.texture_size[1] + 10 # 10px padding for aesthetics
     
     def _update_rect(self, *args):
