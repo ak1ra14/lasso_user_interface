@@ -59,7 +59,7 @@ class WifiLoadingScreen(SafeScreen):
         for wifi in wifi_list:
             button = SelectableButton(text=wifi, font_size=40,
                                                 font_name='fonts/MPLUS1p-Regular.ttf', size_hint_y=None, 
-                                                 selection=self)
+                                                selection=self)
             list_box.add_widget(button)
             self.wifi_list.append(button)
             # After all buttons are added, sum their heights
@@ -570,7 +570,7 @@ class SelectableButton(Button):
     def _update_text_size(self, *args):
         self.text_size = (self.width - 20, None)
         # Dynamically adjust height to fit wrapped text
-        #self.height = self.texture_size[1] + 20  # 20px padding for aesthetics
+        self.height = self.texture_size[1] + 10  # 20px padding for aesthetics
     
     def _update_rect(self, *args):
         """
