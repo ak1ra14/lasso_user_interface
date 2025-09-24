@@ -59,7 +59,7 @@ class WifiLoadingScreen(SafeScreen):
         for wifi in wifi_list:
             button = SelectableButton(text=wifi, font_size=40,
                                                 font_name='fonts/MPLUS1p-Regular.ttf', size_hint_y=None, 
-                                                height=55, selection=self)
+                                                 selection=self)
             list_box.add_widget(button)
             self.wifi_list.append(button)
             # After all buttons are added, sum their heights
