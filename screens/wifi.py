@@ -43,8 +43,10 @@ class WifiLoadingScreen(SafeScreen):
 
     def scan_wifi(self):
         wifi_list = get_available_wifi()
+        unique_wifi = list(set(wifi_list))  # Remove duplicates
+        unique_wifi.sort()  # Sort alphabetically
         # Update UI on the main thread
-        Clock.schedule_once(lambda dt: self.show_results(wifi_list), 1)
+        Clock.schedule_once(lambda dt: self.show_results(unique_wifi), 1)
 
     def show_results(self, wifi_list):
         self.clear_widgets()
