@@ -570,7 +570,7 @@ class SelectableButton(Button):
     def _update_text_size(self, *args):
         self.text_size = (self.width - 20, None)
         # Dynamically adjust height to fit wrapped text
-        self.height = self.texture_size[1] + 20  # 20px padding for aesthetics
+        #self.height = self.texture_size[1] + 20  # 20px padding for aesthetics
     
     def _update_rect(self, *args):
         """
