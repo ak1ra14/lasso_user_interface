@@ -541,19 +541,27 @@ class SelectableButton(Button):
     A button that can be selected or deselected.
     """
     def __init__(self, text,selection, **kwargs):
-        super().__init__(**kwargs)
-        self.text = text
-        self.selection = selection  # Reference to the selection manage
-        self.selected = (selection.selected_wifi == text)  # Check if this button's timezone is the selected one
-        self.background_normal = ''
-        self.background_down = ''
-        self.background_color = (1, 1, 1, 1)
-        with self.canvas.before:
-            Color(1, 1, 1, 1)
-            self.rect = Rectangle(pos=self.pos, size=self.size)
-        self.bind(pos=self._update_rect, size=self._update_rect)
-        self.update_color()
-        #self.bind(on_release=self.on_press)
+            super().__init__(**kwargs)
+            self.text = text
+            self.selection = selection  # Reference to the selection manage
+            self.selected = (selection.selected_wifi == text)  # Check if this button's timezone is the selected one
+            self.background_normal = ''
+            self.background_down = ''
+            self.background_color = (1, 1, 1, 1)
+            self.text_size = (self.width - 20, None)  # Allow wrapping, padding for aesthetics
+            self.shorten = False  # Disable ellipsis shortening
+            self.valign = 'middle'
+            self.halign = 'left'
+            self.bind(width=self._update_text_size)
+            with self.canvas.before:
+                Color(1, 1, 1, 1)
+                self.rect = Rectangle(pos=self.pos, size=self.size)
+            self.bind(pos=self._update_rect, size=self._update_rect)
+            self.update_color()
+            #self.bind(on_release=self.on_press)
+
+    def _update_text_size(self, *args):
+        self.text_size = (self.width - 20, None)
     
     def _update_rect(self, *args):
         """
