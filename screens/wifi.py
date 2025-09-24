@@ -579,7 +579,7 @@ class SelectableButton(Button):
         self.text_size = (self.width - 20, None)
 
     def _update_height(self, *args):
-        self.height = self.texture_size[1] + 10  # 10px padding for aesthetics
+        self.height = self.texture_size[1] 
     
     def _update_rect(self, *args):
         self.rect.pos = self.pos
