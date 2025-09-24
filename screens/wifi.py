@@ -65,7 +65,8 @@ class WifiLoadingScreen(SafeScreen):
             # After all buttons are added, sum their heights
             self.do_layout()
         total_height = sum([btn.height for btn in self.wifi_list])
-        list_box.height = 300
+        list_box.height = max(total_height, 300)
+        Logger.info(f"Total height of wifi list: {total_height}")
         list_box.width = 465
             
         scroll = ScrollView(size_hint=(None, None),
