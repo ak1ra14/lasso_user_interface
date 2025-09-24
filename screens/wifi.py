@@ -566,7 +566,7 @@ class SelectableButton(Button):
             self.rect = Rectangle(pos=self.pos, size=self.size)
         with self.canvas.after:
             Color(0.8, 0.8, 0.8, 1)  # Light gray
-            self.separator = Rectangle(pos=(self.x, self.y), size=(self.width, 1))
+            self.separator = Rectangle(pos=(self.x, self.y), size=(self.width, 3))
         self.bind(pos=self._update_rect, size=self._update_rect)
         self.bind(pos=self._update_separator, size=self._update_separator)
         self.bind(pos=self._update_rect, size=self._update_rect)
