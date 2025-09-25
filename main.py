@@ -92,10 +92,9 @@ class MyApp(App):
         self.sm.add_widget(DarkScreen(name='dark'))
         self.sm.bind(current=self.on_screen_change)
 
-        first_page = self.config.get('first_page', '')
-        self.sm.current = first_page if first_page else 'monitor'
         # Set the initial screen to menu
-
+        self.sm.current = 'monitor'
+        
         # Create a FloatLayout to overlay the time bar
         self.root_layout = FloatLayout()
         self.root_layout.add_widget(self.sm)

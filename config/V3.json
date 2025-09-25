@@ -14,5 +14,5 @@
     "alert_lights_ip2": "192.168.1.202",
     "wifi_ssid": "Not connected",
     "wifi_password": "",
-    "previous_mode": "fall.json"
+    "previous_mode": "bed.json"
 }
