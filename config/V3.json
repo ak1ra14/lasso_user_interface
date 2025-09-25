@@ -5,7 +5,7 @@
     "location": "Room1",
     "volume": 79,
     "ack_enable": "no",
-    "screensaver": 70,
+    "screensaver": 82,
     "timezone": "Singapore (GMT+8)",
     "region_address": "192.168.1.100",
     "mqtt_address": "192.168.1.15058",

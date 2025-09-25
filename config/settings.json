@@ -2,5 +2,8 @@
     "v3_json": "config/V3.json",
     "bed_json": "config/bed.json",
     "fall_json": "config/fall.json",
-    "current_page": "monitor"
+    "settings_json": "config/settings.json",
+    "current_page": "language",
+    "first_page": "",
+    "last_page": ""
 }

@@ -92,9 +92,6 @@ class MyApp(App):
         self.sm.add_widget(DarkScreen(name='dark'))
         self.sm.bind(current=self.on_screen_change)
 
-        # Set the initial screen to menu
-        self.sm.current = 'monitor'
-        
         # Create a FloatLayout to overlay the time bar
         self.root_layout = FloatLayout()
         self.root_layout.add_widget(self.sm)
@@ -113,6 +110,10 @@ class MyApp(App):
         Window.bind(on_touch_down=self.on_user_activity)
         Window.bind(on_key_down=self.on_user_activity)
 
+        # Set the initial screen to menu
+        first_page = self.get_first_page()
+        self.sm.current = first_page
+
         ##checking connection
         integrate_connection_manager(self)
         return self.root_layout
@@ -130,11 +131,13 @@ class MyApp(App):
         Reset the screensaver timer and the time bar timer on user activity.'''
         # If we're coming back from screensaver, return to the previous screen
         if self.sm.current == 'dark' and self.screensaver_was_activated:
-            if self.screen_before_screensaver and self.screen_before_screensaver != 'dark':
+            Logger.info(f"Returning to previous screen: {self.screen_before_screensaver}")
+            if self.screen_before_screensaver and self.screen_before_screensaver not in ['dark', 'monitor']:
                 self.sm.current = self.screen_before_screensaver
             else:
                 # Fallback to monitor if no valid screen was stored
-                self.sm.current = 'monitor'
+                first_page = self.get_first_page()
+                self.sm.current = first_page
                 
             self.screensaver_was_activated= False
             self.screen_before_screensaver = None
@@ -160,6 +163,8 @@ class MyApp(App):
         if self.sm.current != 'dark':
             # Store the current screen before activating screensaver
             self.screen_before_screensaver = self.sm.current
+            if self.screen_before_screensaver == self.get_last_page():
+                self.screen_before_screensaver = self.get_first_page()
             self.screensaver_was_activated = True
             self.sm.current = 'dark'
 
@@ -171,22 +176,29 @@ class MyApp(App):
         self.time_bar.value = self.time_left
         if self.time_left <= 0:
             self._timer_event.cancel()
+            first_page = self.get_first_page()
+            last_page = self.get_last_page()
             if self.sm.current == 'dark':
                 if self.screen_before_screensaver  == 'menu' or self.screen_before_screensaver ==  'menu2':
-                    self.screen_before_screensaver = 'monitor'
+                    if self.get_last_page() != 'monitor':
+                        App.get_running_app().stop()
+                    self.screen_before_screensaver = first_page
                     return
                 elif self.screen_before_screensaver != 'monitor':
                     self.screen_before_screensaver = 'menu'
-                print('screen switched in bg')
                 self.reset_timer()
                 return 
-            if self.sm.current == 'menu' or self.sm.current == 'menu2':
-                self.sm.current = 'monitor'
+            if last_page != 'monitor' and last_page in self.sm.screen_names and last_page == self.sm.current:
+                App.get_running_app().stop()
+            elif self.sm.current == 'menu' or self.sm.current == 'menu2':
+                last_page = self.get_last_page()
+                if last_page != 'monitor': 
+                    self.reset_timer()
+                self.sm.current = last_page
             elif self.sm.current != 'monitor':
                 self.sm.current = 'menu'  # Switch to menu screen when time runs out
                 self.reset_timer()
     
-
     def reset_timer(self, *args):
         '''
         Reset the time bar timer.
@@ -213,6 +225,16 @@ class MyApp(App):
         self.time_left = self.time_limit
         self.time_bar.value = self.time_limit
         self._timer_event = Clock.schedule_interval(self._update_time_bar, 1)    
+    
+    def get_first_page(self):
+        config = load_config("config/settings.json", "settings_json")
+        first_page = config.get("first_page", "") if config.get("first_page", "") in [screen for screen in self.sm.screen_names] else "monitor"
+        return first_page
+
+    def get_last_page(self):
+        config = load_config("config/settings.json", "settings_json")
+        last_page = config.get("last_page", "") if config.get("last_page", "") in [screen for screen in self.sm.screen_names] else "monitor"
+        return last_page
 
 def integrate_connection_manager(app_instance):
     """
@@ -234,6 +256,7 @@ def integrate_connection_manager(app_instance):
     app_instance.on_stop = enhanced_on_stop
     
     Logger.info("ConnectionManager: Integration completed")
+
 
 if __name__ == '__main__':
     Window.size = (1024, 600)  # Set the window size to 1024x600 pixels
