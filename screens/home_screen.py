@@ -125,7 +125,7 @@ class MenuScreen1(MenuScreen):
         """
         mode =  self.config.get("previous_mode", "fall.json")
         mode_config = load_config(f'config/{mode}')
-        single_multiple = "multiple" if mode_config.get("mincount", 99) == 99 else "single"
+        single_multiple = "multiple" if mode_config.get("minnumppl_for_noalert", 99) == 99 else "single"
         if mode == "fall.json":
             return f"{update_text_language('fall_mode')} - {update_text_language(f'fall_{single_multiple}')}"
         elif mode == "bed.json":
@@ -202,7 +202,7 @@ class MenuScreen1(MenuScreen):
         '''
         self.config = load_config('config/settings.json', 'v3_json')
         bed_config = load_config("config/settings.json", 'bed_json')
-        Logger.info(f"Current mode: {self.config.get('previous_mode', 'fall.json')}, mincount: {bed_config.get('mincount',1)}") 
+        Logger.info(f"Current mode: {self.config.get('previous_mode', 'fall.json')}, minnumppl_for_noalert: {bed_config.get('minnumppl_for_noalert',1)}") 
         if self.config.get('previous_mode', 'fall.json') == 'fall.json' or  (self.config.get('previous_mode', 'fall.json') == 'bed.json' and bed_config.get('nbeds')[0] == 1):
             self.manager.current = 'device'
         else:

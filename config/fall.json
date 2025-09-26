@@ -1,12 +1,12 @@
 {
-    "mincount": 1,
+    "minnumppl_for_noalert": 1,
     "alert_checking": [
         [
-            1,
-            "sit_to_stand"
+            0,
+            "sit-to-stand"
         ],
         [
-            1,
+            0,
             "fall"
         ]
     ],

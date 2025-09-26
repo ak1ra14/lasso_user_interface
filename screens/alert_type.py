@@ -43,7 +43,7 @@ class AlertTypeScreen(SafeScreen):
             pos = (70, 330)
         )
         y_axis = [290, 220, 165, 110, 55]
-        bed_types = ["alert_with_video", "sit_up","bed_exit","sit_to_stand","fall_besides_bed"]
+        bed_types = ["alert_with_video", "sit_up","bed_exit","sit-to-stand","lie_out"]
         for i, bed_type in enumerate(bed_types):
             if i == 0:
                 value = self.attach_video_bed 
@@ -70,7 +70,7 @@ class AlertTypeScreen(SafeScreen):
             size=(50,50),
             pos = (420, 335)
         )
-        for i, bed_type in enumerate(["alert_with_video","sit_to_stand","fall"]):
+        for i, bed_type in enumerate(["alert_with_video","sit-to-stand","fall"]):
             if i == 0:
                 value = self.attach_video_bed 
             else:

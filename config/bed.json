@@ -1,5 +1,5 @@
 {
-    "mincount": 99,
+    "minnumppl_for_noalert": 99,
     "nbeds": [
         2,
         [
@@ -17,12 +17,12 @@
             "bed_exit"
         ],
         [
-            0,
-            "sit_to_stand"
+            1,
+            "sit-to-stand"
         ],
         [
-            0,
-            "fall_besides_bed"
+            1,
+            "lie_out"
         ]
     ],
     "attach_video": 1,
