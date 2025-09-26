@@ -19,7 +19,7 @@ class AlertModeScreen(Screen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.modes = load_config('config/settings.json','v3_json').get('previous_mode', 'fall.json')
-        self.single_multiple = load_config(f"config/{self.modes}").get('minnumppl_for_noalert', 1)
+        self.single_multiple = load_config(f"config/{self.modes}").get('minnumppl_for_noalert', 99)
         self.no_beds = load_config("config/settings.json",'bed_json').get('nbeds', [1, 1])[0] == 2
         self.header = HeaderBar(title="mode", icon_path="images/home.png", button_text="home", button_screen="menu")
         main_layout = BoxLayout(orientation='horizontal', padding=[50, 0, 50, 0], spacing=50,size_hint_y=0.5, pos_hint={'center_x': 0.5,'center_y':0.4})  # Only left and right padding
@@ -29,7 +29,13 @@ class AlertModeScreen(Screen):
         self.icon_status = ["bed_single", "bed_multiple", "fall_single", "fall_multiple"]
         self.buttons = []
         for i in range(len(self.icon_images)):
-            active_state = 99 if self.icon_images[i].split('_')[1] == "multiple" else 1
+            if self.icon_images[i].split('_')[1] == "multiple":
+                active_state = 99
+            else:
+                if self.icon_images[i].split('_')[0] == "fall":
+                    active_state = 2
+                else:
+                    active_state = 1
             icon = AlertModeButton(
                 icon_path=f"images/{self.icon_images[i]}.png",
                 text=update_text_language(self.icon_label[i]),
@@ -73,7 +79,7 @@ class AlertModeScreen(Screen):
         """
         update_current_page('alert_mode')
         self.modes = load_config('config/settings.json','fall_json').get('previous_mode', 'fall.json')
-        self.single_multiple = load_config(f"config/{self.modes}").get('minnumppl_for_noalert', 1)
+        self.single_multiple = load_config(f"config/{self.modes}").get('minnumppl_for_noalert', 99)
         self.no_beds = load_config("config/settings.json",'bed_json').get('nbeds', [1, 1])[0]
             # Update the toggle button state and graphics
         self.toggle_button.switch.no_beds = self.no_beds
@@ -121,7 +127,7 @@ class AlertModeButton(IconTextButton):
             self.color_instruction.rgba = (0.22, 0.45, 0.91, 1)  # Blue
 
     def on_press(self):
-        freeze_ui(0.3)  # Freeze UI for 0.3 seconds
+        freeze_ui(0.3)  # Freeze UI for 0.3 secondss
         App.get_running_app().play_sound()  # Play sound on button press
         # Change colour of icon when active and update config file
         if not self.active:
