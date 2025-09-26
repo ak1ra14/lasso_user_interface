@@ -42,7 +42,12 @@ class ShutdownButton(IconTextButton):
     This method is called when the shutdown button is pressed.
     """
     def on_press(self):
-        App.get_running_app().stop()  # Stop the application, simulating a shutdown action
+        import subprocess
+        try:
+            # Attempt to shutdown the device (Linux, Raspberry Pi, etc.)
+            subprocess.run(['sudo', 'shutdown', '-h', 'now'])
+        except Exception as e:
+            print(f"Shutdown failed: {e}")
 
 
 class RebootButton(IconTextButton):
@@ -53,8 +58,12 @@ class RebootButton(IconTextButton):
         super().__init__(**kwargs)
         self.bind(on_press=self.on_press)
 
-    def on_press(self,instance):
-        python = sys.executable
-        os.execl(python, python, *sys.argv)
+    def on_press(self, instance):
+        import subprocess
+        try:
+            # Attempt to reboot the device (Linux, Raspberry Pi, etc.)
+            subprocess.run(['sudo', 'reboot'])
+        except Exception as e:
+            print(f"Reboot failed: {e}")
 
     

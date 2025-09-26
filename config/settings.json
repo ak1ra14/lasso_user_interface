@@ -3,7 +3,7 @@
     "bed_json": "config/bed.json",
     "fall_json": "config/fall.json",
     "settings_json": "config/settings.json",
-    "current_page": "language",
-    "first_page": "",
-    "last_page": ""
+    "current_page": "dark_screen",
+    "first_page": "password",
+    "last_page": "menu"
 }
