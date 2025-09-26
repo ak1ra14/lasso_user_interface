@@ -163,8 +163,9 @@ class MyApp(App):
         if self.sm.current != 'dark':
             # Store the current screen before activating screensaver
             self.screen_before_screensaver = self.sm.current
-            if self.screen_before_screensaver == self.get_last_page():
-                self.screen_before_screensaver = self.get_first_page()
+            Logger.info(f"Activating screensaver, current screen: {self.sm.current}")
+            # if self.screen_before_screensaver == self.get_last_page():
+            #     self.screen_before_screensaver = self.get_first_page()
             self.screensaver_was_activated = True
             self.sm.current = 'dark'
 
@@ -175,10 +176,12 @@ class MyApp(App):
         self.time_left -= 1
         self.time_bar.value = self.time_left
         if self.time_left <= 0:
+            Logger.info("passing through here")
             self._timer_event.cancel()
             first_page = self.get_first_page()
             last_page = self.get_last_page()
             if self.sm.current == 'dark':
+                Logger.info(f"Currently in dark screen, was previously on: {self.screen_before_screensaver}")
                 if self.screen_before_screensaver  == 'menu' or self.screen_before_screensaver ==  'menu2':
                     if self.get_last_page() != 'monitor':
                         Window.close()
@@ -188,8 +191,10 @@ class MyApp(App):
                     self.screen_before_screensaver = 'menu'
                 self.reset_timer()
                 return 
-            if last_page != 'monitor' and last_page in self.sm.screen_names and last_page == self.sm.current:
+            if last_page != 'monitor' and (last_page in self.sm.screen_names and last_page == self.sm.current) or (last_page in ['menu','menu2'] and self.sm.current in ['menu','menu2']):
+                Logger.info("ending program")
                 Window.close()
+                Logger.info("still ongoing here")
             elif self.sm.current == 'menu' or self.sm.current == 'menu2':
                 last_page = self.get_last_page()
                 if last_page != 'monitor': 
@@ -229,6 +234,11 @@ class MyApp(App):
     def get_first_page(self):
         config = load_config("config/settings.json", "settings_json")
         first_page = config.get("first_page", "") if config.get("first_page", "") in [screen for screen in self.sm.screen_names] else "monitor"
+        #to prevent users from accessing bed devices that are not supposed to be accessed
+        if self.config.get("previous_mode","") != 'bed.json' and first_page in ['bed1','bed2']:
+            first_page = 'monitor'
+        elif first_page in ['wifi password','wifi connecting','wifi connected','wifi error','password screen']:
+            first_page = 'monitor'
         return first_page
 
     def get_last_page(self):
