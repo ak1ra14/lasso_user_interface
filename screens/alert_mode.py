@@ -139,6 +139,8 @@ class AlertModeButton(IconTextButton):
             save_config('config/settings.json','v3_json', data=config)
             config = load_config(f"config/{self.screen.modes}")
             config['minnumppl_for_noalert'] = self.active_state
+            config['multihumanpause_seconds'] = 0 if self.active_state == 99 else 5
+            config['no_alert_by_overlap'] = 0 if self.active_state == 99 else 1
             save_config(f"config/{self.screen.modes}", data=config)
             for button in self.screen.buttons:
                 if button != self:
