@@ -181,7 +181,7 @@ class MyApp(App):
             if self.sm.current == 'dark':
                 if self.screen_before_screensaver  == 'menu' or self.screen_before_screensaver ==  'menu2':
                     if self.get_last_page() != 'monitor':
-                        App.get_running_app().stop()
+                        Window.close()
                     self.screen_before_screensaver = first_page
                     return
                 elif self.screen_before_screensaver != 'monitor':
@@ -189,7 +189,7 @@ class MyApp(App):
                 self.reset_timer()
                 return 
             if last_page != 'monitor' and last_page in self.sm.screen_names and last_page == self.sm.current:
-                App.get_running_app().stop()
+                Window.close()
             elif self.sm.current == 'menu' or self.sm.current == 'menu2':
                 last_page = self.get_last_page()
                 if last_page != 'monitor': 
