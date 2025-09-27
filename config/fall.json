@@ -8,11 +8,15 @@
             "sit-to-stand"
         ],
         [
-            0,
+            1,
             "fall"
+        ],
+        [
+            0,
+            "sit-to-stand"
         ]
     ],
-    "attach_video": 0,
+    "attach_video": 1,
     "max_dist": 3000,
     "rtsp_recording": {
         "on": 0

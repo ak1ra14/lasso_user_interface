@@ -1,7 +1,7 @@
 {
-    "minnumppl_for_noalert": 99,
-    "multihumanpause_seconds": 0,
-    "no_alert_by_overlap": 0,
+    "minnumppl_for_noalert": 1,
+    "multihumanpause_seconds": 5,
+    "no_alert_by_overlap": 1,
     "nbeds": [
         2,
         [
@@ -12,22 +12,26 @@
     "alert_checking": [
         [
             0,
-            "sit_up"
+            "sit-to-stand"
+        ],
+        [
+            0,
+            "sit-to-stand"
+        ],
+        [
+            0,
+            "lie_out"
+        ],
+        [
+            0,
+            "lie_out"
         ],
         [
             0,
             "bed_exit"
-        ],
-        [
-            1,
-            "sit-to-stand"
-        ],
-        [
-            1,
-            "lie_out"
         ]
     ],
-    "attach_video": 0,
+    "attach_video": 1,
     "max_dist": 3000,
     "rtsp_recording": {
         "on": 0
