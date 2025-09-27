@@ -1,4 +1,4 @@
 {
-    "topic": "healthcarre/alerts",
-    "server": "192.50.165.50"
+    "topic": "healthcare/alerts",
+    "server": "192.168.1.15058"
 }

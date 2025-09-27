@@ -4,7 +4,14 @@
     "fall_json": "config/fall.json",
     "settings_json": "config/settings.json",
     "mqtt_json": "config/mqtt.json",
-    "current_page": "dark_screen",
+    "ack_json": [
+        "config/ack.json"
+    ],
+    "location_json": [
+        "config/location1.json"
+    ],
+    "default_json": "config/default.json",
+    "current_page": "monitor",
     "first_page": "password",
     "last_page": "menu"
 }

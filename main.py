@@ -53,8 +53,6 @@ class MyApp(App):
         self.config = load_config('config/settings.json','v3_json')
         self.language = self.config.get('language', 'en')
         set_system_volume(self.config.get('volume', 50))
-        self.default_wifi_ssid = 'SoundEyeHq'
-        self.default_wifi_password = 'afafafafaf'
         self.ip_address = get_ip_address()
 
         self.screen_before_screensaver = None
@@ -131,7 +129,7 @@ class MyApp(App):
         Reset the screensaver timer and the time bar timer on user activity.'''
         # If we're coming back from screensaver, return to the previous screen
         if self.sm.current == 'dark' and self.screensaver_was_activated:
-            Logger.info(f"Returning to previous screen: {self.screen_before_screensaver}")
+            #Logger.info(f"Returning to previous screen: {self.screen_before_screensaver}")
             if self.screen_before_screensaver and self.screen_before_screensaver not in ['dark', 'monitor']:
                 self.sm.current = self.screen_before_screensaver
             else:
@@ -163,7 +161,7 @@ class MyApp(App):
         if self.sm.current != 'dark':
             # Store the current screen before activating screensaver
             self.screen_before_screensaver = self.sm.current
-            Logger.info(f"Activating screensaver, current screen: {self.sm.current}")
+            #Logger.info(f"Activating screensaver, current screen: {self.sm.current}")
             # if self.screen_before_screensaver == self.get_last_page():
             #     self.screen_before_screensaver = self.get_first_page()
             self.screensaver_was_activated = True
@@ -176,12 +174,10 @@ class MyApp(App):
         self.time_left -= 1
         self.time_bar.value = self.time_left
         if self.time_left <= 0:
-            Logger.info("passing through here")
             self._timer_event.cancel()
             first_page = self.get_first_page()
             last_page = self.get_last_page()
             if self.sm.current == 'dark':
-                Logger.info(f"Currently in dark screen, was previously on: {self.screen_before_screensaver}")
                 if self.screen_before_screensaver  == 'menu' or self.screen_before_screensaver ==  'menu2':
                     if self.get_last_page() != 'monitor':
                         Window.close()
@@ -192,9 +188,7 @@ class MyApp(App):
                 self.reset_timer()
                 return 
             if last_page != 'monitor' and (last_page in self.sm.screen_names and last_page == self.sm.current) or (last_page in ['menu','menu2'] and self.sm.current in ['menu','menu2']):
-                Logger.info("ending program")
                 Window.close()
-                Logger.info("still ongoing here")
             elif self.sm.current == 'menu' or self.sm.current == 'menu2':
                 last_page = self.get_last_page()
                 if last_page != 'monitor': 

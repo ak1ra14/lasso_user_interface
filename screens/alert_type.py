@@ -7,14 +7,15 @@ from kivy.core.audio import SoundLoader
 from utils.layout import SeparatorLine 
 from utils.layout import HeaderBar, SafeScreen
 from utils.icons import ToggleButton, CustomSwitch
-from utils.config_loader import load_config, save_config, update_current_page, update_text_language
+from utils.config_loader import load_config, save_config, update_current_page, update_text_language, get_valid_value
 from utils.keyboard import show_saved_popup
 
 class AlertTypeScreen(SafeScreen):
     def __init__(self, **kwargs):
         super(AlertTypeScreen, self).__init__(**kwargs)
         self.config = load_config('config/settings.json','v3_json')
-        self.ack_enable = self.config.get("ack_enable", 'Yes')
+        self.ack_config = load_config('config/settings.json','ack_json')
+        self.ack_enable = get_valid_value(self.ack_config, 'ack_enable', load_config("config/settings.json","default_json").get("ack_enable", "yes"))
         self.bed_json = load_config("config/settings.json",'bed_json')
         self.fall_json = load_config("config/settings.json",'fall_json')
         self.attach_video_bed = self.bed_json.get("attach_video", 1)
@@ -108,8 +109,9 @@ class AlertTypeScreen(SafeScreen):
         update_current_page('alert_type')
         status = []
         self.config = load_config('config/settings.json','v3_json')
-        ack_enable = self.config.get("ack_enable", 'yes')
-        status.append(1 if ack_enable == "yes" else 0)
+        self.ack_config = load_config('config/settings.json','ack_json')
+        self.ack_enable = get_valid_value(self.ack_config, 'ack_enable', load_config("config/settings.json","default_json").get("ack_enable", "yes"))
+        status.append(1 if self.ack_enable == "yes" else 0)
         self.bed_json = load_config("config/settings.json",'bed_json')
         self.fall_json = load_config("config/settings.json",'fall_json')
         attach_video_bed = self.bed_json.get("attach_video", 1)
@@ -151,11 +153,11 @@ class SaveButtonAT(IconTextButton):
         self.AT_screen = AT_screen
 
     def on_press(self):
-        config_v3 = load_config('config/settings.json','v3_json')
-        ack_enable = "yes" if self.AT_screen.buttons[0].switch.active else "no"
-        config_v3['ack_enable'] = ack_enable
-        save_config('config/settings.json','v3_json', data=config_v3)
-
+        ack_config = load_config('config/settings.json','ack_json')
+        if ack_config:
+            ack_enable = "yes" if self.AT_screen.buttons[0].switch.active else "no"
+            ack_config['ack_enable'] = ack_enable
+            save_config('config/settings.json','ack_json', data=ack_config)
 
         config_bed = load_config("config/settings.json",'bed_json')
         attach_video_bed = 1 if self.AT_screen.buttons[1].switch.active else 0
@@ -183,3 +185,5 @@ class SaveButtonAT(IconTextButton):
         if sound:
             sound.play()
         App.get_running_app().sm.current = self.screen_name
+
+

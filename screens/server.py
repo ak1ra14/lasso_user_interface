@@ -8,7 +8,7 @@ from utils.config_loader import load_config
 from utils.icons import IconTextButton
 from kivy.graphics import Line, Color, Rectangle
 from utils.keyboard import KeyboardScreen
-from utils.config_loader import save_config, update_current_page, update_text_language
+from utils.config_loader import save_config, update_current_page, update_text_language, get_valid_value
 from utils.layout import SeparatorLine
 from utils.num_pad import NumberPadScreen
 from kivy.app import App
@@ -20,8 +20,6 @@ class ServerScreen(SafeScreen):
         super().__init__(**kwargs)
         self.config = load_config('config/settings.json', 'v3_json')
         self.mqtt_config = load_config('config/settings.json','mqtt_json')
-        self.default_config = load_config('config/settings.json', 'v3_json')
-        self.mqtt_config_default = load_config('config/settings.json','mqtt_json')
         self.buttons = {}
         self.build_ui()
 
@@ -57,9 +55,10 @@ class ServerScreen(SafeScreen):
                                 font_name='fonts/MPLUS1p-Bold.ttf',halign='left')
         self.main_layout.add_widget(self.mqtt_topic)
 
-        self.buttons['mqtt_server'] = EditSetting( status = self.mqtt_config.get('server'), screen_name = 'mqtt broker ip', pos_hint={'center_x': 0.50, 'center_y': 0.55})
-        self.buttons['mqtt_topic'] = EditSetting( status = self.mqtt_config.get('topic'), screen_name = 'mqtt topic', pos_hint={'center_x': 0.50, 'center_y': 0.25})
-
+        self.buttons['mqtt_server'] = EditSetting( status = get_valid_value(self.mqtt_config,'server',load_config("config/settings.json","default_json").get("server", "N/A")), 
+                                                  screen_name = 'mqtt broker ip', pos_hint={'center_x': 0.50, 'center_y': 0.55})
+        self.buttons['mqtt_topic'] = EditSetting( status = get_valid_value(self.mqtt_config,'topic',load_config("config/settings.json","default_json").get("topic", "N/A")),
+                                                 screen_name = 'mqtt topic', pos_hint={'center_x': 0.50, 'center_y': 0.25})
 
         self.alert_lights = Label(text=update_text_language("alert_lights"), font_size=35, size_hint_y=None, height=40,
                                    size_hint=(None, None), size=(300, 40),
@@ -89,7 +88,8 @@ class ServerScreen(SafeScreen):
         self.mqtt_config = load_config('config/settings.json','mqtt_json')
         for key, button in self.buttons.items():
             if key in ['mqtt_server','mqtt_topic']:
-                button.status = self.mqtt_config.get(key.replace('mqtt_',''), '')
+                status = get_valid_value(self.mqtt_config, key.replace('mqtt_',''), load_config("config/settings.json","default_json").get(key.replace('mqtt_',''), "N/A"))
+                button.status = status
             else:
                 button.status = self.config.get(key, '')
             button.label.text = button.status
@@ -179,15 +179,16 @@ class MQTTBrokerIPScreen(NumberPadScreen):
     def __init__(self, **kwargs):
         super().__init__(title="mqtt_broker_ip", screen_name='servers',**kwargs)
         self.mqtt_config = load_config("config/settings.json", "mqtt_json")
-        self.text = self.mqtt_config.get('server', '')
+        self.text = get_valid_value(self.mqtt_config,'server',load_config("config/settings.json","default_json").get("server", "N/A"))
 
     def on_save(self, instance):
         """
         Override the on_save method to save the MQTT broker address.
         """
         super().on_save(instance)
-        self.mqtt_config['server'] = self.input.text
-        save_config("config/settings.json", "mqtt_json", data=self.mqtt_config)
+        if self.mqtt_config:
+            self.mqtt_config['server'] = self.input.text
+            save_config("config/settings.json", "mqtt_json", data=self.mqtt_config)
 
     def on_pre_enter(self):
         """
@@ -195,7 +196,7 @@ class MQTTBrokerIPScreen(NumberPadScreen):
         """
         update_current_page('mqtt_broker_ip')
         self.mqtt_config = load_config("config/settings.json", "mqtt_json")
-        self.input.text = self.mqtt_config.get("server", "")
+        self.input.text = get_valid_value(self.mqtt_config,'server',load_config("config/settings.json","default_json").get("server", "N/A"))
 
 class AlertLight1Screen(NumberPadScreen):
     def __init__(self, **kwargs):
@@ -247,15 +248,16 @@ class MQTTTopicKeyboardScreen(KeyboardScreen):
     def __init__(self, **kwargs):
         super().__init__(title="mqtt_topic",screen_name='servers', **kwargs)
         self.mqtt_config = load_config("config/settings.json", "mqtt_json")
-        self.text = self.mqtt_config.get('topic', '')
+        self.text = get_valid_value(self.mqtt_config,'topic',load_config("config/settings.json","default_json").get("topic", "N/A"))
 
     def press_enter(self, instance):
         """
         Override the on_enter method to set the keyboard title.
         """
         super().press_enter(instance)
-        self.mqtt_config['topic'] = self.keyboard.text_input.text
-        save_config("config/settings.json", "mqtt_json", data=self.mqtt_config)
+        if self.mqtt_config:
+            self.mqtt_config['topic'] = self.keyboard.text_input.text
+            save_config("config/settings.json", "mqtt_json", data=self.mqtt_config)
         show_saved_popup(update_text_language('saved'))
 
     def on_pre_enter(self):
@@ -264,7 +266,7 @@ class MQTTTopicKeyboardScreen(KeyboardScreen):
         """
         self.keyboard.title = "MQTT Topic"
         self.mqtt_config = load_config("config/settings.json", "mqtt_json")
-        self.keyboard.text_input.text = self.mqtt_config.get("topic", "")
+        self.keyboard.text_input.text = get_valid_value(self.mqtt_config,'topic',load_config("config/settings.json","default_json").get("topic", "N/A"))
         self.keyboard.actual_text_input = self.keyboard.text_input.text
 
 class DefaultButton(IconTextButton):
@@ -283,14 +285,15 @@ class DefaultButton(IconTextButton):
     def reset_to_default(self, instance):
         app = App.get_running_app()
         current_screen = app.sm.current_screen
+        default_values = load_config("config/settings.json","default_json")
         for key in current_screen.buttons.keys():
-            if key in current_screen.default_config:
-                current_screen.config[key] = current_screen.default_config[key]
-                current_screen.buttons[key].status = current_screen.default_config[key]
-            if key.replace('mqtt_','') in current_screen.mqtt_config_default:
-                    Logger.info(f"{key}, {current_screen.mqtt_config_default[key.replace('mqtt_','')]}")
-                    current_screen.mqtt_config[key.replace('mqtt_','')] = current_screen.mqtt_config_default[key.replace('mqtt_','')]
-                    current_screen.buttons[key].status = current_screen.mqtt_config_default[key.replace('mqtt_','')]
+            if key in default_values:
+                current_screen.config[key] = default_values[key]
+                current_screen.buttons[key].status = default_values[key]
+            elif key.replace('mqtt_','') in default_values:
+                    Logger.info(f"{key}, {default_values[key.replace('mqtt_','')]}")
+                    current_screen.mqtt_config[key.replace('mqtt_','')] = default_values[key.replace('mqtt_','')]
+                    current_screen.buttons[key].status = default_values[key.replace('mqtt_','')]
 
         save_config("config/settings.json", "v3_json", data=current_screen.config)
         save_config("config/settings.json", "mqtt_json", data=current_screen.mqtt_config)

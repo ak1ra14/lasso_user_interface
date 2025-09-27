@@ -11,7 +11,7 @@
     ],
     "alert_checking": [
         [
-            1,
+            0,
             "sit_up"
         ],
         [
@@ -27,7 +27,7 @@
             "lie_out"
         ]
     ],
-    "attach_video": 1,
+    "attach_video": 0,
     "max_dist": 3000,
     "rtsp_recording": {
         "on": 0

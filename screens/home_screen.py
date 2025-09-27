@@ -4,8 +4,9 @@ from kivy.uix.image import Image
 from kivy.uix.widget import Widget
 from kivy.uix.anchorlayout import AnchorLayout
 from utils.icons import IconTextButton, CircularImageButton, PageIndicator
-from utils.config_loader import load_config, update_current_page, update_text_language
+from utils.config_loader import load_config, update_current_page, update_text_language, get_valid_value
 from utils.layout import HeaderBar,  SafeScreen , FooterBar
+from kivy.app import App
 
 class MenuScreen(SafeScreen):
     '''
@@ -73,7 +74,8 @@ class MenuScreen1(MenuScreen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.config = load_config('config/settings.json', 'v3_json')
-        self.location = self.config.get("location", "")
+        self.location_config = load_config('config/settings.json', 'location_json')
+        self.location = get_valid_value(self.location_config, "location", load_config("config/settings.json","default_json").get("location", "N/A"))
         volume = self.config.get("volume", 50)
         self.volume = f"{volume}%"
         self.mode = self.check_mode()
@@ -170,7 +172,8 @@ class MenuScreen1(MenuScreen):
         Updates the location, volume, mode, and alerts based on the current configuration.
         """
         self.config = load_config('config/settings.json', 'v3_json')
-        self.location = self.config.get("location", "Room 101")
+        self.location_config = load_config("config/settings.json", "location_json")
+        self.location = get_valid_value(self.location_config, "location", load_config("config/settings.json","default_json").get("location", "N/A"))
         self.volume = self.config.get("volume", 50)
         self.mode = self.check_mode()
         self.alerts = self.has_any_alert()

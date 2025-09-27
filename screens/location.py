@@ -1,16 +1,18 @@
+from kivy.logger import Logger
 from utils.layout import HeaderBar, SafeScreen
-from utils.config_loader import load_config, save_config, update_current_page, update_text_language
+from utils.config_loader import load_config, save_config, update_current_page, update_text_language, get_valid_value
 from utils.icons import IconTextButton
 from utils.num_pad import NumberPadScreen
 from utils.keyboard import KeyboardScreen, show_saved_popup
+from kivy.app import App
 
 
 class LocationScreen(SafeScreen):
     def __init__(self, **kwargs):
         super(LocationScreen, self).__init__(**kwargs)
         self.config = load_config("config/settings.json", "v3_json")
+        self.location_config = load_config("config/settings.json", "location_json")
         self.bed_config = load_config("config/settings.json", "bed_json")
-
         self.bed_no = self.bed_config.get("nbeds", [1,[' ']])[0]
         # Create a layout for the keypad
     
@@ -21,7 +23,7 @@ class LocationScreen(SafeScreen):
         if self.bed_no == 2:
             self.location_icon2 = IconTextButton(
                 text=update_text_language('location'),
-                config = self.config.get('location', " "),
+                config = get_valid_value(self.location_config, 'location', load_config("config/settings.json","default_json").get("location", "N/A")),
                 font_size=18,
                 icon_path="images/location.png",
                 size_hint=(None, None),
@@ -93,8 +95,6 @@ class Bed1Screen(KeyboardScreen):
         super().on_pre_enter()
 
 
-        
-
 class Bed2Screen(KeyboardScreen):
     def __init__(self, **kwargs):
         super().__init__(title="bed_2", **kwargs)
@@ -125,15 +125,18 @@ class DeviceKeyboardScreen(KeyboardScreen):
     def __init__(self, **kwargs):
         super().__init__(title="device_location", **kwargs)
         self.title = 'device_location'
-        self.config = load_config("config/settings.json", "v3_json")
-        self.text = self.config.get('location', 'Room 1')
+        self.location_config = load_config("config/settings.json", "location_json")
+        self.text = get_valid_value(self.location_config, 'location', load_config("config/settings.json","default_json").get("location", "N/A"))
+        self.update_default_location()
+
     
     def press_enter(self, instance):
         """
         Override the on_enter method to set the keyboard title.
         """
-        self.config['location'] = self.keyboard.text_input.text
-        save_config("config/settings.json", "v3_json", data=self.config)
+        if self.location_config:
+            self.location_config['location'] = self.keyboard.text_input.text
+        save_config("config/settings.json", "location_json", data=self.location_config)
         show_saved_popup(update_text_language('saved'))
 
     def on_pre_enter(self):
@@ -142,7 +145,15 @@ class DeviceKeyboardScreen(KeyboardScreen):
         """
         update_current_page('device_keyboard')
         self.config = load_config("config/settings.json", "v3_json")
-        self.keyboard.text_input.text = self.config.get("location", "Room 1")
+        self.keyboard.text_input.text = get_valid_value(self.location_config, 'location', load_config("config/settings.json","default_json").get("location", "N/A"))
         self.keyboard.actual_text_input = self.keyboard.text_input.text
         super().on_pre_enter()
+
+    def update_default_location(self):
+        if self.location_config:
+            default_values = load_config("config/settings.json","default_json")
+            default_values['location'] = self.location_config.get('location', default_values.get('location', 'N/A'))
+            Logger.info('saving default location')
+            save_config("config/settings.json","default_json", default_values)
+
 

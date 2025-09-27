@@ -3,7 +3,7 @@ import os
 from kivy.app import App
 from kivy.logger import Logger
 
-def load_config(file_path, variable_name=None):
+def load_config(file_path, variable_name=None,index=0):
     '''
     Load configuration from a JSON file. If variable_name is provided, it loads the JSON file
     specified by the value of that variable in the initial JSON file.
@@ -12,23 +12,39 @@ def load_config(file_path, variable_name=None):
         with open(file_path, "r") as f:
             data = json.load(f)
         if variable_name:
-            # Get the path from the variable in the config
             next_path = data.get(variable_name)
-            if next_path:
-                with open(next_path, "r") as nf:
-                    return json.load(nf)
+            #Logger.info(f"Loading config for '{variable_name}' from: {next_path}")
+            if isinstance(next_path, list):
+                if len(next_path) == 0:
+                    return None
+                index = 0
+                while index < len(next_path):
+                    try:
+                        # If it's a list, load and return the data from the first file in the list
+                        with open(next_path[index], "r") as nf:
+                            #Logger.info(f"Loaded config from: {next_path[index-1]}")
+                            return json.load(nf)
+                    except Exception as e:
+                        index += 1
+                return None
+            elif isinstance(next_path, str):
+                # If it's a string, load and return the data from the file
+                try:
+                    with open(next_path, "r") as nf:
+                        return json.load(nf)
+                except Exception as e:
+                    Logger.exception(f"Failed to load config from {next_path}")
+                    return None
             else:
                 raise KeyError(f"Variable '{variable_name}' not found in {file_path}")
         else:
-            with open(file_path, "r") as f:
-                data = json.load(f)
-        return data
+            return data
     except Exception as e:
         Logger.exception("Failed to load config")
         raise
 
 
-def save_config(file_path, variable_name=None, data=None):
+def save_config(file_path, variable_name=None, data=None,index=0):
     '''
     Save configuration to a JSON file. If variable_name is provided, it saves the data to
     the JSON file specified by the value of that variable in the initial JSON file.'''
@@ -36,16 +52,29 @@ def save_config(file_path, variable_name=None, data=None):
         with open(file_path,"r") as f:
             paths = json.load(f)
         if variable_name:
-            try:
-                next_path = paths.get(variable_name)
-                if next_path:
-                    with open(next_path, "w") as f:
+            next_path = paths.get(variable_name)
+            # If next_path is a list, use the index (default 0)
+            if isinstance(next_path, list) and next_path:
+                # Find the first existing file in the list
+                for target_path in next_path:
+                    if os.path.isfile(target_path):
+                        with open(target_path, "w") as f:
                             json.dump(data, f, indent=4)
-            except:
-                raise KeyError(f"Variable '{variable_name}' not found in {file_path}")
+                        return
+                # If no file exists, do nothing
+                return
+            elif isinstance(next_path, str):
+                target_path = next_path
+            else:
+                return  # Do nothing if path is empty or not found
+            # Only save if the directory exists and path is not empty
+            if target_path and os.path.isdir(os.path.dirname(target_path)):
+                with open(target_path, "w") as f:
+                    json.dump(data, f, indent=4)
         else:
-            with open(file_path, "w") as f:
-                json.dump(data, f, indent=4)
+            if file_path and os.path.isdir(os.path.dirname(file_path)):
+                with open(file_path, "w") as f:
+                    json.dump(data, f, indent=4)
                 return
     except Exception as e:
         Logger.exception("Failed to save config")
@@ -78,4 +107,11 @@ def read_txt_file(file_path):
     """
     with open(file_path, "r", encoding="utf-8") as f:
         return f.read()
+    
+
+def get_valid_value(config, key,default):
+    if config and key in config:
+        return config[key]
+    return default
+
         
