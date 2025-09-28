@@ -168,9 +168,9 @@ class CustomSwitchAM(CustomSwitch):
             self.no_beds = 2 if self.no_beds == 1 else 1
             config = load_config("config/bed.json")
             if self.no_beds == 1:
-                config['nbeds'] = [self.no_beds, ['Bed 1']]
+                config['nbeds'] = [self.no_beds, ['1']]
             elif self.no_beds == 2:
-                config['nbeds'] = [self.no_beds, ['Bed 1', 'Bed 2']]
+                config['nbeds'] = [self.no_beds, ['1', '2']]
 
             save_config("config/settings.json", "bed_json", data=config)
             return True
