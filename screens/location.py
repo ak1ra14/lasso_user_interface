@@ -65,6 +65,7 @@ class LocationScreen(SafeScreen):
         """
         update_current_page('location')
         self.config = load_config("config/settings.json", "v3_json")
+        self.location_config = load_config("config/settings.json", "location_json")
         self.bed_config = load_config("config/settings.json", "bed_json")
         self.bed_no = self.bed_config.get("nbeds", [1, [' ']])[0]
         self.build_ui()
