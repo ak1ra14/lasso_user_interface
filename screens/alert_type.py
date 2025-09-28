@@ -45,39 +45,10 @@ class AlertTypeScreen(SafeScreen):
             size=(70,70),
             pos = (70, 330)
         )
-        y_axis = [290, 220, 165, 110, 55]
+        self.y_axis = [290, 220, 165, 110, 55]
         self.bed_types = ["alert_with_video", "sit_up","bed_exit","sit-to-stand","lie_out"]
-        for i, bed_type in enumerate(self.bed_types):
-            if i == 0:
-                value = self.attach_video_bed 
-            else:
-                value = self.get_first_value(self.alert_checking_bed, bed_type)
-            if value is None:
-                value = 0        
-                button = ToggleButton(
-                    text_right=bed_type,
-                    size_hint_y=None,
-                    height=50,
-                    pos=(50, y_axis[i]),
-                    switch=AlertTypeButton(value, freeze=True),  # Disable the switch
-                    text_size_l_r=(0, 180)
-                )
-            else:
-                button = ToggleButton(
-                    text_right=bed_type,
-                    size_hint_y=None,
-                    height=50,
-                    pos=(50, y_axis[i]),
-                    switch=AlertTypeButton(value),
-                    text_size_l_r=(0, 180)
-                )
-            self.add_widget(button)
-            if bed_type == "alert_with_video":
-                self.buttons['alert_with_video_bed'] = button
-            elif bed_type == "sit-to-stand":
-                self.buttons['sit-to-stand_bed'] = button
-            else:
-                self.buttons[bed_type] = button
+        self.build_bed_buttons()
+
         partition = SeparatorLine(
             points=[370, 370, 370, 60],
             size_hint=(None, None),
@@ -90,37 +61,8 @@ class AlertTypeScreen(SafeScreen):
             pos = (420, 335)
         )
         self.fall_types = ["alert_with_video","sit-to-stand","fall"]
-        for i, fall_type in enumerate(self.fall_types):
-            if i == 0:
-                value = self.attach_video_fall
-            else:
-                value = self.get_first_value(self.alert_checking_fall, fall_type)
-            if value is None:
-                value = 0        
-                button = ToggleButton(
-                    text_right=fall_type,
-                    size_hint_y=None,
-                    height=50,
-                    switch=AlertTypeButton(value, freeze=True),  # Set freeze=True to disable
-                    pos=(400, y_axis[i]),
-                    text_size_l_r=(0, 200)
-                )
-            else:
-                button = ToggleButton(
-                    text_right=fall_type,
-                    size_hint_y=None,
-                    height=50,
-                    switch=AlertTypeButton(value),
-                    pos=(400, y_axis[i]),
-                    text_size_l_r=(0, 200)
-                )
-            self.add_widget(button)
-            if fall_type == 'alert_with_video':
-                self.buttons['alert_with_video_fall'] = button
-            elif fall_type == 'sit-to-stand':
-                self.buttons['sit-to-stand_fall'] = button
-            else:
-                self.buttons[fall_type] = button
+        self.build_fall_buttons()
+        
 
         float_layout = FloatLayout(size_hint=(1, 1))
         self.save_button = SaveButtonAT(
@@ -139,6 +81,73 @@ class AlertTypeScreen(SafeScreen):
         self.add_widget(image)
         self.add_widget(ack_button)
         self.add_widget(fall_image)
+
+    def build_bed_buttons(self):
+        for i, bed_type in enumerate(self.bed_types):
+            if i == 0:
+                value = self.attach_video_bed 
+            else:
+                value = self.get_first_value(self.alert_checking_bed, bed_type)
+            if value is None:
+                value = 0        
+                button = ToggleButton(
+                    text_right=bed_type,
+                    size_hint_y=None,
+                    height=50,
+                    pos=(50, self.y_axis[i]),
+                    switch=AlertTypeButton(value, freeze=True),  # Disable the switch
+                    text_size_l_r=(0, 180)
+                )
+            else:
+                button = ToggleButton(
+                    text_right=bed_type,
+                    size_hint_y=None,
+                    height=50,
+                    pos=(50, self.y_axis[i]),
+                    switch=AlertTypeButton(value),
+                    text_size_l_r=(0, 180)
+                )
+            self.add_widget(button)
+            if bed_type == "alert_with_video":
+                self.buttons['alert_with_video_bed'] = button
+            elif bed_type == "sit-to-stand":
+                self.buttons['sit-to-stand_bed'] = button
+            else:
+                self.buttons[bed_type] = button
+
+    def build_fall_buttons(self):
+        for i, fall_type in enumerate(self.fall_types):
+            if i == 0:
+                value = self.attach_video_fall
+            else:
+                value = self.get_first_value(self.alert_checking_fall, fall_type)
+            if value is None:
+                value = 0        
+                button = ToggleButton(
+                    text_right=fall_type,
+                    size_hint_y=None,
+                    height=50,
+                    switch=AlertTypeButton(value, freeze=True),  # Set freeze=True to disable
+                    pos=(400, self.y_axis[i]),
+                    text_size_l_r=(0, 200)
+                )
+            else:
+                button = ToggleButton(
+                    text_right=fall_type,
+                    size_hint_y=None,
+                    height=50,
+                    switch=AlertTypeButton(value),
+                    pos=(400, self.y_axis[i]),
+                    text_size_l_r=(0, 200)
+                )
+            self.add_widget(button)
+            if fall_type == 'alert_with_video':
+                self.buttons['alert_with_video_fall'] = button
+            elif fall_type == 'sit-to-stand':
+                self.buttons['sit-to-stand_fall'] = button
+            else:
+                self.buttons[fall_type] = button
+
 
     def on_pre_enter(self):
         update_current_page('alert_type')
@@ -250,6 +259,28 @@ class SaveButtonAT(IconTextButton):
         config_bed['attach_video'] = attach_video_bed
 
         # Save alert checking configurations
+        alert_checking_bed = self.update_alert_checking_bed(alert_checking_bed)
+
+        config_bed['alert_checking'] = alert_checking_bed
+        save_config("config/settings.json", 'bed_json', data=config_bed)
+
+        config_fall = load_config("config/settings.json",'fall_json')
+        alert_checking_fall = config_fall.get('alert_checking')
+        attach_video_fall = 1 if self.AT_screen.buttons['alert_with_video_fall'].switch.active else 0
+        config_fall['attach_video'] = attach_video_fall
+
+        alert_checking_fall = self.update_alert_checking_fall(alert_checking_fall)
+
+        config_fall['alert_checking'] = alert_checking_fall
+        save_config("config/settings.json", 'fall_json', data=config_fall)
+
+        show_saved_popup(update_text_language('saved'))  # Show a popup indicating the settings have been saved
+        sound = SoundLoader.load('sound/tap.wav')
+        if sound:
+            sound.play()
+        App.get_running_app().sm.current = self.screen_name
+
+    def update_alert_checking_bed(self,alert_checking_bed):
         for bed_type in self.AT_screen.bed_types:
             if bed_type == 'alert_with_video':
                 continue
@@ -263,15 +294,9 @@ class SaveButtonAT(IconTextButton):
                         value = 1 if button.switch.active == 1 else 0
                         alert_checking_bed[i] = [value, bed_type]
                         break
-
-        config_bed['alert_checking'] = alert_checking_bed
-        save_config("config/settings.json", 'bed_json', data=config_bed)
-
-        config_fall = load_config("config/settings.json",'fall_json')
-        alert_checking_fall = config_fall.get('alert_checking')
-        attach_video_fall = 1 if self.AT_screen.buttons['alert_with_video_fall'].switch.active else 0
-        config_fall['attach_video'] = attach_video_fall
-
+        return alert_checking_bed
+    
+    def update_alert_checking_fall(self,alert_checking_fall):
         for fall_type in self.AT_screen.fall_types:
             if fall_type == 'alert_with_video':
                 continue
@@ -279,22 +304,13 @@ class SaveButtonAT(IconTextButton):
                 button = self.buttons['sit-to-stand_fall']
             else:
                 button = self.buttons[fall_type]
-            Logger.info(f"fall_type: {fall_type}, freeze: {button.switch.freeze}, active: {button.switch.active}")
             if button.switch.freeze == False:
                 for i in range(len(alert_checking_fall)):
                     if alert_checking_fall[i][1] == fall_type:
                         value = 1 if button.switch.active == 1 else 0
-                        Logger.info(f"fall_type: {fall_type}")
                         alert_checking_fall[i] = [value, fall_type]
                         break
+        return alert_checking_fall
 
-        config_fall['alert_checking'] = alert_checking_fall
-        save_config("config/settings.json", 'fall_json', data=config_fall)
-
-        show_saved_popup(update_text_language('saved'))  # Show a popup indicating the settings have been saved
-        sound = SoundLoader.load('sound/tap.wav')
-        if sound:
-            sound.play()
-        App.get_running_app().sm.current = self.screen_name
 
 
