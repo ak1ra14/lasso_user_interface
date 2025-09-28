@@ -181,15 +181,15 @@ class AlertTypeScreen(SafeScreen):
             if fall_type == 'sit-to-stand':
                 fall_type = 'sit-to-stand_fall'
             if value is not None:
-                Logger.info(f"FALSE: fall_type: {fall_type}, value: {value}")
+                #Logger.debug(f"FALSE: fall_type: {fall_type}, value: {value}")
                 status[fall_type] = (False, value)
             else:
-                Logger.info(f"TRUE: fall_type: {fall_type}, value: {value}")
+                #Logger.debug(f"TRUE: fall_type: {fall_type}, value: {value}")
                 status[fall_type] = (True, 0)
 
         for key in self.buttons.keys():
             if isinstance(status[key], tuple):
-                Logger.info(f"BUTTON: {key}, status: {status[key]}")
+                #Logger.debug(f"BUTTON: {key}, status: {status[key]}")
                 self.buttons[key].switch.freeze = status[key][0]
                 self.buttons[key].switch.active = True if status[key][1] == 1 else False
             else:
