@@ -477,7 +477,7 @@ class QwertyKeyboard(FloatLayout):
         # Space key function 
         elif instance.function == 'Space':
             #if japanese keyboard, the space key is used for both word conversion and space insertion
-            Logger.info(f"start index{self.start_index},self.last cursor{self.last_cursor_index}, converting{self.converting},last click{self.last_click_backspace}")
+            Logger.debug(f"start index{self.start_index},self.last cursor{self.last_cursor_index}, converting{self.converting},last click{self.last_click_backspace}")
             if self.language_mode == 'japanese' and self.start_index < self.last_cursor_index and not self.converting and not self.last_click_backspace:
                 # Convert the text to Kanji using the converter
                 self.converting = True
@@ -496,7 +496,7 @@ class QwertyKeyboard(FloatLayout):
                 self.programmatic_cursor_change = False
                 self.last_cursor_index = ti.cursor_index()
             else:
-                Logger.info("Inserting space")
+                Logger.debug("Inserting space")
                 self.converting = False  # Reset the converting flag
                 self.japanese_space_button.text = '空白'
                 self.flick_space_button.text = '空白'
@@ -623,11 +623,11 @@ class QwertyKeyboard(FloatLayout):
                         
                         self.programmatic_cursor_change = False
                         
-                        Logger.info(f"Daku-on conversion: '{char_to_convert}' -> '{converted_char}'")
+                        Logger.debug(f"Daku-on conversion: '{char_to_convert}' -> '{converted_char}'")
                     else:
-                        Logger.info(f"No daku-on conversion available for '{char_to_convert}'")
+                        Logger.debug(f"No daku-on conversion available for '{char_to_convert}'")
                 else:
-                    Logger.info("No character to convert (cursor at beginning)")
+                    Logger.debug("No character to convert (cursor at beginning)")
                     
             except IndexError:
                 Logger.error("Daku-on conversion failed: Index out of range")
@@ -660,7 +660,7 @@ class QwertyKeyboard(FloatLayout):
             self.last_click_space = False
             self.last_click_backspace = False
             self.last_click_enter = False
-            Logger.info(f"Normal key entered: {instance.text},start index: {self.start_index}, self.converting: {self.converting}, cursor pos: {self.cursor_pos}, last cursor index: {self.last_cursor_index}")
+            Logger.debug(f"Normal key entered: {instance.text},start index: {self.start_index}, self.converting: {self.converting}, cursor pos: {self.cursor_pos}, last cursor index: {self.last_cursor_index}")
 
     def press_enter(self, instance):
         if self.language_mode == 'japanese':
