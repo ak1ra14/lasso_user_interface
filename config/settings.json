@@ -8,10 +8,12 @@
         "config/ack.json"
     ],
     "location_json": [
-        "config/location1.json"
+        "config/location1.json",
+        "config/location2.json",
+        "config/location3.json"
     ],
     "default_json": "config/default.json",
-    "current_page": "menu",
+    "current_page": "dark_screen",
     "first_page": "password",
     "last_page": "menu"
 }

@@ -80,6 +80,80 @@ def save_config(file_path, variable_name=None, data=None,index=0):
         Logger.exception("Failed to save config")
         raise
 
+def to_json_format(key, value):
+    """
+    Convert key-value pair to JSON format
+    
+    Args:
+        key: The key name
+        value: The value to be associated with the key
+        
+    Returns:
+        dict: A dictionary in JSON format
+        
+    Example:
+        to_json_format("wifi_ssid", "MyNetwork") 
+        returns {"wifi_ssid": "MyNetwork"}
+    """
+    try:
+        json_data = {str(key): value}
+        return json_data
+    except Exception as e:
+        Logger.error(f"ConnectionManager: Error converting to JSON format: {e}")
+        return {}
+
+def save_config_partial(file_path, variable_name=None, key=None, value=None, index=0):
+    '''
+    Save configuration to a JSON file. If variable_name is provided, it saves the data to
+    the JSON file specified by the value of that variable in the initial JSON file.
+    Only updates specified fields.
+    '''
+    try:
+        data = to_json_format(key,value)
+        with open(file_path, "r") as f:
+            paths = json.load(f)
+        
+        if variable_name:
+            next_path = paths.get(variable_name)
+            if isinstance(next_path, list) and next_path:
+                # Find first existing file in list
+                for target_path in next_path:
+                    if os.path.isfile(target_path):
+                        # Read existing data
+                        with open(target_path, "r") as f:
+                            existing_data = json.load(f)
+                        # Update only specified fields
+                        existing_data.update(data)
+                        # Write back merged data
+                        with open(target_path, "w") as f:
+                            json.dump(existing_data, f, indent=4)
+                        return
+                return
+            elif isinstance(next_path, str):
+                target_path = next_path
+                if target_path and os.path.isfile(target_path):
+                    # Read existing data
+                    with open(target_path, "r") as f:
+                        existing_data = json.load(f)
+                    # Update only specified fields
+                    existing_data.update(data)
+                    # Write back merged data
+                    with open(target_path, "w") as f:
+                        json.dump(existing_data, f, indent=4)
+        else:
+            if file_path and os.path.isfile(file_path):
+                # Read existing data
+                with open(file_path, "r") as f:
+                    existing_data = json.load(f)
+                # Update only specified fields
+                existing_data.update(data)
+                # Write back merged data
+                with open(file_path, "w") as f:
+                    json.dump(existing_data, f, indent=4)
+    except Exception as e:
+        Logger.exception("Failed to save config")
+        raise
+
 def update_current_page(page_name):
     """
     Update the current page in the config file.

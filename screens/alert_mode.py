@@ -8,7 +8,7 @@ from kivy.uix.floatlayout import FloatLayout
 from kivy.properties import BooleanProperty
 from utils.layout import SeparatorLine
 from utils.layout import HeaderBar, SafeScreen
-from utils.config_loader import load_config, save_config, update_current_page, update_text_language
+from utils.config_loader import load_config, save_config, update_current_page, update_text_language, to_json_format, save_config_partial
 from utils.freeze_screen import freeze_ui   
 
 
@@ -135,8 +135,7 @@ class AlertModeButton(IconTextButton):
             self.screen.modes = f"{self.mode}.json"
             self.screen.single_multiple = self.active_state
             config = load_config('config/settings.json','v3_json')
-            config['previous_mode'] = self.screen.modes
-            save_config('config/settings.json','v3_json', data=config)
+            save_config_partial("config/settings.json","v3_json",key='previous_mode',value=self.screen.modes)
             config = load_config(f"config/{self.screen.modes}")
             config['minnumppl_for_noalert'] = self.active_state
             config['multihumanpause_seconds'] = 0 if self.active_state == 99 else 5
@@ -166,13 +165,12 @@ class CustomSwitchAM(CustomSwitch):
             self.active = not self.active
             # Toggle between 1 and 2
             self.no_beds = 2 if self.no_beds == 1 else 1
-            config = load_config("config/bed.json")
             if self.no_beds == 1:
-                config['nbeds'] = [self.no_beds, ['1']]
+                nbeds_value = [self.no_beds, ['1']]
             elif self.no_beds == 2:
-                config['nbeds'] = [self.no_beds, ['1', '2']]
+                nbeds_value = [self.no_beds, ['1', '2']]
 
-            save_config("config/settings.json", "bed_json", data=config)
+            save_config_partial("config/settings.json", "bed_json", key='nbeds', value=nbeds_value)
             return True
         return False
             

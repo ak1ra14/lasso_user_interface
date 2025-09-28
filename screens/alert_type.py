@@ -7,7 +7,7 @@ from kivy.core.audio import SoundLoader
 from utils.layout import SeparatorLine 
 from utils.layout import HeaderBar, SafeScreen
 from utils.icons import ToggleButton, CustomSwitch
-from utils.config_loader import load_config, save_config, update_current_page, update_text_language, get_valid_value
+from utils.config_loader import load_config, update_current_page, update_text_language, get_valid_value, save_config_partial
 from utils.keyboard import show_saved_popup
 from kivy.graphics import Color, RoundedRectangle
 from kivy.logger import Logger
@@ -249,30 +249,26 @@ class SaveButtonAT(IconTextButton):
         self.buttons = self.AT_screen.buttons
         if ack_config:
             ack_enable = "yes" if self.AT_screen.buttons['ack_button'].switch.active else "no"
-            ack_config['ack_enable'] = ack_enable
-            save_config('config/settings.json','ack_json', data=ack_config)
+            save_config_partial('config/settings.json','ack_json',key='ack_enable',value=ack_enable)
 
         config_bed = load_config("config/settings.json",'bed_json')
         alert_checking_bed = config_bed.get('alert_checking')
-        print("alert_checking_bed before:", alert_checking_bed)
         attach_video_bed = 1 if self.AT_screen.buttons['alert_with_video_bed'].switch.active else 0
-        config_bed['attach_video'] = attach_video_bed
-
+        save_config_partial('config/settings.json','bed_json',key='attach_video',value=attach_video_bed)
         # Save alert checking configurations
         alert_checking_bed = self.update_alert_checking_bed(alert_checking_bed)
 
         config_bed['alert_checking'] = alert_checking_bed
-        save_config("config/settings.json", 'bed_json', data=config_bed)
+        save_config_partial('config/settings.json','bed_json',key='alert_checking',value=alert_checking_bed)
 
         config_fall = load_config("config/settings.json",'fall_json')
         alert_checking_fall = config_fall.get('alert_checking')
         attach_video_fall = 1 if self.AT_screen.buttons['alert_with_video_fall'].switch.active else 0
-        config_fall['attach_video'] = attach_video_fall
+        save_config_partial('config/settings.json','fall_json',key='attach_video',value=attach_video_fall)
 
         alert_checking_fall = self.update_alert_checking_fall(alert_checking_fall)
 
-        config_fall['alert_checking'] = alert_checking_fall
-        save_config("config/settings.json", 'fall_json', data=config_fall)
+        save_config_partial('config/settings.json','fall_json',key='alert_checking',value=alert_checking_fall)
 
         show_saved_popup(update_text_language('saved'))  # Show a popup indicating the settings have been saved
         sound = SoundLoader.load('sound/tap.wav')

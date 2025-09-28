@@ -1,7 +1,7 @@
 from kivy.uix.boxlayout import BoxLayout
 from utils.icons import IconTextButton
 from kivy.uix.widget import Widget
-from utils.config_loader import load_config, update_current_page, save_config, update_text_language
+from utils.config_loader import load_config, update_current_page, save_config, update_text_language, save_config_partial
 from utils.layout import HeaderBar, SafeScreen
 from kivy.properties import BooleanProperty
 from utils.freeze_screen import freeze_ui
@@ -82,10 +82,8 @@ class LanguageButton(IconTextButton):
         App.get_running_app().play_sound()  # Play sound on button press
         if not self.active:
             self.active = True
-            config = load_config('config/settings.json', 'v3_json')  
-            config['language'] = self.language
             App.get_running_app().language = self.language
-            save_config('config/V3.json', data=config)
+            save_config_partial("config/settings.json","v3_json",key='language',value=self.language)
             for button in self.parent.parent.buttons:
                 if button != self:
                     button.active = False

@@ -1,7 +1,7 @@
 import json
 from kivy.logger import Logger
 from utils.layout import HeaderBar, SafeScreen
-from utils.config_loader import load_config, save_config, update_current_page, update_text_language, get_valid_value
+from utils.config_loader import load_config, update_current_page, update_text_language, get_valid_value, save_config_partial
 from utils.icons import IconTextButton
 from utils.num_pad import NumberPadScreen
 from utils.keyboard import KeyboardScreen, show_saved_popup
@@ -83,7 +83,8 @@ class Bed1Screen(KeyboardScreen):
         Override the on_enter method to set the keyboard title.
         """    
         self.config['nbeds'][1][0] = self.keyboard.text_input.text
-        save_config("config/settings.json", "bed_json", self.config)
+        nbeds_value = self.config['nbeds']
+        save_config_partial("config/settings.json", "bed_json", key = 'nbeds', value=nbeds_value)
         show_saved_popup(update_text_language('saved'))  # Show a popup indicating the settings have been saved
 
     def on_pre_enter(self):
@@ -109,7 +110,8 @@ class Bed2Screen(KeyboardScreen):
         Override the on_enter method to set the keyboard title.
         """    
         self.config['nbeds'][1][1] = self.keyboard.text_input.text
-        save_config("config/settings.json", "bed_json", self.config)
+        nbeds_value = self.config['nbeds']
+        save_config_partial("config/settings.json", "bed_json", key = 'nbeds', value=nbeds_value)
         show_saved_popup(update_text_language('saved'))
 
     def on_pre_enter(self):
@@ -138,8 +140,7 @@ class DeviceKeyboardScreen(KeyboardScreen):
         """
         if self.location_config:
             if not self.check_all_location_values_same("config/settings.json",'location_json', self.location_config.get('location',None)):
-                self.location_config['location'] = self.keyboard.text_input.text
-                save_config("config/settings.json", "location_json", data=self.location_config)
+                save_config_partial("config/settings.json", "location_json", key='location',value=self.keyboard.text_input.text)
             else:
                 self.update_all_location_values("config/settings.json",'location_json', self.keyboard.text_input.text)
         show_saved_popup(update_text_language('saved'))
@@ -160,7 +161,7 @@ class DeviceKeyboardScreen(KeyboardScreen):
             default_values = load_config("config/settings.json","default_json")
             default_values['location'] = self.location_config.get('location', default_values.get('location', 'N/A'))
             Logger.info('saving default location')
-            save_config("config/settings.json","default_json", default_values)
+            save_config_partial("config/settings.json","default_json", key='location',value=self.location_config.get('location', default_values.get('location', 'N/A')))
 
     def check_all_location_values_same(self,file_path, variable_name='location_json',value_to_check=None):
         with open(file_path, "r") as f:
