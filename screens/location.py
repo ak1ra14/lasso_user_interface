@@ -150,6 +150,7 @@ class DeviceKeyboardScreen(KeyboardScreen):
         """
         update_current_page('device_keyboard')
         self.config = load_config("config/settings.json", "v3_json")
+        self.location_config = load_config("config/settings.json", "location_json")
         self.keyboard.text_input.text = get_valid_value(self.location_config, 'location', load_config("config/settings.json","default_json").get("location", "N/A"))
         self.keyboard.actual_text_input = self.keyboard.text_input.text
         super().on_pre_enter()
