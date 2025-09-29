@@ -1,7 +1,7 @@
 {
-    "minnumppl_for_noalert": 99,
-    "multihumanpause_seconds": 0,
-    "no_alert_by_overlap": 0,
+    "minnumppl_for_noalert": 2,
+    "multihumanpause_seconds": 5,
+    "no_alert_by_overlap": 1,
     "alert_checking": [
         [
             [],
@@ -28,7 +28,7 @@
             {}
         ]
     ],
-    "attach_video": 0,
+    "attach_video": 1,
     "max_dist": 3000,
     "rtsp_recording": {
         "on": 0

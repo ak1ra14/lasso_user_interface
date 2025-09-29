@@ -138,7 +138,7 @@ class SaveButton(IconTextButton):
         Clock.schedule_once(self._reset_color, 0.3)  # Reset color after 0.3 seconds
         freeze_ui(0.3)
         set_system_volume(self.volume_screen.volume)
-        sound_with_usbsoundcard = load_config("config/settings.json","v3_json").get("sound_with_usbsoundcard")
+        sound_with_usbsoundcard = load_config("config/settings.json","v3_json").get("sound_with_usbsoundcard",0)
         if sys.platform == 'linux':
             if sound_with_usbsoundcard:
                 subprocess.Popen(['aplay', '-D', 'plughw:2,0', 'sound/alertsound.wav'], 

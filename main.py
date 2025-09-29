@@ -1,5 +1,5 @@
 from asyncio import subprocess
-import os, sys
+import os, sys, subprocess
 from kivy.config import Config
 from kivy.metrics import Metrics
 
@@ -16,8 +16,6 @@ from kivy.uix.progressbar import ProgressBar
 from kivy.uix.floatlayout import FloatLayout
 from kivy.logger import Logger
 
-import sys
-import socket
 from screens.home_screen import MenuScreen1, MenuScreen2
 from screens.language import LanguageScreen
 from screens.monitor import MonitorScreen, get_ip_address
@@ -117,11 +115,23 @@ class MyApp(App):
     
     def play_sound(self):
         try:
-            if self.sound:
-                self.sound.stop()  # Stop if already playing
-                self.sound.play()
+            sound_with_usbsoundcard = load_config("config/settings.json","v3_json").get("sound_with_usbsoundcard",0)
+            if sys.platform == 'linux':
+                if sound_with_usbsoundcard:
+                    subprocess.Popen(['aplay', '-D', 'plughw:2,0', 'sound/tap.wav'], 
+                                stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                else:   
+                    subprocess.Popen(['aplay', 'sound/tap.wav'], 
+                                stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            elif sys.platform == 'darwin':  # macOS
+                subprocess.Popen(['afplay', 'sound/tap.wav'], 
+                                stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            else:
+                    Logger.warning(f"Unsupported platform: {sys.platform}")
+        except FileNotFoundError:
+            Logger.error(f"Sound file 'sound/tap.wav' not found")
         except Exception as e:
-            Logger.error("Sound file not found or unsupported format.")
+            Logger.error(f"Error playing sound: {e}")
     
     def on_user_activity(self, *args):
         '''

@@ -295,9 +295,8 @@ class SaveButtonAT(IconTextButton):
                         key='alert_checking', value=alert_checking_fall)
         
         show_saved_popup(update_text_language('saved'))  # Show a popup indicating the settings have been saved
-        sound = SoundLoader.load('sound/tap.wav')
-        if sound:
-            sound.play()
+        App.get_running_app().play_sound()  # Play sound on button press
+
         App.get_running_app().sm.current = self.screen_name
 
     def update_alert_checking(self, alert_checking_list, alert_types, mode='bed'):
