@@ -5,7 +5,8 @@
     "settings_json": "config/settings.json",
     "mqtt_json": "config/mqtt.json",
     "ack_json": [
-        "config/ack.json"
+        "config/ack1.json",
+        "config/ack2.json"
     ],
     "location_json": [
         "config/location1.json",
@@ -13,7 +14,7 @@
         "config/location3.json"
     ],
     "default_json": "config/default.json",
-    "current_page": "dark_screen",
+    "current_page": "device_keyboard",
     "first_page": "password",
     "last_page": "menu"
 }

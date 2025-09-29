@@ -188,4 +188,34 @@ def get_valid_value(config, key,default):
         return config[key]
     return default
 
+
+def check_all_values_same(file_path, variable_name='location_json',key=None,value_to_check=None):
+    with open(file_path, "r") as f:
+        data = json.load(f)
+    if variable_name:
+        next_path = data.get(variable_name)
+    all_same = True
+    if isinstance(next_path, list):
+        for path in next_path:
+            with open(path, "r") as f:
+                config = json.load(f)
+                value = config.get(key, None)
+            if value != value_to_check:
+                return False
+    return all_same
+
+def update_all_values(file_path, variable_name='location_json', key=None, new_value=None):
+    with open(file_path, "r") as f:
+        data = json.load(f)
+    if variable_name:
+        next_path = data.get(variable_name)
+    if isinstance(next_path, list):
+        for path in next_path:
+            with open(path, "r") as f:
+                config = json.load(f)
+            config[key] = new_value
+            with open(path, "w") as f:
+                json.dump(config, f, indent=4)
+
+
         

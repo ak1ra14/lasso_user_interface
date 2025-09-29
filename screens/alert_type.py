@@ -7,7 +7,7 @@ from kivy.core.audio import SoundLoader
 from utils.layout import SeparatorLine 
 from utils.layout import HeaderBar, SafeScreen
 from utils.icons import ToggleButton, CustomSwitch
-from utils.config_loader import load_config, update_current_page, update_text_language, get_valid_value, save_config_partial
+from utils.config_loader import load_config, update_current_page, update_text_language, get_valid_value, save_config_partial, update_all_values, check_all_values_same
 from utils.keyboard import show_saved_popup
 from kivy.graphics import Color, RoundedRectangle
 from kivy.logger import Logger
@@ -249,7 +249,10 @@ class SaveButtonAT(IconTextButton):
         self.buttons = self.AT_screen.buttons
         if ack_config:
             ack_enable = "yes" if self.AT_screen.buttons['ack_button'].switch.active else "no"
-            save_config_partial('config/settings.json','ack_json',key='ack_enable',value=ack_enable)
+            if not check_all_values_same("config/settings.json",'ack_json',key='ack_enable', value_to_check=ack_config.get('ack_enable',None)):
+                save_config_partial("config/settings.json", "ack_json", key='ack_enable',value=ack_enable)
+            else:
+                update_all_values("config/settings.json",'ack_json', key='ack_enable', new_value= ack_enable)   
 
         config_bed = load_config("config/settings.json",'bed_json')
         alert_checking_bed = config_bed.get('alert_checking')

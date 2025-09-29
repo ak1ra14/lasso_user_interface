@@ -1,7 +1,7 @@
 import json
 from kivy.logger import Logger
 from utils.layout import HeaderBar, SafeScreen
-from utils.config_loader import load_config, update_current_page, update_text_language, get_valid_value, save_config_partial
+from utils.config_loader import load_config, update_current_page, update_text_language, get_valid_value, save_config_partial, check_all_values_same, update_all_values
 from utils.icons import IconTextButton
 from utils.num_pad import NumberPadScreen
 from utils.keyboard import KeyboardScreen, show_saved_popup
@@ -138,11 +138,12 @@ class DeviceKeyboardScreen(KeyboardScreen):
         """
         Override the on_enter method to set the keyboard title.
         """
+        self.location_config = load_config("config/settings.json", "location_json")
         if self.location_config:
-            if not self.check_all_location_values_same("config/settings.json",'location_json', self.location_config.get('location',None)):
+            if not check_all_values_same("config/settings.json",'location_json',key='location', value_to_check= self.location_config.get('location',None)):
                 save_config_partial("config/settings.json", "location_json", key='location',value=self.keyboard.text_input.text)
             else:
-                self.update_all_location_values("config/settings.json",'location_json', self.keyboard.text_input.text)
+                update_all_values("config/settings.json",'location_json', key='location',new_value= self.keyboard.text_input.text)   
         show_saved_popup(update_text_language('saved'))
 
     def on_pre_enter(self):
@@ -163,33 +164,6 @@ class DeviceKeyboardScreen(KeyboardScreen):
             Logger.info('saving default location')
             save_config_partial("config/settings.json","default_json", key='location',value=self.location_config.get('location', default_values.get('location', 'N/A')))
 
-    def check_all_location_values_same(self,file_path, variable_name='location_json',value_to_check=None):
-        with open(file_path, "r") as f:
-            data = json.load(f)
-        if variable_name:
-            next_path = data.get(variable_name)
-        all_same = True
-        if isinstance(next_path, list):
-            for path in next_path:
-                with open(path, "r") as f:
-                    config = json.load(f)
-                    location_value = config.get('location', None)
-                if location_value != value_to_check:
-                    return False
-        return all_same
-
-    def update_all_location_values(self,file_path, variable_name='location_json', new_value=None):
-        with open(file_path, "r") as f:
-            data = json.load(f)
-        if variable_name:
-            next_path = data.get(variable_name)
-        if isinstance(next_path, list):
-            for path in next_path:
-                with open(path, "r") as f:
-                    config = json.load(f)
-                config['location'] = new_value
-                with open(path, "w") as f:
-                    json.dump(config, f, indent=4)
 
 
 
