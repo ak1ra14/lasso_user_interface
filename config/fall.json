@@ -1,17 +1,26 @@
 {
-    "minnumppl_for_noalert": 2,
-    "multihumanpause_seconds": 5,
-    "no_alert_by_overlap": 1,
+    "minnumppl_for_noalert": 99,
+    "multihumanpause_seconds": 0,
+    "no_alert_by_overlap": 0,
     "alert_checking": [
         [
+            [],
+            [],
+            [],
             1,
             "sit-to-stand"
         ],
         [
-            1,
+            [],
+            [],
+            [],
+            0,
             "fall"
         ],
         [
+            [],
+            [],
+            [],
             0,
             "sit-to-stand"
         ]

@@ -162,6 +162,25 @@ class AlertTypeScreen(SafeScreen):
         attach_video_bed = self.bed_json.get("attach_video", 1)
         status['alert_with_video_bed'] = attach_video_bed
 
+        status = self.update_status_bed(status)
+
+        attach_video_fall = self.fall_json.get("attach_video", 1)
+        status['alert_with_video_fall'] = attach_video_fall
+
+        status = self.update_status_fall(status)
+
+        self.update_state(status)
+
+        self.header.update_language()
+        self.save_button.label.text = update_text_language('save')
+
+    def get_first_value(self, alert_checking_list, alert_type):
+        for item in alert_checking_list:
+            if item[4] == alert_type:
+                return item[3]
+        return None
+    
+    def update_status_bed(self,status):
         alert_checking_bed = self.bed_json.get("alert_checking", None)
         for bed_type in self.bed_types[1:]:
             value = self.get_first_value(alert_checking_bed, bed_type)
@@ -171,10 +190,9 @@ class AlertTypeScreen(SafeScreen):
                 status[bed_type] = (False, value)
             else:
                 status[bed_type] = (True, 0)
-
-        attach_video_fall = self.fall_json.get("attach_video", 1)
-        status['alert_with_video_fall'] = attach_video_fall
-
+        return status
+    
+    def update_status_fall(self,status):
         alert_checking_fall = self.fall_json.get("alert_checking", None)
         for fall_type in self.fall_types[1:]:
             value = self.get_first_value(alert_checking_fall, fall_type)
@@ -187,6 +205,9 @@ class AlertTypeScreen(SafeScreen):
                 #Logger.debug(f"TRUE: fall_type: {fall_type}, value: {value}")
                 status[fall_type] = (True, 0)
 
+        return status
+    
+    def update_state(self, status):
         for key in self.buttons.keys():
             if isinstance(status[key], tuple):
                 #Logger.debug(f"BUTTON: {key}, status: {status[key]}")
@@ -196,14 +217,7 @@ class AlertTypeScreen(SafeScreen):
                 self.buttons[key].switch.active = status[key]
             self.buttons[key].switch.update_graphics()
             self.buttons[key].update_language()
-        self.header.update_language()
-        self.save_button.label.text = update_text_language('save')
-
-    def get_first_value(self, alert_checking_list, alert_type):
-        for item in alert_checking_list:
-            if item[1] == alert_type:
-                return item[0]
-        return None
+        
     
 class AlertTypeButton(CustomSwitch):
     def __init__(self, value, freeze=False, **kwargs):
@@ -259,57 +273,72 @@ class SaveButtonAT(IconTextButton):
         attach_video_bed = 1 if self.AT_screen.buttons['alert_with_video_bed'].switch.active else 0
         save_config_partial('config/settings.json','bed_json',key='attach_video',value=attach_video_bed)
         # Save alert checking configurations
-        alert_checking_bed = self.update_alert_checking_bed(alert_checking_bed)
-
-        config_bed['alert_checking'] = alert_checking_bed
-        save_config_partial('config/settings.json','bed_json',key='alert_checking',value=alert_checking_bed)
+        alert_checking_bed = self.update_alert_checking(
+            alert_checking_bed, 
+            self.AT_screen.bed_types, 
+            mode='bed'
+        )
+        save_config_partial('config/settings.json', 'bed_json', 
+                       key='alert_checking', value=alert_checking_bed)
 
         config_fall = load_config("config/settings.json",'fall_json')
         alert_checking_fall = config_fall.get('alert_checking')
         attach_video_fall = 1 if self.AT_screen.buttons['alert_with_video_fall'].switch.active else 0
         save_config_partial('config/settings.json','fall_json',key='attach_video',value=attach_video_fall)
 
-        alert_checking_fall = self.update_alert_checking_fall(alert_checking_fall)
-
-        save_config_partial('config/settings.json','fall_json',key='alert_checking',value=alert_checking_fall)
-
+        alert_checking_fall = self.update_alert_checking(
+            alert_checking_fall, 
+            self.AT_screen.fall_types, 
+            mode='fall'
+        )
+        save_config_partial('config/settings.json', 'fall_json', 
+                        key='alert_checking', value=alert_checking_fall)
+        
         show_saved_popup(update_text_language('saved'))  # Show a popup indicating the settings have been saved
         sound = SoundLoader.load('sound/tap.wav')
         if sound:
             sound.play()
         App.get_running_app().sm.current = self.screen_name
 
-    def update_alert_checking_bed(self,alert_checking_bed):
-        for bed_type in self.AT_screen.bed_types:
-            if bed_type == 'alert_with_video':
+    def update_alert_checking(self, alert_checking_list, alert_types, mode='bed'):
+        """
+        Update alert checking list for both bed and fall modes
+        
+        Args:
+            alert_checking_list: List of alert checking configurations
+            alert_types: List of alert types to process
+            mode: 'bed' or 'fall' to determine button suffix
+        
+        Returns:
+            Updated alert checking list
+        """
+        for alert_type in alert_types:
+            if alert_type == 'alert_with_video':
                 continue
-            if bed_type == 'sit-to-stand':
-                button = self.buttons['sit-to-stand_bed']
+                
+            # Get the correct button based on type and mode
+            if alert_type == 'sit-to-stand':
+                button_key = f'sit-to-stand_{mode}'
             else:
-                button = self.buttons[bed_type]
-            if button.switch.freeze == False:
-                for i in range(len(alert_checking_bed)):
-                    if alert_checking_bed[i][1] == bed_type:
-                        value = 1 if button.switch.active == 1 else 0
-                        alert_checking_bed[i] = [value, bed_type]
+                button_key = alert_type
+                
+            button = self.buttons[button_key]
+            
+            if not button.switch.freeze:
+                for i in range(len(alert_checking_list)):
+                    if alert_checking_list[i][4] == alert_type:
+                        value = 1 if button.switch.active else 0
+                        # Preserve the first three empty arrays
+                        alert_checking_list[i] = [
+                            alert_checking_list[i][0],  # Keep first []
+                            alert_checking_list[i][1],  # Keep second []
+                            alert_checking_list[i][2],  # Keep third []
+                            value,                      # Update the 0/1 value
+                            alert_type                  # Update the type
+                        ]
                         break
-        return alert_checking_bed
-    
-    def update_alert_checking_fall(self,alert_checking_fall):
-        for fall_type in self.AT_screen.fall_types:
-            if fall_type == 'alert_with_video':
-                continue
-            if fall_type == 'sit-to-stand':
-                button = self.buttons['sit-to-stand_fall']
-            else:
-                button = self.buttons[fall_type]
-            if button.switch.freeze == False:
-                for i in range(len(alert_checking_fall)):
-                    if alert_checking_fall[i][1] == fall_type:
-                        value = 1 if button.switch.active == 1 else 0
-                        alert_checking_fall[i] = [value, fall_type]
-                        break
-        return alert_checking_fall
+                        
+        return alert_checking_list
 
 
 
