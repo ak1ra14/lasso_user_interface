@@ -327,15 +327,9 @@ class SaveButtonAT(IconTextButton):
             if not button.switch.freeze:
                 for i in range(len(alert_checking_list)):
                     if alert_checking_list[i][4] == alert_type:
+                        # Only update the value at index 3, preserve everything else
                         value = 1 if button.switch.active else 0
-                        # Preserve the first three empty arrays
-                        alert_checking_list[i] = [
-                            alert_checking_list[i][0],  # Keep first []
-                            alert_checking_list[i][1],  # Keep second []
-                            alert_checking_list[i][2],  # Keep third []
-                            value,                      # Update the 0/1 value
-                            alert_type                  # Update the type
-                        ]
+                        alert_checking_list[i][3] = value
                         break
                         
         return alert_checking_list

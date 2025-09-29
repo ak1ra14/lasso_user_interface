@@ -4,10 +4,10 @@ from utils.icons import IconTextButton
 from kivy.app import App
 from kivy.uix.floatlayout import FloatLayout
 from utils.freeze_screen import freeze_ui
-import os, sys
+import os, sys, subprocess
 from kivy.uix.slider import Slider
-
-from utils.config_loader import load_config, save_config, update_current_page, update_text_language
+from kivy.clock import Clock
+from utils.config_loader import load_config, save_config, update_current_page, update_text_language, save_config_partial
 from utils.layout import HeaderBar, SafeScreen
 from utils.keyboard import show_saved_popup
 
@@ -132,12 +132,25 @@ class SaveButton(IconTextButton):
         This method is called when the save button is pressed.
         """
         # Save the current volume to the config file
-        super().on_press()
+
+        self.color_instruction.rgba = (0.2, 0.8, 0.2, 1) # Change color to green on press
+        Clock.schedule_once(self._reset_color, 0.3)  # Reset color after 0.3 seconds
+        freeze_ui(0.3)
         set_system_volume(self.volume_screen.volume)
+        sound_with_usbsoundcard = load_config("config/settings.json","v3_json").get("sound_with_usbsoundcard")
+        if sys.platform == 'linux':
+            if sound_with_usbsoundcard:
+                subprocess.Popen(['aplay', '-D', 'plughw:2,0', 'sound/alertsound.wav'], 
+                            stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            else:   
+                subprocess.Popen(['aplay', 'sound/alertsound.wav'], 
+                            stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        elif sys.platform == 'darwin':  # macOS
+            subprocess.Popen(['afplay', 'sound/alertsound.wav'], 
+                            stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        
         show_saved_popup(update_text_language('saved'))  # Show a popup indicating the settings have been saved
-        config = load_config('config/settings.json', 'v3_json')
-        config['volume'] = self.volume_screen.volume
-        save_config('config/settings.json', 'v3_json', data=config)
+        save_config_partial("config/settings.json", "v3_json", key = 'volume', value=self.volume_screen.volume)
         App.get_running_app().sm.current = 'menu'  # Navigate back to the menu screen
 
 class HomeButtonVolume(IconTextButton):

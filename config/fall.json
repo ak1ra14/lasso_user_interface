@@ -7,22 +7,25 @@
             [],
             [],
             [],
-            1,
-            "sit-to-stand"
+            0,
+            "sit-to-stand",
+            {}
         ],
         [
             [],
             [],
             [],
             0,
-            "fall"
+            "fall",
+            {}
         ],
         [
             [],
             [],
             [],
             0,
-            "sit-to-stand"
+            "sit-to-stand",
+            {}
         ]
     ],
     "attach_video": 0,

@@ -15,35 +15,40 @@
             [],
             [],
             0,
-            "sit-to-stand"
+            "sit-to-stand",
+            {}
         ],
         [
             [],
             [],
             [],
             0,
-            "sit-to-stand"
+            "sit-to-stand",
+            {}
         ],
         [
             [],
             [],
             [],
             0,
-            "lie_out"
+            "lie_out",
+            {}
         ],
         [
             [],
             [],
             [],
             0,
-            "lie_out"
+            "lie_out",
+            {}
         ],
         [
             [],
             [],
             [],
-            1,
-            "bed_exit"
+            0,
+            "bed_exit",
+            {}
         ]
     ],
     "attach_video": 0,

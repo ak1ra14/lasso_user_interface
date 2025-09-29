@@ -154,8 +154,8 @@ class MenuScreen1(MenuScreen):
         has_fall_video = fall_config.get("attach_video", 0)
 
         # Check if any nested list's first element is 1
-        bed_has_alert = any(isinstance(item, list) and len(item) > 0 and item[0] == 1 for item in bed_alerts)
-        fall_has_alert = any(isinstance(item, list) and len(item) > 0 and item[0] == 1 for item in fall_alerts)
+        bed_has_alert = any(isinstance(item, list) and len(item) > 0 and item[3] == 1 for item in bed_alerts)
+        fall_has_alert = any(isinstance(item, list) and len(item) > 0 and item[3] == 1 for item in fall_alerts)
 
         if (bed_has_alert or has_bed_video) and (fall_has_alert or has_fall_video):
             return "bed_exit_and_fall"

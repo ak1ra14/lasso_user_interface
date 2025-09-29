@@ -1,3 +1,4 @@
+from asyncio import subprocess
 import os, sys
 from kivy.config import Config
 from kivy.metrics import Metrics
@@ -30,14 +31,12 @@ from screens.location import LocationScreen, Bed1Screen, Bed2Screen, DeviceKeybo
 from screens.server import ServerScreen, MQTTTopicKeyboardScreen, RegionServerScreen, MQTTBrokerIPScreen, AlertLight1Screen, AlertLight2Screen
 from utils.num_pad import NumberPadScreen
 from screens.wifi import WifiLoadingScreen, WifiPasswordScreen, WifiConnectingScreen, WifiConnectedScreen, WifiErrorScreen, connect_wifi, get_connected_wifi
-from kivy.core.audio import SoundLoader
-from kivy.uix.popup import Popup
-from kivy.uix.label import Label
-from kivy.uix.boxlayout import BoxLayout
 from kivy.clock import Clock
 from utils.config_loader import update_text_language
 from utils.password import PasswordScreen
 from utils.connection_manager import ConnectionManager
+from kivy.core.audio import SoundLoader
+
 
 
 class MyApp(App):
