@@ -10,6 +10,7 @@ from kivy.clock import Clock
 from utils.config_loader import load_config, save_config, update_current_page, update_text_language, save_config_partial
 from utils.layout import HeaderBar, SafeScreen
 from utils.keyboard import show_saved_popup
+from kivy.logger import Logger
 
 
 class VolumeScreen(SafeScreen):
@@ -167,9 +168,12 @@ def set_system_volume(percent):
     #raspberry pi
 def set_system_volume_linux(percent):
     # Clamp percent between 0 and 100
-    percent = max(0, min(100, percent))
-    os.system(f"amixer sset 'Master' {percent}%")
-
+    percentage = os.popen('amixer get PCM | grep "Front Left: Playback" | ' + "awk '{print $5}'").read()
+    volume_value = str(percentage).strip("b'[]\n").strip('%')
+    Logger.info(f"Previous volume: {volume_value}, New volume set to {percent}")
+    subprocess.Popen(["amixer", "-c", "2", "cset", "numid=4", f"{percent}%"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    subprocess.Popen(["amixer", "-c", "2", "cset", "numid=6", f"{percent}%"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    subprocess.Popen(["amixer", "-c", "0", "cset", "numid=6", f"{percent}%"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 #macOS
 def set_system_volume_mac(percent):
     percent = max(0, min(100, percent))
