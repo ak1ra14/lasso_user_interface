@@ -1,6 +1,6 @@
-from utils.keyboard import KeyboardScreen
-from utils.config_loader import read_txt_file, update_text_language
-from utils.keyboard import show_saved_popup
+from utils.as_keyboard import KeyboardScreen
+from utils.as_config_loader import read_txt_file, update_text_language
+from utils.as_keyboard import show_saved_popup
 from kivy.app import App
 
 class PasswordScreen(KeyboardScreen):

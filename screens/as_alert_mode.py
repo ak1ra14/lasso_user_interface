@@ -1,15 +1,15 @@
 from kivy.uix.screenmanager import Screen
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
-from utils.icons import IconTextButton, ToggleButton, CustomSwitch
+from utils.as_icons import IconTextButton, ToggleButton, CustomSwitch
 from kivy.uix.widget import Widget
 from kivy.app import App
 from kivy.uix.floatlayout import FloatLayout
 from kivy.properties import BooleanProperty
-from utils.layout import SeparatorLine
-from utils.layout import HeaderBar, SafeScreen
-from utils.config_loader import load_config, save_config, update_current_page, update_text_language, to_json_format, save_config_partial
-from utils.freeze_screen import freeze_ui   
+from utils.as_layout import SeparatorLine
+from utils.as_layout import HeaderBar, SafeScreen
+from utils.as_config_loader import load_config, save_config, update_current_page, update_text_language, to_json_format, save_config_partial
+from utils.as_freeze_screen import freeze_ui   
 
 
 class AlertModeScreen(Screen):

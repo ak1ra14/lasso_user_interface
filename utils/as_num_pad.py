@@ -5,14 +5,14 @@ from kivy.uix.label import Label
 from kivy.uix.widget import Widget
 from kivy.uix.textinput import TextInput
 from kivy.uix.floatlayout import FloatLayout
-from utils.config_loader import update_text_language
-from utils.icons import IconTextButton
+from utils.as_config_loader import update_text_language
+from utils.as_icons import IconTextButton
 from kivy.graphics import Color, RoundedRectangle, Line
-from utils.keyboard import SeparatorLine
-from utils.layout import SafeScreen
-from utils.freeze_screen import freeze_ui
+from utils.as_keyboard import SeparatorLine
+from utils.as_layout import SafeScreen
+from utils.as_freeze_screen import freeze_ui
 from kivy.app import App
-from utils.keyboard import show_saved_popup
+from utils.as_keyboard import show_saved_popup
 
 class NumberPadScreen(SafeScreen):
     '''

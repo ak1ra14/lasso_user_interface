@@ -1,10 +1,10 @@
 import json
 from kivy.logger import Logger
-from utils.layout import HeaderBar, SafeScreen
-from utils.config_loader import load_config, update_current_page, update_text_language, get_valid_value, save_config_partial, check_all_values_same, update_all_values
-from utils.icons import IconTextButton
-from utils.num_pad import NumberPadScreen
-from utils.keyboard import KeyboardScreen, show_saved_popup
+from utils.as_layout import HeaderBar, SafeScreen
+from utils.as_config_loader import load_config, update_current_page, update_text_language, get_valid_value, save_config_partial, check_all_values_same, update_all_values
+from utils.as_icons import IconTextButton
+from utils.as_num_pad import NumberPadScreen
+from utils.as_keyboard import KeyboardScreen, show_saved_popup
 from kivy.app import App
 
 

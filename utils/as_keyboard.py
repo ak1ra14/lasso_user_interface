@@ -7,17 +7,17 @@ from kivy.uix.widget import Widget
 from kivy.graphics import Color, RoundedRectangle, Ellipse, Line
 from kivy.properties import BooleanProperty
 from kivy.uix.floatlayout import FloatLayout
-from utils.icons import IconTextButton
-from utils.flick_key import FlickKey
-from utils.layout import SafeScreen
-from utils.freeze_screen import freeze_ui
+from utils.as_icons import IconTextButton
+from utils.as_flick_key import FlickKey
+from utils.as_layout import SafeScreen
+from utils.as_freeze_screen import freeze_ui
 from kivy.uix.image import Image
 from kivy.clock import Clock
 from kivy.uix.screenmanager import Screen
 import sys, os
 import mozcpy
 from kivy.app import App
-from utils.config_loader import load_config, update_text_language
+from utils.as_config_loader import load_config, update_text_language
 import time 
 from kivy.uix.popup import Popup
 from kivy.logger import Logger

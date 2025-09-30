@@ -1,5 +1,5 @@
 import sys, subprocess, threading, time
-from utils.layout import HeaderBar, SafeScreen, LoadingCircle
+from utils.as_layout import HeaderBar, SafeScreen, LoadingCircle
 from kivy.uix.image import Image
 from kivy.app import App
 from kivy.uix.screenmanager import Screen
@@ -9,10 +9,10 @@ from kivy.uix.gridlayout import GridLayout
 from kivy.uix.scrollview import ScrollView
 from kivy.graphics import Color, Rectangle
 from kivy.uix.button import Button
-from utils.config_loader import load_config, save_config, update_current_page, update_text_language
-from utils.icons import IconTextButton
-from utils.keyboard import KeyboardScreen
-from utils.freeze_screen import freeze_ui
+from utils.as_config_loader import load_config, save_config, update_current_page, update_text_language
+from utils.as_icons import IconTextButton
+from utils.as_keyboard import KeyboardScreen
+from utils.as_freeze_screen import freeze_ui
 from kivy.logger import Logger
 
 class WifiLoadingScreen(SafeScreen):

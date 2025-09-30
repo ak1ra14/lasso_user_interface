@@ -1,15 +1,15 @@
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
-from utils.icons import IconTextButton
+from utils.as_icons import IconTextButton
 from kivy.app import App
 from kivy.uix.floatlayout import FloatLayout
-from utils.freeze_screen import freeze_ui
+from utils.as_freeze_screen import freeze_ui
 import os, sys, subprocess
 from kivy.uix.slider import Slider
 from kivy.clock import Clock
-from utils.config_loader import load_config, save_config, update_current_page, update_text_language, save_config_partial
-from utils.layout import HeaderBar, SafeScreen
-from utils.keyboard import show_saved_popup
+from utils.as_config_loader import load_config, save_config, update_current_page, update_text_language, save_config_partial
+from utils.as_layout import HeaderBar, SafeScreen
+from utils.as_keyboard import show_saved_popup
 from kivy.logger import Logger
 
 

@@ -8,10 +8,10 @@ from kivy.uix.widget import Widget
 from kivy.uix.anchorlayout import AnchorLayout
 from kivy.app import App
 from kivy.core.audio import SoundLoader
-from utils.config_loader import load_config, update_text_language
+from utils.as_config_loader import load_config, update_text_language
 from kivy.properties import BooleanProperty
 from kivy.clock import Clock
-from utils.freeze_screen import freeze_ui
+from utils.as_freeze_screen import freeze_ui
 
 
 class ColoredLabel(Label):

@@ -1,7 +1,7 @@
 from kivy.core.audio import SoundLoader
 from kivy.logger import Logger
 import sys
-from utils.config_loader import load_config
+from utils.as_config_loader import load_config
 
 class SoundManager:
     def __init__(self):

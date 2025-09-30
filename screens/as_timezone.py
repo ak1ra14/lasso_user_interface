@@ -2,16 +2,16 @@ from kivy.uix.screenmanager import Screen
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
 from kivy.uix.widget import Widget
-from utils.icons import IconTextButton
+from utils.as_icons import IconTextButton
 from kivy.uix.button import Button
 from kivy.uix.scrollview import ScrollView
-from utils.config_loader import load_config, save_config, update_current_page, update_text_language
+from utils.as_config_loader import load_config, save_config, update_current_page, update_text_language
 from kivy.uix.gridlayout import GridLayout
 from kivy.app import App
 from kivy.uix.button import Button
 from kivy.graphics import Color, Rectangle
-from utils.layout import HeaderBar, SafeScreen
-from utils.keyboard import show_saved_popup
+from utils.as_layout import HeaderBar, SafeScreen
+from utils.as_keyboard import show_saved_popup
 
 class TimezoneScreen(SafeScreen):
     def __init__(self, **kwargs):

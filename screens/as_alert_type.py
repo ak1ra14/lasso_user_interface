@@ -1,14 +1,14 @@
-from utils.icons import IconTextButton, ToggleButton
+from utils.as_icons import IconTextButton, ToggleButton
 from kivy.uix.image import Image
 from kivy.uix.floatlayout import FloatLayout
 from kivy.properties import BooleanProperty
 from kivy.app import App
 from kivy.core.audio import SoundLoader
-from utils.layout import SeparatorLine 
-from utils.layout import HeaderBar, SafeScreen
-from utils.icons import ToggleButton, CustomSwitch
-from utils.config_loader import load_config, update_current_page, update_text_language, get_valid_value, save_config_partial, update_all_values, check_all_values_same
-from utils.keyboard import show_saved_popup
+from utils.as_layout import SeparatorLine 
+from utils.as_layout import HeaderBar, SafeScreen
+from utils.as_icons import ToggleButton, CustomSwitch
+from utils.as_config_loader import load_config, update_current_page, update_text_language, get_valid_value, save_config_partial, update_all_values, check_all_values_same
+from utils.as_keyboard import show_saved_popup
 from kivy.graphics import Color, RoundedRectangle
 from kivy.logger import Logger
 

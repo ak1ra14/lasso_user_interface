@@ -1,10 +1,10 @@
 from kivy.uix.boxlayout import BoxLayout
-from utils.icons import IconTextButton
+from utils.as_icons import IconTextButton
 from kivy.uix.widget import Widget
-from utils.config_loader import load_config, update_current_page, save_config, update_text_language, save_config_partial
-from utils.layout import HeaderBar, SafeScreen
+from utils.as_config_loader import load_config, update_current_page, save_config, update_text_language, save_config_partial
+from utils.as_layout import HeaderBar, SafeScreen
 from kivy.properties import BooleanProperty
-from utils.freeze_screen import freeze_ui
+from utils.as_freeze_screen import freeze_ui
 from kivy.app import App
 
 

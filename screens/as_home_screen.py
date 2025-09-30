@@ -3,9 +3,9 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.image import Image
 from kivy.uix.widget import Widget
 from kivy.uix.anchorlayout import AnchorLayout
-from utils.icons import IconTextButton, CircularImageButton, PageIndicator
-from utils.config_loader import load_config, update_current_page, update_text_language, get_valid_value
-from utils.layout import HeaderBar,  SafeScreen , FooterBar
+from utils.as_icons import IconTextButton, CircularImageButton, PageIndicator
+from utils.as_config_loader import load_config, update_current_page, update_text_language, get_valid_value
+from utils.as_layout import HeaderBar,  SafeScreen , FooterBar
 from kivy.app import App
 
 class MenuScreen(SafeScreen):

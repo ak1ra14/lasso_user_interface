@@ -1,10 +1,10 @@
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.widget import Widget  
-from utils.icons import IconTextButton, CircularImageButton
+from utils.as_icons import IconTextButton, CircularImageButton
 from kivy.app import App
 import os, sys
-from utils.config_loader import load_config, save_config, update_current_page, update_text_language
-from utils.layout import HeaderBar, SafeScreen
+from utils.as_config_loader import load_config, save_config, update_current_page, update_text_language
+from utils.as_layout import HeaderBar, SafeScreen
 
 class PowerScreen(SafeScreen):
     """

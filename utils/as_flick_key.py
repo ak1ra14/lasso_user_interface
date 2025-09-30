@@ -6,7 +6,7 @@ from kivy.uix.button import Button
 from kivy.graphics import Color, RoundedRectangle
 from kivy.uix.floatlayout import FloatLayout
 from kivy.logger import Logger
-from utils.freeze_screen import freeze_ui
+from utils.as_freeze_screen import freeze_ui
 
 class FlickPopup(FloatLayout):
     '''

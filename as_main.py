@@ -10,30 +10,30 @@ if sys.platform.startswith('linux'):
 from kivy.app import App
 from kivy.uix.screenmanager import ScreenManager, Screen, NoTransition
 from kivy.core.window import Window
-from utils.config_loader import load_config, save_config
+from utils.as_config_loader import load_config, save_config
 from kivy.clock import Clock
 from kivy.uix.progressbar import ProgressBar
 from kivy.uix.floatlayout import FloatLayout
 from kivy.logger import Logger
 
-from screens.home_screen import MenuScreen1, MenuScreen2
-from screens.language import LanguageScreen
-from screens.monitor import MonitorScreen, get_ip_address
-from screens.power import PowerScreen
-from screens.screensaver import ScreenSaverScreen, DarkScreen
-from screens.timezone import TimezoneScreen
-from screens.volume import VolumeScreen, set_system_volume
-from screens.alert_mode import AlertModeScreen
-from screens.alert_type import AlertTypeScreen
-from screens.location import LocationScreen, Bed1Screen, Bed2Screen, DeviceKeyboardScreen
-from screens.server import ServerScreen, MQTTTopicKeyboardScreen, RegionServerScreen, MQTTBrokerIPScreen, AlertLight1Screen, AlertLight2Screen
-from utils.num_pad import NumberPadScreen
-from screens.wifi import WifiLoadingScreen, WifiPasswordScreen, WifiConnectingScreen, WifiConnectedScreen, WifiErrorScreen, connect_wifi, get_connected_wifi
+from screens.as_home_screen import MenuScreen1, MenuScreen2
+from screens.as_language import LanguageScreen
+from screens.as_monitor import MonitorScreen, get_ip_address
+from screens.as_power import PowerScreen
+from screens.as_screensaver import ScreenSaverScreen, DarkScreen
+from screens.as_timezone import TimezoneScreen
+from screens.as_volume import VolumeScreen, set_system_volume
+from screens.as_alert_mode import AlertModeScreen
+from screens.as_alert_type import AlertTypeScreen
+from screens.as_location import LocationScreen, Bed1Screen, Bed2Screen, DeviceKeyboardScreen
+from screens.as_server import ServerScreen, MQTTTopicKeyboardScreen, RegionServerScreen, MQTTBrokerIPScreen, AlertLight1Screen, AlertLight2Screen
+from utils.as_num_pad import NumberPadScreen
+from screens.as_wifi import WifiLoadingScreen, WifiPasswordScreen, WifiConnectingScreen, WifiConnectedScreen, WifiErrorScreen, connect_wifi, get_connected_wifi
 from kivy.clock import Clock
-from utils.config_loader import update_text_language
-from utils.password import PasswordScreen
-from utils.connection_manager import ConnectionManager
-from utils.sound_manager import SoundManager
+from utils.as_config_loader import update_text_language
+from utils.as_password import PasswordScreen
+from utils.as_connection_manager import ConnectionManager
+from utils.as_sound_manager import SoundManager
 from kivy.core.audio import SoundLoader
 
 

@@ -7,9 +7,9 @@ import configparser
 import re
 from kivy.clock import Clock
 from kivy.logger import Logger
-from utils.config_loader import load_config, save_config, update_text_language
-from screens.monitor import get_ip_address
-from screens.wifi import get_connected_wifi
+from utils.as_config_loader import load_config, save_config, update_text_language
+from screens.as_monitor import get_ip_address
+from screens.as_wifi import get_connected_wifi
 
 
 class ConnectionManager:

@@ -2,12 +2,12 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
 from kivy.uix.widget import Widget
 from kivy.graphics import Color, Line, Ellipse
-from utils.icons import IconTextButton, PageIndicator, CircularImageButton, PageIndicatorWidget
+from utils.as_icons import IconTextButton, PageIndicator, CircularImageButton, PageIndicatorWidget
 from kivy.uix.anchorlayout import AnchorLayout
-from utils.config_loader import load_config
+from utils.as_config_loader import load_config
 from kivy.uix.screenmanager import Screen
 from kivy.clock import Clock
-from utils.config_loader import update_text_language
+from utils.as_config_loader import update_text_language
 import math
 
 class HeaderBar(BoxLayout):

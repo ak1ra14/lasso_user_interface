@@ -14,7 +14,7 @@
         "config/location3.json"
     ],
     "default_json": "config/default.json",
-    "current_page": "menu",
+    "current_page": "monitor",
     "first_page": "password",
     "last_page": "menu"
 }
