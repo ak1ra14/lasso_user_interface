@@ -102,8 +102,6 @@ class ChangeVolume(IconTextButton):
             self._increase()
         elif self.change == "decrease":
             self._decrease()
-        print("Volume changed by", self.by)
-
 
     def _increase(self):
         current_volume = self.volume_screen.volume
