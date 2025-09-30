@@ -66,7 +66,6 @@ class WifiLoadingScreen(SafeScreen):
         def update_list_box_height(dt):
             total_height = sum([btn.height for btn in self.wifi_list])
             list_box.height = max(total_height, 300)
-            Logger.info(f"Total height of wifi list: {total_height}, number of wifi: {len(self.wifi_list)}")
         Clock.schedule_once(update_list_box_height, 0)
         list_box.width = 465
             
@@ -579,7 +578,6 @@ class SelectableButton(Button):
         self.text_size = (self.width - 20, None)
 
     def _update_height(self, *args):
-        Logger.info(f"Button '{self.text}' texture size: {self.texture_size}")
         self.height = self.texture_size[1] + 10 # 10px padding for aesthetics
     
     def _update_rect(self, *args):

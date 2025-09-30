@@ -291,7 +291,7 @@ class DefaultButton(IconTextButton):
                 current_screen.config[key] = default_values[key]
                 current_screen.buttons[key].status = default_values[key]
             elif key.replace('mqtt_','') in default_values:
-                    Logger.info(f"{key}, {default_values[key.replace('mqtt_','')]}")
+                    #Logger.debug(f"{key}, {default_values[key.replace('mqtt_','')]}")
                     current_screen.mqtt_config[key.replace('mqtt_','')] = default_values[key.replace('mqtt_','')]
                     current_screen.buttons[key].status = default_values[key.replace('mqtt_','')]
 
