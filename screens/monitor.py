@@ -50,7 +50,7 @@ class MonitorScreen(SafeScreen):
         )
         
     def go_to_menu(self, instance):
-        App.get_running_app().play_sound()
+        App.get_running_app().sound_manager.play_tap()
         App.get_running_app().sm.current = 'menu'  # Change 'main' to the actual screen name for the menu
 
     def on_pre_enter(self):

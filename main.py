@@ -33,6 +33,7 @@ from kivy.clock import Clock
 from utils.config_loader import update_text_language
 from utils.password import PasswordScreen
 from utils.connection_manager import ConnectionManager
+from utils.sound_manager import SoundManager
 from kivy.core.audio import SoundLoader
 
 
@@ -43,7 +44,7 @@ class MyApp(App):
         Build the main application. creating instance of ScreenManager and adding all screens to it.
         '''
         self.sm = ScreenManager(transition=NoTransition())
-        self.sound = SoundLoader.load('sound/tap.mp3')  # Load sound once
+        self.sound_manager = SoundManager()
         self.en_dictionary = load_config('languages/en.json')
         self.jp_dictionary = load_config('languages/jp.json')
         # Set the default volume to config setting
@@ -112,26 +113,6 @@ class MyApp(App):
         ##checking connection
         integrate_connection_manager(self)
         return self.root_layout
-    
-    def play_sound(self):
-        try:
-            sound_with_usbsoundcard = load_config("config/settings.json","v3_json").get("sound_with_usbsoundcard",0)
-            if sys.platform == 'linux':
-                if sound_with_usbsoundcard:
-                    subprocess.Popen(['aplay', '-D', 'plughw:2,0', 'sound/tap.wav'], 
-                                stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-                else:   
-                    subprocess.Popen(['aplay', 'sound/tap.wav'], 
-                                stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-            elif sys.platform == 'darwin':  # macOS
-                subprocess.Popen(['afplay', 'sound/tap.wav'], 
-                                stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-            else:
-                    Logger.warning(f"Unsupported platform: {sys.platform}")
-        except FileNotFoundError:
-            Logger.error(f"Sound file 'sound/tap.wav' not found")
-        except Exception as e:
-            Logger.error(f"Error playing sound: {e}")
     
     def on_user_activity(self, *args):
         '''

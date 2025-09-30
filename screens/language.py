@@ -79,7 +79,7 @@ class LanguageButton(IconTextButton):
 
     def on_press(self):
         freeze_ui(0.3)  # Freeze UI for 0.3 seconds
-        App.get_running_app().play_sound()  # Play sound on button press
+        App.get_running_app().sound_manager.play_tap()
         if not self.active:
             self.active = True
             App.get_running_app().language = self.language

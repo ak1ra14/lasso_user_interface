@@ -824,7 +824,7 @@ class RoundedButton(Button):
 
     def on_press(self):
         #print(f"Button {self.text} pressed")
-        App.get_running_app().play_sound()
+        App.get_running_app().sound_manager.play_tap()
         freeze_ui(0.3)  # freeze the UI for 0.3 seconds to prevent multiple presses
 
 

@@ -116,7 +116,6 @@ class ChangeTime(IconTextButton):
         self.screensaver_time_label = screensaver_time_label
         self.change = change
         self.screensaver_screen = screensaver_screen  # Reference to the screen
-        self.sound = SoundLoader.load('sound/tap.wav')
 
     def on_press(self):
         super().on_press()
@@ -167,7 +166,7 @@ class HomeButtonScreensaver(IconTextButton):
 
     def on_press(self):
         super().on_press()
-        App.get_running_app().play_sound()
+        App.get_running_app().sound_manager.play_tap()
         # Navigate back to the menu screen
         self.config = load_config('config/settings.json', 'v3_json')
         self.screensaver_screen.screensaver_time_label.text = f"{self.config.get('screensaver', 50)}s"

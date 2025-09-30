@@ -128,6 +128,6 @@ class RoundedButton(Button):
         self.bg_color.rgba = self.background_color
     
     def on_press(self):
-        App.get_running_app().play_sound()  # Play sound on press
+        App.get_running_app().sound_manager.play_tap()
         freeze_ui(0.3)
 

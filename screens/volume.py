@@ -138,18 +138,8 @@ class SaveButton(IconTextButton):
         Clock.schedule_once(self._reset_color, 0.3)  # Reset color after 0.3 seconds
         freeze_ui(0.3)
         set_system_volume(self.volume_screen.volume)
-        sound_with_usbsoundcard = load_config("config/settings.json","v3_json").get("sound_with_usbsoundcard",0)
-        if sys.platform == 'linux':
-            if sound_with_usbsoundcard:
-                subprocess.Popen(['aplay', '-D', 'plughw:2,0', 'sound/alertsound.wav'], 
-                            stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-            else:   
-                subprocess.Popen(['aplay', 'sound/alertsound.wav'], 
-                            stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-        elif sys.platform == 'darwin':  # macOS
-            subprocess.Popen(['afplay', 'sound/alertsound.wav'], 
-                            stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-        
+        App.get_running_app().sound_manager.play_alert()
+
         show_saved_popup(update_text_language('saved'))  # Show a popup indicating the settings have been saved
         save_config_partial("config/settings.json", "v3_json", key = 'volume', value=self.volume_screen.volume)
         App.get_running_app().sm.current = 'menu'  # Navigate back to the menu screen
@@ -171,9 +161,8 @@ def set_system_volume_linux(percent):
     percentage = os.popen('amixer get PCM | grep "Front Left: Playback" | ' + "awk '{print $5}'").read()
     volume_value = str(percentage).strip("b'[]\n").strip('%')
     Logger.info(f"Previous volume: {volume_value}, New volume set to {percent}")
-    subprocess.Popen(["amixer", "-c", "2", "cset", "numid=4", f"{percent}%"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-    subprocess.Popen(["amixer", "-c", "2", "cset", "numid=6", f"{percent}%"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-    subprocess.Popen(["amixer", "-c", "0", "cset", "numid=6", f"{percent}%"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    subprocess.Popen(['amixer', 'sset', 'Master', 'playback', f'{percent}%'], stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
+
 #macOS
 def set_system_volume_mac(percent):
     percent = max(0, min(100, percent))

@@ -128,7 +128,7 @@ class AlertModeButton(IconTextButton):
 
     def on_press(self):
         freeze_ui(0.3)  # Freeze UI for 0.3 secondss
-        App.get_running_app().play_sound()  # Play sound on button press
+        App.get_running_app().sound_manager.play_tap()
         # Change colour of icon when active and update config file
         if not self.active:
             self.active = True

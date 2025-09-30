@@ -151,7 +151,7 @@ class IconTextButton(Button):
         self.label_widget.text = value
 
     def on_press(self):
-        App.get_running_app().play_sound()  # Play sound on button press
+        App.get_running_app().sound_manager.play_tap()
         self.color_instruction.rgba = (0.2, 0.8, 0.2, 1) # Change color to green on press
         Clock.schedule_once(self._reset_color, 0.3)  # Reset color after 0.3 seconds
         freeze_ui(0.3)
@@ -216,7 +216,7 @@ class CircularImageButton(Button):
         """
         self.color_instruction.rgba = (0.2, 0.8, 0.2, 1)  # Change color to green on press
         Clock.schedule_once(self._reset_color, 0.3)  # Reset color after
-        App.get_running_app().play_sound()  # Play sound on button press
+        App.get_running_app().sound_manager.play_tap()
 
     def _reset_color(self, dt):
         self.color_instruction.rgba = (0.22, 0.45, 0.91, 1)
@@ -273,7 +273,7 @@ class CustomSwitch(FloatLayout):
     def toggle(self, instance, touch):
         if self.collide_point(*touch.pos):
             self.active = not self.active
-            App.get_running_app().play_sound()  # Play sound on toggle
+            App.get_running_app().sound_manager.play_tap()
             freeze_ui(0.3)  # Freeze UI for 0.3 seconds
             return True
         return False
