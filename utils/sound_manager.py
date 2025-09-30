@@ -5,8 +5,8 @@ from utils.config_loader import load_config
 
 class SoundManager:
     def __init__(self):
-        self.tap_sound = SoundLoader.load('sound/tap.wav')
-        self.alert_sound = SoundLoader.load('sound/alertsound.wav')
+        self.tap_sound = SoundLoader.load('sound/tap.mp3')
+        self.alert_sound = SoundLoader.load('sound/alertsound.mp3')
         # Log sound loading status
         if self.tap_sound:
             Logger.info(f"SoundManager: Tap sound loaded successfully")
