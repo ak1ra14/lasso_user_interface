@@ -160,15 +160,17 @@ class CustomSwitchAM(CustomSwitch):
         self.bind(on_touch_down=self.toggle)
 
     def toggle(self, instance, touch):
+        nbeds_value = load_config("config/settings.json","bed_json").get('nbeds')
         if self.collide_point(*touch.pos):
             freeze_ui(0.3)  # Freeze UI for 0.3 seconds
             self.active = not self.active
             # Toggle between 1 and 2
             self.no_beds = 2 if self.no_beds == 1 else 1
-            if self.no_beds == 1:
-                nbeds_value = [self.no_beds, ['1']]
+            nbeds_value[0] = self.no_beds
+            if self.no_beds == 1:  
+                nbeds_value[1] = ['1']         
             elif self.no_beds == 2:
-                nbeds_value = [self.no_beds, ['1', '2']]
+                nbeds_value[1] = ['1', '2']
 
             save_config_partial("config/settings.json", "bed_json", key='nbeds', value=nbeds_value)
             return True
