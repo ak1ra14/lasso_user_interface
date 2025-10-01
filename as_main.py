@@ -10,32 +10,32 @@ if sys.platform.startswith('linux'):
 from kivy.app import App
 from kivy.uix.screenmanager import ScreenManager, Screen, NoTransition
 from kivy.core.window import Window
-from utils.as_config_loader import load_config, save_config
 from kivy.clock import Clock
 from kivy.uix.progressbar import ProgressBar
 from kivy.uix.floatlayout import FloatLayout
 from kivy.logger import Logger
-
-from screens.as_home_screen import MenuScreen1, MenuScreen2
-from screens.as_language import LanguageScreen
-from screens.as_monitor import MonitorScreen, get_ip_address
-from screens.as_power import PowerScreen
-from screens.as_screensaver import ScreenSaverScreen, DarkScreen
-from screens.as_timezone import TimezoneScreen
-from screens.as_volume import VolumeScreen, set_system_volume
-from screens.as_alert_mode import AlertModeScreen
-from screens.as_alert_type import AlertTypeScreen
-from screens.as_location import LocationScreen, Bed1Screen, Bed2Screen, DeviceKeyboardScreen
-from screens.as_server import ServerScreen, MQTTTopicKeyboardScreen, RegionServerScreen, MQTTBrokerIPScreen, AlertLight1Screen, AlertLight2Screen
-from utils.as_num_pad import NumberPadScreen
-from screens.as_wifi import WifiLoadingScreen, WifiPasswordScreen, WifiConnectingScreen, WifiConnectedScreen, WifiErrorScreen, connect_wifi, get_connected_wifi
 from kivy.clock import Clock
-from utils.as_config_loader import update_text_language
-from utils.as_password import PasswordScreen
-from utils.as_connection_manager import ConnectionManager
-from utils.as_sound_manager import SoundManager
 from kivy.core.audio import SoundLoader
 
+
+from as_utils.as_config_loader import load_config, save_config
+from as_screens.as_home_screen import MenuScreen1, MenuScreen2
+from as_screens.as_language import LanguageScreen
+from as_screens.as_monitor import MonitorScreen, get_ip_address
+from as_screens.as_power import PowerScreen
+from as_screens.as_screensaver import ScreenSaverScreen, DarkScreen
+from as_screens.as_timezone import TimezoneScreen
+from as_screens.as_volume import VolumeScreen, set_system_volume
+from as_screens.as_alert_mode import AlertModeScreen
+from as_screens.as_alert_type import AlertTypeScreen
+from as_screens.as_location import LocationScreen, Bed1Screen, Bed2Screen, DeviceKeyboardScreen
+from as_screens.as_server import ServerScreen, MQTTTopicKeyboardScreen, RegionServerScreen, MQTTBrokerIPScreen, AlertLight1Screen, AlertLight2Screen
+from as_utils.as_num_pad import NumberPadScreen
+from as_screens.as_wifi import WifiLoadingScreen, WifiPasswordScreen, WifiConnectingScreen, WifiConnectedScreen, WifiErrorScreen, connect_wifi, get_connected_wifi
+from as_utils.as_config_loader import update_text_language
+from as_utils.as_password import PasswordScreen
+from as_utils.as_connection_manager import ConnectionManager
+from as_utils.as_sound_manager import SoundManager
 
 
 class MyApp(App):
@@ -45,10 +45,10 @@ class MyApp(App):
         '''
         self.sm = ScreenManager(transition=NoTransition())
         self.sound_manager = SoundManager()
-        self.en_dictionary = load_config('languages/en.json')
-        self.jp_dictionary = load_config('languages/jp.json')
+        self.en_dictionary = load_config('as_languages/en.json')
+        self.jp_dictionary = load_config('as_languages/jp.json')
         # Set the default volume to config setting
-        self.config = load_config('config/settings.json','v3_json')
+        self.config = load_config('as_config/settings.json','v3_json')
         self.language = self.config.get('language', 'en')
         set_system_volume(self.config.get('volume', 50))
         self.ip_address = get_ip_address()
@@ -137,7 +137,7 @@ class MyApp(App):
         '''
         Reset the screensaver timer.
         '''
-        self.config = load_config('config/settings.json', 'v3_json')
+        self.config = load_config('as_config/settings.json', 'v3_json')
         if self.screensaver_event:
             self.screensaver_event.cancel()
         timeout = self.config.get('screensaver', 60)
@@ -216,7 +216,7 @@ class MyApp(App):
         self._timer_event = Clock.schedule_interval(self._update_time_bar, 1)    
     
     def get_first_page(self):
-        config = load_config("config/settings.json", "settings_json")
+        config = load_config("as_config/settings.json", "settings_json")
         first_page = config.get("first_page", "") if config.get("first_page", "") in [screen for screen in self.sm.screen_names] else "monitor"
         #to prevent users from accessing bed devices that are not supposed to be accessed
         if self.config.get("previous_mode","") != 'bed.json' and first_page in ['bed1','bed2']:
@@ -226,7 +226,7 @@ class MyApp(App):
         return first_page
 
     def get_last_page(self):
-        config = load_config("config/settings.json", "settings_json")
+        config = load_config("as_config/settings.json", "settings_json")
         last_page = config.get("last_page", "") if config.get("last_page", "") in [screen for screen in self.sm.screen_names] else "monitor"
         return last_page
 

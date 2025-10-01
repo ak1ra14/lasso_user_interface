@@ -1,0 +1,20 @@
+{
+    "v3_json": "as_config/V3.json",
+    "bed_json": "as_config/bed.json",
+    "fall_json": "as_config/fall.json",
+    "settings_json": "as_config/settings.json",
+    "mqtt_json": "as_config/mqtt.json",
+    "ack_json": [
+        "as_config/ack1.json",
+        "as_config/ack2.json"
+    ],
+    "location_json": [
+        "as_config/location1.json",
+        "as_config/location2.json",
+        "as_config/location3.json"
+    ],
+    "default_json": "as_config/default.json",
+    "current_page": "monitor",
+    "first_page": "password",
+    "last_page": "menu"
+}

@@ -1,0 +1,307 @@
+from kivy.logger import Logger
+from kivy.uix.screenmanager import Screen
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.floatlayout import FloatLayout
+from kivy.uix.label import Label
+from kivy.graphics import Line, Color, Rectangle
+from kivy.app import App
+
+
+from as_utils.as_layout import HeaderBar, SafeScreen
+from as_utils.as_config_loader import load_config
+from as_utils.as_icons import IconTextButton
+from as_utils.as_keyboard import KeyboardScreen
+from as_utils.as_config_loader import save_config, update_current_page, update_text_language, get_valid_value
+from as_utils.as_layout import SeparatorLine
+from as_utils.as_num_pad import NumberPadScreen
+from as_utils.as_keyboard import show_saved_popup
+
+
+class ServerScreen(SafeScreen):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.config = load_config('as_config/settings.json', 'v3_json')
+        self.mqtt_config = load_config('as_config/settings.json','mqtt_json')
+        self.buttons = {}
+        self.build_ui()
+
+    def build_ui(self):
+        self.default_button = DefaultButton()
+        self.header = HeaderBar(title="servers", icon_path="as_images/home.png", button_text="home", button_screen="menu2", second_button=self.default_button)
+        self.main_layout = FloatLayout(size_hint=(1, 1))
+        self.main_layout.add_widget(self.header)
+
+        #self.region_server = Label(text=update_text_language("region_server"), font_size=35, height=40,pos_hint={'center_x': 0.13 if App.get_running_app().language == 'en' else 0.17, 'center_y': 0.68},font_name='fonts/MPLUS1p-Bold.ttf', halign='left')
+        self.region_server = Label(text=update_text_language("region_server"), font_size=35, height=40,
+                                   size_hint=(None, None), size=(300, 40),
+                                    pos=(5, 385) if App.get_running_app().language == 'en' else (30, 385),  # Absolute positioning
+                                   font_name='as_fonts/MPLUS1p-Bold.ttf', halign='left')
+
+        self.buttons['region_address'] = EditSetting( status = self.config.get('region_address'), screen_name = 'region server', pos_hint={'center_x': 0.20, 'center_y': 0.55},
+                                                     )
+        self.main_layout.add_widget(self.region_server)
+        self.mqtt = Label(text=update_text_language('mqtt'), font_size=40, size_hint_y=None, height=40, 
+                          size_hint=(None, None), size=(300, 40),
+                            pos=(310, 410) , # Absolute positioning
+                          font_name='as_fonts/MPLUS1p-Bold.ttf' , halign='left')
+        self.main_layout.add_widget(self.mqtt)
+        
+        self.mqtt_broker_ip = Label(text=update_text_language('mqtt_broker_ip'), font_size=25, size_hint_y=None, height=40,
+                                     size_hint=(None, None), size=(300, 40),
+                                     pos=(350, 360) if App.get_running_app().language == 'en' else (360, 360),  # Absolute positioning
+                                     font_name='as_fonts/MPLUS1p-Bold.ttf', halign='left')
+        self.main_layout.add_widget(self.mqtt_broker_ip)
+        self.mqtt_topic = Label(text=update_text_language('mqtt_topic'), font_size=25, size_hint_y=None, height=40, 
+                                size_hint=(None, None), size=(300, 40),
+                                pos=(330, 185) if App.get_running_app().language == 'en' else (340, 185),  # Absolute positioning
+                                font_name='as_fonts/MPLUS1p-Bold.ttf',halign='left')
+        self.main_layout.add_widget(self.mqtt_topic)
+
+        self.buttons['mqtt_server'] = EditSetting( status = get_valid_value(self.mqtt_config,'server',load_config("as_config/settings.json","default_json").get("server", "N/A")), 
+                                                  screen_name = 'mqtt broker ip', pos_hint={'center_x': 0.50, 'center_y': 0.55})
+        self.buttons['mqtt_topic'] = EditSetting( status = get_valid_value(self.mqtt_config,'topic',load_config("as_config/settings.json","default_json").get("topic", "N/A")),
+                                                 screen_name = 'mqtt topic', pos_hint={'center_x': 0.50, 'center_y': 0.25})
+
+        self.alert_lights = Label(text=update_text_language("alert_lights"), font_size=35, size_hint_y=None, height=40,
+                                   size_hint=(None, None), size=(300, 40),
+                                   pos=(605, 385) if App.get_running_app().language == 'en' else (623, 385),  # Absolute positioning
+                                   font_name='as_fonts/MPLUS1p-Bold.ttf', halign='left')
+        self.main_layout.add_widget(self.alert_lights)
+        self.buttons['alert_lights_ip1'] = EditSetting( status = self.config.get('alert_lights_ip1'), screen_name = 'alert lights 1', pos_hint={'center_x': 0.80, 'center_y': 0.55})
+        self.buttons['alert_lights_ip2'] = EditSetting( status = self.config.get('alert_lights_ip2'), screen_name = 'alert lights 2', pos_hint={'center_x': 0.80, 'center_y': 0.30})
+
+        for button in self.buttons.values():
+            self.main_layout.add_widget(button)
+
+        # Add a separator line
+        separator_1 = SeparatorLine(points=[350,450,350,250],size_hint =(None,None))
+        self.main_layout.add_widget(separator_1)
+        separator_2 = SeparatorLine(points=[665, 450, 665, 250], size_hint=(None, None))
+        self.main_layout.add_widget(separator_2)
+        self.add_widget(self.main_layout)
+
+    def on_pre_enter(self):
+        """
+        This method is called before the screen is displayed.
+        It can be used to update the UI or perform any necessary actions.
+        """
+        update_current_page('server')
+        self.config = load_config('as_config/settings.json', 'v3_json')
+        self.mqtt_config = load_config('as_config/settings.json','mqtt_json')
+        for key, button in self.buttons.items():
+            if key in ['mqtt_server','mqtt_topic']:
+                status = get_valid_value(self.mqtt_config, key.replace('mqtt_',''), load_config("as_config/settings.json","default_json").get(key.replace('mqtt_',''), "N/A"))
+                button.status = status
+            else:
+                button.status = self.config.get(key, '')
+            button.label.text = button.status
+
+    def update_language(self):
+        self.clear_widgets()
+        self.build_ui()
+
+class EditSetting(FloatLayout):
+    def __init__(self, status, screen_name,**kwargs):
+        super().__init__(**kwargs)
+        self.status = status
+        self.screen_name = screen_name
+        self.build_ui()
+
+    def build_ui(self):
+        self.button = IconTextButton(
+            text=update_text_language("edit"),
+            font_size=20,
+            radius=[10,],
+            size_hint=(None, None),
+            size=(120, 40),
+            pos_hint = {'center_x': 0.45, 'center_y': 0.5},
+            screen_name=self.screen_name
+        )
+        self.label = Label(
+            text=self.status,
+            font_size=18,
+            size_hint=(None, None),
+            height=30,
+            width = 200,
+            pos_hint = {'center_x': 0.5, 'center_y': 0.42},
+            font_family='as_fonts/MPLUS1p-Bold.ttf',
+            shorten=True,
+            shorten_from='right',
+            max_lines=1,
+            halign='left',
+            valign='middle',
+        )
+        self.label.bind(size=lambda inst, val: setattr(inst, 'text_size', val))
+        with self.canvas:
+            self.label.color = (1, 1, 1, 1) # Text color
+            self.label.text_size = self.label.size
+            self.line1 = Line(points=[self.label.x - 10, self.label.y, self.label.x + self.label.width, self.label.y], width=1)
+            self.line2 = Line(points=[self.label.x - 10, self.label.y, self.label.x - 10, self.label.y + self.label.height], width=1)
+            self.line3 = Line(points=[self.label.x - 10, self.label.y + self.label.height, self.label.x + self.label.width, self.label.y + self.label.height], width=1)
+            self.line4 = Line(points=[self.label.x + self.label.width, self.label.y, self.label.x + self.label.width, self.label.y + self.label.height], width=1)
+        self.label.bind(pos=self.update_line, size=self.update_line)
+        self.add_widget(self.button)
+        self.add_widget(self.label)
+
+
+    def update_line(self, *args):
+        x1 = self.label.x - 10
+        y1 = self.label.y + self.label.height 
+        x2 = self.label.x + self.label.width
+        y2 = self.label.y
+        self.line1.points = [x1, y1, x2, y1]
+        self.line2.points = [x1, y1, x1, y2]
+        self.line3.points = [x1, y2, x2, y2]
+        self.line4.points = [x2, y1, x2, y2]
+
+class RegionServerScreen(NumberPadScreen):
+    def __init__(self, **kwargs):
+        super().__init__(title="region_address",screen_name='servers', **kwargs)
+        self.config = load_config("as_config/settings.json", "v3_json")
+        self.text = self.config.get('region_address', '')
+
+    def on_save(self, instance):
+        """
+        Override the on_save method to save the region address.
+        """
+        super().on_save(instance)
+        self.config['region_address'] = self.input.text
+        save_config("as_config/settings.json", "v3_json", data=self.config)
+
+    def on_pre_enter(self):
+        """
+        Override the on_pre_enter method to set the keyboard title.
+        """
+        update_current_page('region_server')
+        self.config = load_config("as_config/settings.json", "v3_json")
+        self.input.text = self.config.get("region_address", "")
+    
+
+class MQTTBrokerIPScreen(NumberPadScreen):
+    def __init__(self, **kwargs):
+        super().__init__(title="mqtt_broker_ip", screen_name='servers',**kwargs)
+        self.mqtt_config = load_config("as_config/settings.json", "mqtt_json")
+        self.text = get_valid_value(self.mqtt_config,'server',load_config("as_config/settings.json","default_json").get("server", "N/A"))
+
+    def on_save(self, instance):
+        """
+        Override the on_save method to save the MQTT broker address.
+        """
+        super().on_save(instance)
+        if self.mqtt_config:
+            self.mqtt_config['server'] = self.input.text
+            save_config("as_config/settings.json", "mqtt_json", data=self.mqtt_config)
+
+    def on_pre_enter(self):
+        """
+        Override the on_pre_enter method to set the keyboard title.
+        """
+        update_current_page('mqtt_broker_ip')
+        self.mqtt_config = load_config("as_config/settings.json", "mqtt_json")
+        self.input.text = get_valid_value(self.mqtt_config,'server',load_config("as_config/settings.json","default_json").get("server", "N/A"))
+
+class AlertLight1Screen(NumberPadScreen):
+    def __init__(self, **kwargs):
+        super().__init__(title="alert_lights_ip1",screen_name='servers', **kwargs)
+        self.config = load_config("as_config/settings.json", "v3_json")
+        self.text = self.config.get('alert_lights_ip1', '')
+
+    def on_save(self, instance):
+        """
+        Override the on_save method to save the alert light 1 address.
+        """
+        super().on_save(instance)
+        self.config['alert_lights_ip1'] = self.input.text
+        save_config("as_config/settings.json", "v3_json", data=self.config)
+
+    def on_pre_enter(self):
+        """
+        Override the on_pre_enter method to set the keyboard title.
+        """
+        update_current_page('alert_light_1')
+        self.config = load_config("as_config/settings.json", "v3_json")
+        self.input.text = self.config.get("alert_lights_ip1", "")
+
+
+class AlertLight2Screen(NumberPadScreen):
+    def __init__(self, **kwargs):
+        super().__init__(title="alert_lights_ip2", screen_name='servers',**kwargs)
+        self.config = load_config("as_config/settings.json", "v3_json")
+        self.text = self.config.get('alert_lights_ip2', '')
+
+    def on_save(self, instance):
+        """
+        Override the on_save method to save the alert light 2 address.
+        """
+        super().on_save(instance)
+        self.config['alert_lights_ip2'] = self.input.text
+        save_config("as_config/settings.json", "v3_json", data=self.config)
+
+    def on_pre_enter(self):
+        """
+        Override the on_pre_enter method to set the keyboard title.
+        """
+        update_current_page('alert_light_2')
+        self.config = load_config("as_config/settings.json", "v3_json")
+        self.input.text = self.config.get("alert_lights_ip2", "")
+
+
+class MQTTTopicKeyboardScreen(KeyboardScreen):
+    def __init__(self, **kwargs):
+        super().__init__(title="mqtt_topic",screen_name='servers', **kwargs)
+        self.mqtt_config = load_config("as_config/settings.json", "mqtt_json")
+        self.text = get_valid_value(self.mqtt_config,'topic',load_config("as_config/settings.json","default_json").get("topic", "N/A"))
+
+    def press_enter(self, instance):
+        """
+        Override the on_enter method to set the keyboard title.
+        """
+        super().press_enter(instance)
+        if self.mqtt_config:
+            self.mqtt_config['topic'] = self.keyboard.text_input.text
+            save_config("as_config/settings.json", "mqtt_json", data=self.mqtt_config)
+        show_saved_popup(update_text_language('saved'))
+
+    def on_pre_enter(self):
+        """
+        Override the on_pre_enter method to set the keyboard title.
+        """
+        self.keyboard.title = "MQTT Topic"
+        self.mqtt_config = load_config("as_config/settings.json", "mqtt_json")
+        self.keyboard.text_input.text = get_valid_value(self.mqtt_config,'topic',load_config("as_config/settings.json","default_json").get("topic", "N/A"))
+        self.keyboard.actual_text_input = self.keyboard.text_input.text
+
+class DefaultButton(IconTextButton):
+    def __init__(self, **kwargs):
+        super().__init__(
+            text=update_text_language("default"),
+            icon_path="as_images/reboot.png",
+            font_size=20,
+            size_hint=(None, None),
+            size=(110, 110),
+            pos_hint = {'center_x': 0.5, 'center_y': 0.5},
+            on_release=self.reset_to_default,
+            **kwargs
+        )
+
+    def reset_to_default(self, instance):
+        app = App.get_running_app()
+        current_screen = app.sm.current_screen
+        default_values = load_config("as_config/settings.json","default_json")
+        for key in current_screen.buttons.keys():
+            if key in default_values:
+                current_screen.config[key] = default_values[key]
+                current_screen.buttons[key].status = default_values[key]
+            elif key.replace('mqtt_','') in default_values:
+                    #Logger.debug(f"{key}, {default_values[key.replace('mqtt_','')]}")
+                    current_screen.mqtt_config[key.replace('mqtt_','')] = default_values[key.replace('mqtt_','')]
+                    current_screen.buttons[key].status = default_values[key.replace('mqtt_','')]
+
+        save_config("as_config/settings.json", "v3_json", data=current_screen.config)
+        save_config("as_config/settings.json", "mqtt_json", data=current_screen.mqtt_config)
+        current_screen.on_pre_enter()
+    
+    def on_press(self):
+        super().on_press()
+        show_saved_popup("change_to_default")
+
