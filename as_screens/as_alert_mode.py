@@ -21,7 +21,8 @@ class AlertModeScreen(Screen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.modes = load_config('as_config/settings.json','v3_json').get('previous_mode', 'fall.json')
-        self.single_multiple = load_config(f"as_config/{self.modes}").get('minnumppl_for_noalert', 99)
+        self.json_file = self.modes.replace(".","_")
+        self.single_multiple = load_config('as_config/settings.json',self.json_file).get('minnumppl_for_noalert', 99)
         self.no_beds = load_config("as_config/settings.json",'bed_json').get('nbeds', [1, 1])[0] == 2
         self.header = HeaderBar(title="mode", icon_path="as_images/home.png", button_text="home", button_screen="menu")
         main_layout = BoxLayout(orientation='horizontal', padding=[50, 0, 50, 0], spacing=50,size_hint_y=0.5, pos_hint={'center_x': 0.5,'center_y':0.4})  # Only left and right padding
@@ -81,7 +82,8 @@ class AlertModeScreen(Screen):
         """
         update_current_page('alert_mode')
         self.modes = load_config('as_config/settings.json','fall_json').get('previous_mode', 'fall.json')
-        self.single_multiple = load_config(f"as_config/{self.modes}").get('minnumppl_for_noalert', 99)
+        self.json_file = self.modes.replace(".","_")
+        self.single_multiple = load_config('as_config/settings.json',self.json_file).get('minnumppl_for_noalert', 99)
         self.no_beds = load_config("as_config/settings.json",'bed_json').get('nbeds', [1, 1])[0]
             # Update the toggle button state and graphics
         self.toggle_button.switch.no_beds = self.no_beds
@@ -138,11 +140,12 @@ class AlertModeButton(IconTextButton):
             self.screen.single_multiple = self.active_state
             config = load_config('as_config/settings.json','v3_json')
             save_config_partial("as_config/settings.json","v3_json",key='previous_mode',value=self.screen.modes)
-            config = load_config(f"as_config/{self.screen.modes}")
+            json_name = self.screen.modes.replace(".","_")
+            config = load_config("as_config/settings.json",json_name)
             config['minnumppl_for_noalert'] = self.active_state
             config['multihumanpause_seconds'] = 0 if self.active_state == 99 else 5
             config['no_alert_by_overlap'] = 0 if self.active_state == 99 else 1
-            save_config(f"as_config/{self.screen.modes}", data=config)
+            save_config("as_config/settings.json",json_name, data=config)
             for button in self.screen.buttons:
                 if button != self:
                     button.active = False

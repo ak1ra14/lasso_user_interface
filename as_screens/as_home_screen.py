@@ -127,7 +127,8 @@ class MenuScreen1(MenuScreen):
         Check the current mode and return a string representation.
         """
         mode =  self.config.get("previous_mode", "fall.json")
-        mode_config = load_config(f'as_config/{mode}')
+        json_file = mode.replace(".","_")
+        mode_config = load_config("as_config/settings.json",json_file)
         single_multiple = "multiple" if mode_config.get("minnumppl_for_noalert", 99) == 99 else "single"
         if mode == "fall.json":
             return f"{update_text_language('fall_mode')} - {update_text_language(f'fall_{single_multiple}')}"
