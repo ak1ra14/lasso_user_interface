@@ -338,7 +338,8 @@ class WifiConnectingScreen(Screen):
 class WifiConnectedScreen(SafeScreen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.add_widget(HeaderBar(title=" ",button_screen="menu2"))
+        self.header = HeaderBar(title=" ",button_screen="menu2")
+        self.add(self.header)
         self.add_widget(Image(
             source='as_images/wifi.png',
             size_hint=(None, None),
@@ -375,13 +376,15 @@ class WifiConnectedScreen(SafeScreen):
         """
         Update the language of the widgets in this screen.
         """
+        self.header.update_language()
         self.connection_successful_label.text = update_text_language('connection_successful')
 
 
 class WifiErrorScreen(SafeScreen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.add_widget(HeaderBar(title=" ",button_screen="menu2"))
+        self.header = HeaderBar(title=" ",button_screen="menu2")
+        self.add(self.header)
         self.add_widget(Image(
             source='as_images/wifi_failed.png',
             size_hint=(None, None),
@@ -435,6 +438,7 @@ class WifiErrorScreen(SafeScreen):
         """
         Update the language of the widgets in this screen.
         """
+        self.header.update_language()
         self.retry_button.label.text = update_text_language("try_again")
         self.connection_failed.text = update_text_language("connection_fail")
         self.check_password_label.text = update_text_language("check_password")
