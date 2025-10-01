@@ -1,7 +1,7 @@
 {
     "version": "SG-S1-20250630",
     "sensor_ID": "ABC123",
-    "language": "jp",
+    "language": "en",
     "volume": 42,
     "screensaver": 168,
     "timezone": "Los Angeles (GMT-7)",
@@ -10,6 +10,6 @@
     "alert_lights_ip2": "192.168.1.202",
     "wifi_ssid": "Not connected",
     "wifi_password": "afafafaf",
-    "previous_method": "fall.json",
+    "previous_method": "bed.json",
     "sound_with_usbsoundcard": 0
 }

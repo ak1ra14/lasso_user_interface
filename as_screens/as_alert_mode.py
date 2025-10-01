@@ -21,7 +21,7 @@ class AlertModeScreen(Screen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.modes = load_config('as_config/settings.json','v3_json').get('previous_method', 'fall.json')
-        self.json_file = self.modes.replace(".","_")
+        self.json_file = 'bed_json' if 'bed' in self.modes else 'fall_json'
         self.single_multiple = load_config('as_config/settings.json',self.json_file).get('minnumppl_for_noalert', 99)
         self.no_beds = load_config("as_config/settings.json",'bed_json').get('nbeds', [1, 1])[0] == 2
         self.header = HeaderBar(title="mode", icon_path="as_images/home.png", button_text="home", button_screen="menu")
@@ -82,7 +82,7 @@ class AlertModeScreen(Screen):
         """
         update_current_page('alert_mode')
         self.modes = load_config('as_config/settings.json','fall_json').get('previous_method', 'fall.json')
-        self.json_file = self.modes.replace(".","_")
+        self.json_file = 'bed_json' if 'bed' in self.modes else 'fall_json'
         self.single_multiple = load_config('as_config/settings.json',self.json_file).get('minnumppl_for_noalert', 99)
         self.no_beds = load_config("as_config/settings.json",'bed_json').get('nbeds', [1, 1])[0]
             # Update the toggle button state and graphics
@@ -140,7 +140,7 @@ class AlertModeButton(IconTextButton):
             self.screen.single_multiple = self.active_state
             config = load_config('as_config/settings.json','v3_json')
             save_config_partial("as_config/settings.json","v3_json",key='previous_method',value=self.screen.modes)
-            json_name = self.screen.modes.replace(".","_")
+            json_name = 'bed_json' if 'bed' in self.screen.modes else 'fall_json'
             config = load_config("as_config/settings.json",json_name)
             config['minnumppl_for_noalert'] = self.active_state
             config['multihumanpause_seconds'] = 0 if self.active_state == 99 else 5
