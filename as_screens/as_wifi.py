@@ -339,7 +339,7 @@ class WifiConnectedScreen(SafeScreen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.header = HeaderBar(title=" ",button_screen="menu2")
-        self.add(self.header)
+        self.add_widget(self.header)
         self.add_widget(Image(
             source='as_images/wifi.png',
             size_hint=(None, None),
@@ -384,7 +384,7 @@ class WifiErrorScreen(SafeScreen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.header = HeaderBar(title=" ",button_screen="menu2")
-        self.add(self.header)
+        self.add_widget(self.header)
         self.add_widget(Image(
             source='as_images/wifi_failed.png',
             size_hint=(None, None),
