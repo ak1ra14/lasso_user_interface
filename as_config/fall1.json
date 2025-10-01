@@ -1,7 +1,7 @@
 {
     "minnumppl_for_noalert": 2,
     "multihumanpause_seconds": 5,
-    "no_alert_by_overlap": 1,
+    "noalert_by_overlap": 1,
     "alert_checking": [
         [
             [],
