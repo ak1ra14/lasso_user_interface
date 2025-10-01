@@ -138,7 +138,6 @@ class MenuScreen1(MenuScreen):
             return f"{update_text_language('unknown_mode')}"
 
     def check_mode_for_image(self, text):
-        Logger.info(f"{text}")
         if text.startswith("Fall") or text.startswith("転倒"):
             return "fall_multiple" if ("Multiple" in text or "複数" in text) else "fall_single"
         elif text.startswith("Bed") or text.startswith("ベッド"):
