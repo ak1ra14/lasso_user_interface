@@ -219,7 +219,7 @@ class MyApp(App):
         config = load_config("as_config/settings.json", "settings_json")
         first_page = config.get("first_page", "") if config.get("first_page", "") in [screen for screen in self.sm.screen_names] else "monitor"
         #to prevent users from accessing bed devices that are not supposed to be accessed
-        if self.config.get("previous_mode","") != 'bed.json' and first_page in ['bed1','bed2']:
+        if self.config.get("previous_method","") != 'bed.json' and first_page in ['bed1','bed2']:
             first_page = 'monitor'
         elif first_page in ['wifi password','wifi connecting','wifi connected','wifi error','password screen']:
             first_page = 'monitor'
