@@ -42,7 +42,8 @@ class HeaderBar(BoxLayout):
             size=(110, 110),
             pos_hint={'center_x': 0.5, 'center_y': 0.5},
             height=50,
-            screen_name=button_screen
+            screen_name=button_screen,
+            button_mode = 'no_status'
         )
         self.add_widget(self.top_right_button)
 

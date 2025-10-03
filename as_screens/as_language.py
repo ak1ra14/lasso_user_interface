@@ -57,6 +57,7 @@ class LanguageButton(IconTextButton):
         self.language = language
         self.predefined_color()
         self.bind(active=self._update_active_color)
+        self.button_mode = 'no_status'
 
     def on_button_press(self, instance):
         """

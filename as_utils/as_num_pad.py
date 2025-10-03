@@ -68,13 +68,15 @@ class NumberPadScreen(SafeScreen):
                                         screen_name=screen_name,
                                 size_hint=(None, None), size = (120,120),
                                 pos_hint = None,
-                                pos = (875,450)
+                                pos = (875,450),
+                                button_mode = 'no_status'
                              )
         self.save_button = IconTextButton(text=update_text_language("save"), font_size=18,
                                 icon_path="as_images/save.png",
                                 on_press = self.on_save,
                                 size_hint=(None, None), size=(120, 120),
-                                 pos=(720, 200))
+                                 pos=(720, 200),
+                                 button_mode = 'no_status')
         right.add_widget(self.home_button)
         right.add_widget(self.save_button)
         right.bind(pos=self.setter('pos'))

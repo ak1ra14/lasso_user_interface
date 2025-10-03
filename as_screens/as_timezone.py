@@ -62,7 +62,8 @@ class TimezoneScreen(SafeScreen):
                                      tz_screen=self,
                                      screen_name='menu2',
                                      pos_hint={'center_x': 0.80, 'center_y': 0.45},
-                                     size_hint=(None, None), size=(120, 120))
+                                     size_hint=(None, None), size=(120, 120),
+                                     button_mode='no_status')
 
         main.add_widget(Widget(size_hint_y=1))  # Spacer
         self.add_widget(self.save_button)

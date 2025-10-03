@@ -25,7 +25,8 @@ class ScreenSaverScreen(SafeScreen):
             text=update_text_language("save"),  
             size_hint=(None, None),
             size=(110, 110),
-            pos_hint={'center_x': 0.5, 'center_y': 0.5}
+            pos_hint={'center_x': 0.5, 'center_y': 0.5},
+            button_mode='no_status'
         )
         self.header = HeaderBar(title="screensaver", icon_path="as_images/home.png", button_text="home", button_screen="menu2", second_button=self.save_button)
         buttons = BoxLayout(orientation='horizontal', spacing=15, size_hint_y=0.3, pos_hint={'center_x': 0.5, 'center_y': 0.50}, padding=[50,0,50,0])  # Only left and right padding
@@ -55,13 +56,13 @@ class ScreenSaverScreen(SafeScreen):
                                         change="decrease",
                                         screensaver_screen=self,
                                         pos_hint={'center_x': 0.5, 'center_y': 0.5},
-                                        by=10, height=50))
+                                        by=10, height=50, button_mode='image_only'))
         buttons.add_widget(ChangeTime(icon_path="as_images/decrease.png",
                                         screensaver_time_label=self.screensaver_time_label,
                                         change="decrease",
                                         screensaver_screen=self,  # Pass the screen instance
                                         pos_hint={'center_x': 0.5, 'center_y': 0.5},
-                                        by=1, height=50))
+                                        by=1, height=50, button_mode='image_only'))
         screensaver = BoxLayout(orientation='vertical', spacing=30, size_hint_y=0.3, pos_hint={'center_x': 0.5, 'center_y': 0.5}, padding=[20,0,20,0])
 
         buttons.add_widget(screensaver)
@@ -71,13 +72,13 @@ class ScreenSaverScreen(SafeScreen):
                                         by=1,
                                         pos_hint={'center_x': 0.5, 'center_y': 0.5},
                                         screensaver_screen=self,  # Pass the screen instance
-                                        height=50))
+                                        height=50, button_mode='image_only'))
         buttons.add_widget(ChangeTime(icon_path="as_images/increase_10.png",
                                         screensaver_time_label=self.screensaver_time_label,
                                         change="increase",  # Pass the label to update
                                         screensaver_screen=self,  # Pass the screen instance
                                         pos_hint={'center_x': 0.5, 'center_y': 0.5},
-                                        by=10, height=50))
+                                        by=10, height=50, button_mode='image_only'))
         self.slider = Slider(min=0, max=600, value=0, step=1, size_hint_x=None, size_hint_y=None, width=900, pos_hint={'center_x': 0.5, 'center_y': 0.3})
         
         self.slider.bind(value=self.on_slider_value_change)
@@ -118,7 +119,6 @@ class ChangeTime(IconTextButton):
         self.screensaver_time_label = screensaver_time_label
         self.change = change
         self.screensaver_screen = screensaver_screen  # Reference to the screen
-
     def on_press(self):
         super().on_press()
         freeze_ui(0.3)  # Freeze the UI for 0.3 seconds
@@ -145,7 +145,6 @@ class SaveButton(IconTextButton):
     def __init__(self, screensaver_screen=None, **kwargs):
         super().__init__(**kwargs)
         self.screensaver_screen = screensaver_screen
-
     def on_press(self):
         """
         Override the on_press method to save the current screensaver settings.
@@ -165,6 +164,7 @@ class HomeButtonScreensaver(IconTextButton):
     def __init__(self, screensaver_screen=None, **kwargs):
         super().__init__(**kwargs)
         self.screensaver_screen = screensaver_screen
+        self.button_mode = 'no_status'
 
     def on_press(self):
         super().on_press()

@@ -35,16 +35,22 @@ class IconTextButton(Button):
     It includes properties for text and image source, and its layout
     is defined entirely in Python.
     """
-    def __init__(self, icon_path = None, text = "", font_size = 20, size=(190,190), radius=[20,], screen_name=None, config = False, pos_hint = None, **kwargs):
+    def __init__(self, icon_path = None, text = "", font_size = 20, size=(190,190), radius=[20,], 
+                button_mode = 'icon_status', screen_name=None, config = False, pos_hint = None, **kwargs):
         super().__init__(**kwargs)
         self.config = config  # Store the config status
+        self.icon_path = icon_path
         self.label_text=text
-        if 'size_hint' not in kwargs:
-            self.size_hint = (None, None)
+        self.button_mode = button_mode
+        self.font_size = font_size
         self.size = size
-        self.screen_name = screen_name  # Store the screen name for navigation
+        self.radius = radius
+        self.screen_name = screen_name
         if pos_hint is not None:
             self.pos_hint = pos_hint
+        if 'size_hint' not in kwargs:
+            self.size_hint = (None, None)
+
 
         self.background_normal = ''
         self.background_down = ''
@@ -57,20 +63,26 @@ class IconTextButton(Button):
                 radius=radius  # Adjust this value for more or less curvature
             )
         self.bind(pos=self._update_rect, size=self._update_rect)
-        layout = FloatLayout(size=self.size, size_hint=(1, 1))
-        layout.size = self.size
-        layout.pos = self.pos
-        self.bind(pos=layout.setter('pos'), size=layout.setter('size'))
-        if self.label_text == "": # If no label text is provided, we only show the icon
+        self.layout = FloatLayout(size=self.size, size_hint=(1, 1))
+        self.layout.size = self.size
+        self.layout.pos = self.pos
+        self.bind(pos=self.layout.setter('pos'), size=self.layout.setter('size'))
+        self.build_ui()
+
+    def build_ui(self):
+        if self.button_mode == 'image_only': # If no label text is provided, we only show the icon
             self.image = Image(
-            source=icon_path,
+            source=self.icon_path,
             size_hint=(0.6,0.6),
             pos_hint={'center_x': 0.5, 'center_y': 0.50}  # Center image vertically
             )
-        elif icon_path is None: #for server button 
+            self.layout.add_widget(self.image)
+            self.add_widget(self.layout)
+            return
+        elif self.button_mode == 'edit_button': #for server button 
             self.label = Label(
                 text=self.label_text,
-                font_size= font_size,  # Adjust font size based on button height
+                font_size= self.font_size,  # Adjust font size based on button height
                 font_name='as_fonts/MPLUS1p-Bold.ttf',
                 color=(1, 1, 1, 1),
                 size_hint=(0.9, 0.9),
@@ -79,17 +91,17 @@ class IconTextButton(Button):
                 valign='middle'
             )
             self.label.bind(size=lambda inst, val: setattr(inst, 'text_size', val))
-            layout.add_widget(self.label)
-            self.add_widget(layout)
+            self.layout.add_widget(self.label)
+            self.add_widget(self.layout)
             return
         else:  # If both icon and text are provided, we show both
             self.image = Image(
-                source=icon_path,
+                source=self.icon_path,
                 size_hint=(0.45,0.45),
                 pos_hint={'center_x': 0.5, 'center_y': 0.65}  # Center image vertically
             )
-        layout.add_widget(self.image)
-        if self.config:
+        self.layout.add_widget(self.image)
+        if self.button_mode == 'icon_status':
             self.label = Label(
                 text=self.label_text,
                 font_size=  self.size[1] * 0.1 - 3 if self.label_text == 'スクリーンセーバー' or self.label_text == 'Screensaver' else self.size[1] * 0.1,   # Adjust font size based on button height.
@@ -115,10 +127,10 @@ class IconTextButton(Button):
                 max_lines=1,
             )
             self.status.bind(size=lambda inst, val: setattr(inst, 'text_size', val))
-            layout.add_widget(self.label)
-            layout.add_widget(self.status)
+            self.layout.add_widget(self.label)
+            self.layout.add_widget(self.status)
 
-        else:
+        elif self.button_mode == 'no_status':
             if self.label_text:
                 self.label = Label(
                     text=self.label_text,
@@ -131,8 +143,8 @@ class IconTextButton(Button):
                     valign='middle'
                 )
                 #label.bind(size=lambda inst, val: setattr(inst, 'text_size', val))
-                layout.add_widget(self.label)
-        self.add_widget(layout)
+                self.layout.add_widget(self.label)
+        self.add_widget(self.layout)
 
     def _update_rect(self, instance, value):
         """Callback to update the position and size of the rounded rectangle."""

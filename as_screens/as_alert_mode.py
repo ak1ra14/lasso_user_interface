@@ -49,6 +49,7 @@ class AlertModeScreen(Screen):
                 active_state=active_state, #the minnumppl_for_noalert = 1 or 99
                 screen=self, #to keep track of the active button
                 mode=self.icon_images[i].split("_")[0], #to keep track of the button's mode
+                button_mode = 'icon_status'
             )
             self.buttons.append(icon)
             main_layout.add_widget(icon)

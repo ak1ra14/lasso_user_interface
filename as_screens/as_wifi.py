@@ -90,14 +90,16 @@ class WifiLoadingScreen(SafeScreen):
             icon_path ='as_images/wifi.png',
             size = (140,140),
             pos_hint={'center_x': 0.25, 'center_y': 0.55},
-            on_release=lambda x: self.pre_enter_loading()  # Re-scan Wi-Fi
+            on_release=lambda x: self.pre_enter_loading(),  # Re-scan Wi-Fi
+            button_mode = 'no_status'
         )
         self.connect_wifi_button = IconTextButton(
             text=update_text_language("connect_wifi"),
             icon_path ='as_images/connection.png',
             size = (140,140),
             pos_hint={'center_x': 0.25, 'center_y': 0.25},
-            on_release=self.connect_wifi
+            on_release=self.connect_wifi,
+            button_mode = 'no_status'
         )
                 
         scroll.add_widget(list_box)
@@ -195,14 +197,16 @@ class WifiPasswordScreen(KeyboardScreen):
             icon_path ='as_images/wifi.png',
             size = (110,110),
             pos_hint={'center_x': pos_x, 'center_y': 0.855},
-            on_release=self.go_to_wifi_scan
+            on_release=self.go_to_wifi_scan,
+            button_mode = 'no_status'
         )
         self.visibility_button = IconTextButton(
             icon_path ='as_images/visibility_on.png',
             size = (50,50),
             pos_hint={'center_x': 0.59, 'center_y': 0.81},
             on_press=self.freeze_ui,  # Freeze UI on press
-            on_release=self.password_visibility
+            on_release=self.password_visibility,
+            button_mode = 'image_only'
         )
         self.add_widget(self.wifi_scan_button)
         self.add_widget(self.visibility_button)
@@ -307,7 +311,8 @@ class WifiConnectingScreen(Screen):
             font_size=30,
             size=(200, 90),
             pos_hint={'center_x': 0.5, 'center_y': 0.25},
-            on_release=self.cancel_connection
+            on_release=self.cancel_connection,
+            button_mode = 'edit_button'
         )
         
         self.add_widget(self.label)
@@ -422,7 +427,8 @@ class WifiErrorScreen(SafeScreen):
             font_size=30,
             pos_hint={'center_x': 0.5, 'center_y': 0.22},
             screen_name='wifi password',
-            font_name='as_fonts/MPLUS1p-Regular.ttf'
+            font_name='as_fonts/MPLUS1p-Regular.ttf',
+            button_mode = 'edit_button'
         )
 
         self.add_widget(self.label)

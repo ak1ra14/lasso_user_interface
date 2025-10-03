@@ -53,6 +53,7 @@ class KeyboardScreen(SafeScreen):
                     size_hint=(None, None),
                     size=(110, 110),
                     pos_hint={'top': 0.95, 'right': 0.85},
+                    button_mode = 'image_only'
                 )
                 self.keyboard.overlay.add_widget(self.keyboard.language_button)
             if self.keyboard.language_button and App.get_running_app().language == 'en':
@@ -199,6 +200,7 @@ class QwertyKeyboard(FloatLayout):
             size=(110, 110),
             pos_hint={'top': 0.95, 'right': 0.97},
             screen_name=self.screen_name,
+            button_mode = 'no_status'
         )
         if App.get_running_app().language == 'jp':
             self.language_button = LanguageTextButton(
@@ -206,6 +208,7 @@ class QwertyKeyboard(FloatLayout):
                 size_hint=(None, None),
                 size=(110, 110),
                 pos_hint={'top': 0.95, 'right': 0.85},
+                button_mode = 'image_only'
             )
             self.overlay.add_widget(self.language_button)
 

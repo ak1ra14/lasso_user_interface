@@ -17,9 +17,9 @@ class PowerScreen(SafeScreen):
         self.header = HeaderBar(title="power", icon_path="as_images/home.png", button_text="home", button_screen="menu")
         buttons = BoxLayout(orientation='horizontal', spacing=80, size_hint_y=0.3, pos_hint={'center_x': 0.5, 'center_y': 0.5}, padding=[80,0,80,0])  # Only left and right padding
         buttons.add_widget(Widget())
-        self.reboot_button = RebootButton(icon_path="as_images/reboot.png", text=update_text_language("reboot"), height=50)
+        self.reboot_button = RebootButton(icon_path="as_images/reboot.png", text=update_text_language("reboot"), height=50,button_mode = 'no_status')
         buttons.add_widget(self.reboot_button)
-        self.shutdown_button = ShutdownButton(icon_path="as_images/power.png", text=update_text_language("shutdown"), height=50)
+        self.shutdown_button = ShutdownButton(icon_path="as_images/power.png", text=update_text_language("shutdown"), height=50,button_mode = 'no_status')
         buttons.add_widget(self.shutdown_button)
         buttons.add_widget(Widget())
         self.add_widget(self.header)

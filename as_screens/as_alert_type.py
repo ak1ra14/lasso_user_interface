@@ -75,7 +75,8 @@ class AlertTypeScreen(SafeScreen):
             pos_hint = None,
             pos=(800, 180),
             AT_screen=self,
-            screen_name="menu"
+            screen_name="menu",
+            button_mode = 'no_status'
         )
         float_layout.add_widget(self.save_button)
         self.add_widget(float_layout)

@@ -31,7 +31,8 @@ class LocationScreen(SafeScreen):
                 size_hint=(None, None),
                 size=(200, 200),
                 pos_hint={'center_x': 0.25, 'center_y': 0.5},
-                screen_name='device'
+                screen_name='device',
+                button_mode = 'icon_status'
             )
             self.add_widget(self.location_icon2)
             self.bed1_icon2 = IconTextButton(
@@ -42,7 +43,8 @@ class LocationScreen(SafeScreen):
                 size_hint=(None, None),
                 size=(200, 200),
                 pos_hint={'center_x': 0.5, 'center_y': 0.5},
-                screen_name='bed1'
+                screen_name='bed1',
+                button_mode = 'icon_status'
             )
             self.add_widget(self.bed1_icon2)
             self.bed2_icon = IconTextButton(
@@ -53,7 +55,8 @@ class LocationScreen(SafeScreen):
                 size_hint=(None, None),
                 size=(200, 200),
                 pos_hint={'center_x': 0.75, 'center_y': 0.5},
-                screen_name='bed2'
+                screen_name='bed2',
+                button_mode = 'icon_status'
             )
             self.add_widget(self.bed2_icon)
 

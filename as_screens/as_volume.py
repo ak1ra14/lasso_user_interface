@@ -27,7 +27,8 @@ class VolumeScreen(SafeScreen):
             text=update_text_language("save"),  
             size_hint=(None, None),
             size=(110, 110),
-            pos_hint={'center_x': 0.5, 'center_y': 0.5}
+            pos_hint={'center_x': 0.5, 'center_y': 0.5},
+            button_mode='no_status'
         )
         self.header = HeaderBar(title='volume', icon_path="as_images/home.png", button_text="home", button_screen="menu", second_button=self.save_button)
         buttons = BoxLayout(orientation='horizontal', spacing=15, size_hint_y=0.3, pos_hint={'center_x': 0.5, 'center_y': 0.5}, padding=[50,0,50,0])  # Only left and right padding
@@ -44,13 +45,13 @@ class VolumeScreen(SafeScreen):
                                         change="decrease",
                                         volume_screen=self,
                                         pos_hint={'center_x': 0.5, 'center_y': 0.5},
-                                        by=10, height=50))
+                                        by=10, height=50, button_mode='image_only'))
         buttons.add_widget(ChangeVolume(icon_path="as_images/decrease.png",
                                         volume_label=self.volume_label,
                                         change="decrease",
                                         volume_screen=self,  # Pass the screen instance
                                         pos_hint={'center_x': 0.5, 'center_y': 0.5},
-                                        by=1, height=50))
+                                        by=1, height=50, button_mode='image_only'))
         volume = BoxLayout(orientation='vertical', spacing=30, size_hint_y=0.3, pos_hint={'center_x': 0.5, 'center_y': 0.5}, padding=[20,0,20,0])
 
         volume.add_widget(self.volume_label)
@@ -62,13 +63,13 @@ class VolumeScreen(SafeScreen):
                                           pos_hint={'center_x': 0.5, 'center_y': 0.5},
                                           by=1,
                                         volume_screen=self,  # Pass the screen instance   
-                                         height=50))
+                                         height=50, button_mode='image_only'))
         buttons.add_widget(ChangeVolume(icon_path="as_images/increase_10.png", 
                                         volume_label=self.volume_label, 
                                          change = "increase", # Pass the label to update
                                          volume_screen=self,  # Pass the screen instance
                                         pos_hint={'center_x': 0.5, 'center_y': 0.5},
-                                          by=10, height=50))
+                                          by=10, height=50, button_mode='image_only'))
         self.slider = Slider(min=0, max=100, value=0, step=1, size_hint_x=None, size_hint_y=None, width=900, pos_hint={'center_x': 0.5, 'center_y': 0.3})
         self.slider.bind(value=self.on_slider_value_change)
         self.add_widget(self.slider)
@@ -128,6 +129,7 @@ class SaveButton(IconTextButton):
     def __init__(self, volume_screen=None, **kwargs):
         super().__init__(**kwargs)
         self.volume_screen = volume_screen
+        self.button_mode = 'no_status'
 
     def on_press(self):
         """

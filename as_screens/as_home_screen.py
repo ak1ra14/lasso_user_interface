@@ -38,7 +38,8 @@ class MenuScreen(SafeScreen):
             icon_path='as_images/language.png',
             text=update_text_language("language"),
             size=(110, 110),
-            screen_name='language'  # Navigate to language screen
+            screen_name='language',  # Navigate to language screen
+            button_mode = 'no_status'
         )
         right_buttons.add_widget(self.language_button)
         self.monitor_button = IconTextButton(
@@ -46,13 +47,15 @@ class MenuScreen(SafeScreen):
             text=update_text_language("monitor"),
             size=(110, 110),
             screen_name='monitor',  # Navigate to monitor screen
+            button_mode = 'no_status'
         )
         right_buttons.add_widget(self.monitor_button)
         self.power_button = IconTextButton(
             icon_path='as_images/power.png',
             text=update_text_language("power"),
             size=(110, 110),
-            screen_name='power'  # Navigate to power screen
+            screen_name='power',
+            button_mode = 'no_status'  # Navigate to power screen
         )
         right_buttons.add_widget(self.power_button)
         right_buttons.bind(minimum_width=right_buttons.setter('width'))  # Let width fit content
@@ -104,6 +107,7 @@ class MenuScreen1(MenuScreen):
                 text=update_text_language(content_name),
                 config=self.config_status[i],
                 size=(202, 202),
+                button_mode = 'icon_status'
                 # Do NOT set screen_name here for dynamic navigation!
             )
             if content_name == 'location':
@@ -258,6 +262,7 @@ class MenuScreen2(MenuScreen):
                 config=self.config_status[i],  # Pass config name for loading status
                 size=(202, 202),
                 screen_name=content_names[i].lower(),  # Navigate to respective screen
+                button_mode = 'icon_status'
             )
             content.add_widget(self.content_buttons[content_name])
 

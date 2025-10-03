@@ -115,7 +115,8 @@ class EditSetting(FloatLayout):
             size_hint=(None, None),
             size=(120, 40),
             pos_hint = {'center_x': 0.45, 'center_y': 0.5},
-            screen_name=self.screen_name
+            screen_name=self.screen_name,
+            button_mode = 'edit_button'
         )
         self.label = Label(
             text=self.status,
@@ -281,6 +282,7 @@ class DefaultButton(IconTextButton):
             size=(110, 110),
             pos_hint = {'center_x': 0.5, 'center_y': 0.5},
             on_release=self.reset_to_default,
+            button_mode = 'no_status',
             **kwargs
         )
 
