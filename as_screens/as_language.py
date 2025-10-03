@@ -17,10 +17,10 @@ class LanguageScreen(SafeScreen):
         self.header = HeaderBar(title='language', icon_path="as_images/home.png", button_text="home", button_screen="menu")
         main_layout = BoxLayout(orientation='horizontal', spacing=80, size_hint_y=0.3, pos_hint={'center_x': 0.5, 'center_y': 0.5}, padding=[80,0,80,0])  # Only left and right padding
         main_layout.add_widget(Widget())
-        self.en_button = LanguageButton(icon_path="as_images/english.png", text=update_text_language('english'), language='en', height=50)
+        self.en_button = LanguageButton(icon_path="as_images/english.png", text=update_text_language('english'), language='en', height=50, button_mode='no_status')
         main_layout.add_widget(self.en_button)
         self.buttons.append(self.en_button)
-        self.jp_button = LanguageButton(icon_path="as_images/japanese.png", text=update_text_language('japanese'), language='jp', height=50)
+        self.jp_button = LanguageButton(icon_path="as_images/japanese.png", text=update_text_language('japanese'), language='jp', height=50, button_mode='no_status')
         main_layout.add_widget(self.jp_button)
         self.buttons.append(self.jp_button)
         main_layout.add_widget(Widget())
@@ -57,7 +57,6 @@ class LanguageButton(IconTextButton):
         self.language = language
         self.predefined_color()
         self.bind(active=self._update_active_color)
-        self.button_mode = 'no_status'
 
     def on_button_press(self, instance):
         """
