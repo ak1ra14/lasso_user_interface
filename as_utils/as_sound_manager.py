@@ -1,6 +1,6 @@
 from kivy.core.audio import SoundLoader
 from kivy.logger import Logger
-import sys
+import sys, subprocess
 
 from as_utils.as_config_loader import load_config
 
@@ -8,6 +8,7 @@ class SoundManager:
     def __init__(self):
         self.tap_sound = SoundLoader.load('as_sound/tap.mp3')
         self.alert_sound = SoundLoader.load('as_sound/alertsound.mp3')
+        self.sound_with_usbsoundcard = load_config("as_config/settings.json","v3_json").get("sound_with_usbsoundcard")
         # Log sound loading status
         if self.tap_sound:
             Logger.info(f"SoundManager: Tap sound loaded successfully")
@@ -22,14 +23,21 @@ class SoundManager:
             Logger.error(f"SoundManager: Failed to load alert sound")
             
         
-    def play_tap(self):
-        try:
-            if self.tap_sound:
-                self.tap_sound.stop()
-                self.tap_sound.play()
-        except Exception as e:
-            Logger.error(f"Error playing tap sound: {e}")
-            
+    def play_tap(self, sound_file="as_sound/tap.mp3"):
+        # try:
+        #     if self.tap_sound:
+        #         self.tap_sound.stop()
+        #         self.tap_sound.play()
+        # except Exception as e:
+        #     Logger.error(f"Error playing tap sound: {e}")
+        if sys.platform.startswith("linux"):
+            if self.sound_with_usbsoundcard:
+                subprocess.Popen(['aplay', '-D', 'plughw:2,0', sound_file], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            else:
+                subprocess.Popen(['aplay', sound_file], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+
+        elif sys.platform == "darwin":  # macOS
+            subprocess.Popen(['afplay', sound_file], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     def play_alert(self):
         try:
             if self.alert_sound:
