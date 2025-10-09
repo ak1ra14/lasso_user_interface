@@ -23,7 +23,7 @@ class SoundManager:
             Logger.error(f"SoundManager: Failed to load alert sound")
             
         
-    def play_tap(self, sound_file="as_sound/tap.mp3"):
+    def play_tap(self, sound_file="as_sound/tap.wav"):
         # try:
         #     if self.tap_sound:
         #         self.tap_sound.stop()
