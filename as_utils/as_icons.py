@@ -100,7 +100,7 @@ class IconTextButton(Button):
                 size_hint=(0.45,0.45),
                 pos_hint={'center_x': 0.5, 'center_y': 0.65}  # Center image vertically
             )
-        self.layout.add_widget(self.image)
+            self.layout.add_widget(self.image)
         if self.button_mode == 'icon_status':
             self.label = Label(
                 text=self.label_text,
@@ -129,6 +129,8 @@ class IconTextButton(Button):
             self.status.bind(size=lambda inst, val: setattr(inst, 'text_size', val))
             self.layout.add_widget(self.label)
             self.layout.add_widget(self.status)
+            self.add_widget(self.layout)
+            return
 
         elif self.button_mode == 'no_status':
             if self.label_text:
@@ -144,7 +146,8 @@ class IconTextButton(Button):
                 )
                 #label.bind(size=lambda inst, val: setattr(inst, 'text_size', val))
                 self.layout.add_widget(self.label)
-        self.add_widget(self.layout)
+                self.add_widget(self.layout)
+            return
 
     def _update_rect(self, instance, value):
         """Callback to update the position and size of the rounded rectangle."""
@@ -230,6 +233,9 @@ class CircularImageButton(Button):
         self.color_instruction.rgba = (0.2, 0.8, 0.2, 1)  # Change color to green on press
         Clock.schedule_once(self._reset_color, 0.3)  # Reset color after
         App.get_running_app().sound_manager.play_tap()
+        freeze_ui(0.3)
+        
+
 
     def _reset_color(self, dt):
         self.color_instruction.rgba = (0.22, 0.45, 0.91, 1)
