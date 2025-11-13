@@ -41,21 +41,15 @@ class MyApp(App):
         '''
         self.sm = ScreenManager(transition=NoTransition())
         self.sound_manager = SoundManager()
-        self.en_dictionary = load_config('as_languages/en.json')
-        self.jp_dictionary = load_config('as_languages/jp.json')
-        # Set the default volume to config setting
-        self.config = load_config('as_config/settings.json','v3_json')
-        self.language = self.config.get('language', 'en')
-        set_system_volume(self.config.get('volume', 50))
-        self.ip_address = get_ip_address()
+        self.set_up_config()
 
         self.screen_before_screensaver = None
         self.screensaver_was_activated = False
+        self.screensaver_event = None
 
         self.add_all_screens()
         self.setup_time_bar()
         
-        self.screensaver_event = None
         self.reset_screensaver_timer()
         Window.bind(on_touch_down=self.on_user_activity)
         Window.bind(on_key_down=self.on_user_activity)
@@ -63,12 +57,27 @@ class MyApp(App):
         # Set the initial screen to menu
         first_page = self.get_first_page()
         self.sm.current = first_page
+        
         ##checking connection
         self.integrate_connection_manager()
 
         return self.root_layout
     
-    def add_all_screens(self):
+    def set_up_config(self) -> None:
+        '''
+        Load configuration files and set initial parameters.
+        '''
+        try:
+            self.en_dictionary = load_config('as_languages/en.json')
+            self.jp_dictionary = load_config('as_languages/jp.json')
+            self.config = load_config('as_config/settings.json','v3_json')
+            self.language = self.config.get('language', 'en')
+            set_system_volume(self.config.get('volume', 50))
+            self.ip_address = get_ip_address()
+        except Exception as e:
+            Logger.error(f"Error loading configuration: {e}")
+    
+    def add_all_screens(self) -> None:
         '''
         Add all screens to the ScreenManager.
         '''
@@ -155,9 +164,6 @@ class MyApp(App):
         if self.sm.current != 'dark':
             # Store the current screen before activating screensaver
             self.screen_before_screensaver = self.sm.current
-            #Logger.info(f"Activating screensaver, current screen: {self.sm.current}")
-            # if self.screen_before_screensaver == self.get_last_page():
-            #     self.screen_before_screensaver = self.get_first_page()
             self.screensaver_was_activated = True
             self.sm.current = 'dark'
 
