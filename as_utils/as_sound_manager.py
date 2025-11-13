@@ -31,11 +31,16 @@ class SoundManager:
 
 
     def play_sound(self,sound_file="as_sound/tap.wav"):
-        if sys.platform.startswith("linux"):
-            if self.sound_with_usbsoundcard:
-                subprocess.Popen(['aplay', '-D', 'plughw:2,0', sound_file], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-            else:
-                subprocess.Popen(['aplay', sound_file], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        try:
+            if sys.platform.startswith("linux"):
+                if self.sound_with_usbsoundcard:
+                    subprocess.Popen(['aplay', '-D', 'plughw:2,0', sound_file], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                else:
+                    subprocess.Popen(['aplay', sound_file], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
-        elif sys.platform == "darwin":  # macOS
-            subprocess.Popen(['afplay', sound_file], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            elif sys.platform == "darwin":  # macOS
+                subprocess.Popen(['afplay', sound_file], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        except:
+            Logger.error(f"SoundManager: Failed to play sound")
+
+

@@ -2,7 +2,7 @@
     "ack_enable": "yes",
     "server": "192.168.1.058",
     "topic": "healthcare/alerts",
-    "location": "Room 1",
+    "location": "rf",
     "region_address": "192.168.1.100",
     "alert_lights_ip1": "192.168.1.201",
     "alert_lights_ip2": "192.168.1.202"

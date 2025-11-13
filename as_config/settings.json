@@ -14,7 +14,7 @@
         "as_config/location3.json"
     ],
     "default_json": "as_config/default.json",
-    "current_page": "location",
+    "current_page": "monitor",
     "first_page": "password",
     "last_page": "menu"
 }
