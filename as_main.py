@@ -1,12 +1,6 @@
-from asyncio import subprocess
 import os, sys, subprocess
 from kivy.config import Config
 from kivy.metrics import Metrics
-
-if sys.platform.startswith('linux'):
-    Config.set('input', 'mouse', 'mouse,multitouch_on_demand')
-    Config.set('graphics', 'show_cursor', 0) 
-
 from kivy.app import App
 from kivy.uix.screenmanager import ScreenManager, Screen, NoTransition
 from kivy.core.window import Window
@@ -16,7 +10,6 @@ from kivy.uix.floatlayout import FloatLayout
 from kivy.logger import Logger
 from kivy.clock import Clock
 from kivy.core.audio import SoundLoader
-
 
 from as_utils.as_config_loader import load_config, save_config
 from as_screens.as_home_screen import MenuScreen1, MenuScreen2
@@ -37,6 +30,9 @@ from as_utils.as_password import PasswordScreen
 from as_utils.as_connection_manager import ConnectionManager
 from as_utils.as_sound_manager import SoundManager
 
+if sys.platform.startswith('linux'):
+    Config.set('input', 'mouse', 'mouse,multitouch_on_demand')
+    Config.set('graphics', 'show_cursor', 0) 
 
 class MyApp(App):
     def build(self):
@@ -114,9 +110,10 @@ class MyApp(App):
         integrate_connection_manager(self)
         return self.root_layout
     
-    def on_user_activity(self, *args):
+    def on_user_activity(self, *args) -> None:
         '''
-        Reset the screensaver timer and the time bar timer on user activity.'''
+        Reset the screensaver timer and the time bar timer on user activity.
+        '''
         # If we're coming back from screensaver, return to the previous screen
         if self.sm.current == 'dark' and self.screensaver_was_activated:
             #Logger.info(f"Returning to previous screen: {self.screen_before_screensaver}")
@@ -133,7 +130,7 @@ class MyApp(App):
         self.reset_screensaver_timer()
         self.reset_timer()
     
-    def reset_screensaver_timer(self, *args):
+    def reset_screensaver_timer(self, *args) -> None:
         '''
         Reset the screensaver timer.
         '''
@@ -144,7 +141,7 @@ class MyApp(App):
         if timeout != 0:
             self.screensaver_event = Clock.schedule_once(self.activate_screensaver, timeout)
 
-    def activate_screensaver(self, *args):
+    def activate_screensaver(self, *args) -> None:
         '''
         Activate the screensaver by switching to the dark screen.
         '''
@@ -157,7 +154,7 @@ class MyApp(App):
             self.screensaver_was_activated = True
             self.sm.current = 'dark'
 
-    def _update_time_bar(self, dt):
+    def _update_time_bar(self, *args) -> None:
         '''
         Update the time bar every second. If time runs out, switch to menu screen.
         '''
@@ -188,7 +185,7 @@ class MyApp(App):
                 self.sm.current = 'menu'  # Switch to menu screen when time runs out
                 self.reset_timer()
     
-    def reset_timer(self, *args):
+    def reset_timer(self, *args) -> None:
         '''
         Reset the time bar timer.
         '''
@@ -198,17 +195,18 @@ class MyApp(App):
             self._timer_event.cancel()
         self._timer_event = Clock.schedule_interval(self._update_time_bar, 1)
 
-    def on_screen_change(self, *args):
+    def on_screen_change(self, *args) -> None:
         '''
         Handle screen changes to show/hide the time bar and manage timers.'''
         if self.sm.current == 'dark' or self.sm.current == 'monitor':
             self.time_bar.opacity = 0  # Hide time bar in dark screen
-            # if self._timer_event and self.sm.current == 'dark':
-            #     self._timer_event.cancel()
         else:
             self.time_bar.opacity = 1
 
-    def reset_timer_event(self):
+    def reset_timer_event(self) -> None:
+        """
+        
+        """
         if self._timer_event:
             self._timer_event.cancel()
         self.time_left = self.time_limit
@@ -230,7 +228,7 @@ class MyApp(App):
         last_page = config.get("last_page", "") if config.get("last_page", "") in [screen for screen in self.sm.screen_names] else "monitor"
         return last_page
 
-def integrate_connection_manager(app_instance):
+def integrate_connection_manager(app_instance: MyApp):
     """
     Helper function to integrate ConnectionManager into your MyApp
     Call this in your MyApp.build() method

@@ -1,10 +1,10 @@
 {
     "version": "SG-S1-20250630",
     "sensor_ID": "ABC123",
-    "language": "jp",
+    "language": "en",
     "volume": 42,
     "screensaver": 168,
-    "timezone": "Los Angeles (GMT-7)",
+    "timezone": "Singapore (GMT+8)",
     "region_address": "192.168.1.100",
     "alert_lights_ip1": "192.168.1.201",
     "alert_lights_ip2": "192.168.1.202",
