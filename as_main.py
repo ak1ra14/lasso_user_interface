@@ -201,17 +201,7 @@ class MyApp(App):
         if self.sm.current == 'dark' or self.sm.current == 'monitor':
             self.time_bar.opacity = 0  # Hide time bar in dark screen
         else:
-            self.time_bar.opacity = 1
-
-    def reset_timer_event(self) -> None:
-        """
-        
-        """
-        if self._timer_event:
-            self._timer_event.cancel()
-        self.time_left = self.time_limit
-        self.time_bar.value = self.time_limit
-        self._timer_event = Clock.schedule_interval(self._update_time_bar, 1)    
+            self.time_bar.opacity = 1 
     
     def get_first_page(self):
         config = load_config("as_config/settings.json", "settings_json")
