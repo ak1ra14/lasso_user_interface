@@ -52,7 +52,26 @@ class MyApp(App):
         self.screen_before_screensaver = None
         self.screensaver_was_activated = False
 
-        # Add all screens to the ScreenManager
+        self.add_all_screens()
+        self.setup_time_bar()
+        
+        self.screensaver_event = None
+        self.reset_screensaver_timer()
+        Window.bind(on_touch_down=self.on_user_activity)
+        Window.bind(on_key_down=self.on_user_activity)
+
+        # Set the initial screen to menu
+        first_page = self.get_first_page()
+        self.sm.current = first_page
+        ##checking connection
+        self.integrate_connection_manager()
+
+        return self.root_layout
+    
+    def add_all_screens(self):
+        '''
+        Add all screens to the ScreenManager.
+        '''
         self.sm.add_widget(MonitorScreen(name='monitor'))
         self.sm.add_widget(MenuScreen1(name='menu'))
         self.sm.add_widget(MenuScreen2(name='menu2'))
@@ -79,11 +98,13 @@ class MyApp(App):
         self.sm.add_widget(WifiConnectedScreen(name='wifi connected'))
         self.sm.add_widget(WifiErrorScreen(name='wifi error'))
         self.sm.add_widget(PasswordScreen(name='password screen'))
-
-        # Add the dark screen for screensaver
         self.sm.add_widget(DarkScreen(name='dark'))
         self.sm.bind(current=self.on_screen_change)
 
+    def setup_time_bar(self) -> None:
+        """
+        Setting up the time bar overlaying the ScreenManager.
+        """
         # Create a FloatLayout to overlay the time bar
         self.root_layout = FloatLayout()
         self.root_layout.add_widget(self.sm)
@@ -94,22 +115,8 @@ class MyApp(App):
         self.time_bar = ProgressBar(max=self.time_limit, value=self.time_limit, size_hint=(0.94, None), height=20, pos_hint={'x': 0.03, 'y': 0})
         self.time_bar.opacity = 0
         self.root_layout.add_widget(self.time_bar)
-
-        # Start timer
         self._timer_event = Clock.schedule_interval(self._update_time_bar, 1)
-        self.screensaver_event = None
-        self.reset_screensaver_timer()
-        Window.bind(on_touch_down=self.on_user_activity)
-        Window.bind(on_key_down=self.on_user_activity)
 
-        # Set the initial screen to menu
-        first_page = self.get_first_page()
-        self.sm.current = first_page
-
-        ##checking connection
-        integrate_connection_manager(self)
-        return self.root_layout
-    
     def on_user_activity(self, *args) -> None:
         '''
         Reset the screensaver timer and the time bar timer on user activity.
@@ -218,27 +225,25 @@ class MyApp(App):
         last_page = config.get("last_page", "") if config.get("last_page", "") in [screen for screen in self.sm.screen_names] else "monitor"
         return last_page
 
-def integrate_connection_manager(app_instance: MyApp):
-    """
-    Helper function to integrate ConnectionManager into your MyApp
-    Call this in your MyApp.build() method
-    """
-    # Create and start connection manager
-    app_instance.connection_manager = ConnectionManager(app_instance)
-    app_instance.connection_manager.start_monitoring()
-    
-    # Add cleanup method to app
-    original_on_stop = getattr(app_instance, 'on_stop', lambda: None)
-    
-    def enhanced_on_stop():
-        if hasattr(app_instance, 'connection_manager'):
-            app_instance.connection_manager.stop_monitoring()
-        original_on_stop()
-    
-    app_instance.on_stop = enhanced_on_stop
-    
-    Logger.info("ConnectionManager: Integration completed")
-
+    def integrate_connection_manager(self):
+        """
+        Helper function to integrate ConnectionManager into your MyApp
+        Call this in your MyApp.build() method
+        """
+        # Create and start connection manager
+        self.connection_manager = ConnectionManager(self)
+        self.connection_manager.start_monitoring()
+        
+        # Add cleanup method to app
+        original_on_stop = getattr(self, 'on_stop', lambda: None)
+        
+        def enhanced_on_stop():
+            if hasattr(self, 'connection_manager'):
+                self.connection_manager.stop_monitoring()
+            original_on_stop()
+        
+        self.on_stop = enhanced_on_stop
+        Logger.info("ConnectionManager: Integration completed")
 
 if __name__ == '__main__':
     Window.size = (1024, 600)  # Set the window size to 1024x600 pixels
