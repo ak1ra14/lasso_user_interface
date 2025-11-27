@@ -1,4 +1,3 @@
-from _win32typing import SHFILEOPSTRUCT
 import mozcpy
 import time 
 
