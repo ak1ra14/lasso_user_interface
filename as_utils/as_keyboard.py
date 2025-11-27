@@ -22,7 +22,7 @@ from as_utils.as_icons import IconTextButton
 from as_utils.as_flick_key import FlickKey
 from as_utils.as_layout import SafeScreen
 from as_utils.as_freeze_screen import freeze_ui
-from as_utils.as_keyboard_layout import ENGLISH_KEYS, ENGLISH_SUB_KEYS, JAPANESE_KEYS, JAPANESE_SUB_KEYS, FLICK_KEYS, DAKUON_MAP
+from as_utils.as_keyboard_layout import ENGLISH_KEYS, ENGLISH_SUB_KEYS, SHIFT_KEYS, JAPANESE_KEYS, JAPANESE_SUB_KEYS, FLICK_KEYS, DAKUON_MAP
 
 
 
