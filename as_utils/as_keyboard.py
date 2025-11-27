@@ -1,3 +1,7 @@
+from _win32typing import SHFILEOPSTRUCT
+import mozcpy
+import time 
+
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.button import Button
@@ -10,10 +14,7 @@ from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.image import Image
 from kivy.clock import Clock
 from kivy.uix.screenmanager import Screen
-import sys, os
-import mozcpy
 from kivy.app import App
-import time 
 from kivy.uix.popup import Popup
 from kivy.logger import Logger
 
@@ -22,6 +23,11 @@ from as_utils.as_icons import IconTextButton
 from as_utils.as_flick_key import FlickKey
 from as_utils.as_layout import SafeScreen
 from as_utils.as_freeze_screen import freeze_ui
+from as_utils.as_keyboard_layout import ENGLISH_KEYS, ENGLISH_SUB_KEYS, JAPANESE_KEYS, JAPANESE_SUB_KEYS, FLICK_KEYS, DAKUON_MAP
+
+
+
+
 
 
 class KeyboardScreen(SafeScreen):
@@ -162,65 +168,16 @@ class QwertyKeyboard(FloatLayout):
 
     def set_keys(self):
         #### English keyboard layouts #######
-        self.shift_keys = [
-            ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'],
-            ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'],
-            ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L'],
-            ['Shift','Z', 'X', 'C', 'V', 'B', 'N', 'M', 'Backspace'],
-            ['English', ',', 'Space','.', 'Enter']
-        ]
-        self.keys = [
-            ['1', '2', '3', '4', '5', '6', '7', '8', '9' , '0'],
-            ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p'],
-            ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l'],
-            ['Shift', 'z', 'x', 'c', 'v', 'b', 'n', 'm', 'Backspace'],
-            ['English', ',', 'Space', '.', 'Enter']
-        ]
-        self.subkeys = [
-            ['', '', '', '', '', '', '', '', '', ''],
-            ['%', "\\", '|', '=', "[", "]", '<', '>', '{', '}'],   # 10 subkeys (correct)
-            ['@', '#', '$', '_', '&', '-', '+', '(', ')'],
-            ['', '*', '\"', '\'', ':', ';', '!', '?', ''],
-            ['', '', '', '', '', '']
-        ]
+        self.shift_keys = SHIFT_KEYS
+        self.keys = ENGLISH_KEYS
+        self.subkeys = ENGLISH_SUB_KEYS
+    
+        #### Japanese keyboard layouts #######
+        self.japanese_keys = JAPANESE_KEYS
+        self.japanese_subkeys = JAPANESE_SUB_KEYS        
 
-#### Japanese keyboard layouts #######
-        self.japanese_keys = [
-            ['あ', 'か', 'さ', 'た', 'な', 'は', 'ま', 'や', 'ら', 'わ','Backspace'],
-            ['い', 'き', 'し', 'ち', 'に', 'ひ', 'み', '', 'り', 'を', 'Space'],
-            ['う', 'く', 'す', 'つ', 'ぬ', 'ふ', 'む', 'ゆ', 'る', 'ん', 'Enter'],
-            ['え', 'け', 'せ', 'て', 'ね', 'へ', 'め', '', 'れ', '。', 'Daku-on'],
-            ['お', 'こ', 'そ', 'と', 'の', 'ほ', 'も', 'よ', 'ろ', '、','Japanese']
-            # Add more rows as needed
-        ]
-        self.japanese_subkeys = [
-            ['ア', 'カ', 'サ', 'タ', 'ナ', 'ハ', 'マ', 'ヤ', 'ラ', 'ワ',''],
-            ['イ', 'キ', 'シ', 'チ', 'ニ', 'ヒ', 'ミ', '', 'リ', 'ヲ',''],
-            ['ウ', 'ク', 'ス', 'ツ', 'ヌ', 'フ', 'ム', 'ユ', 'ル', 'ン',''],
-            ['エ', 'ケ', 'セ', 'テ', 'ネ', 'ヘ', 'メ', '', 'レ', 'ー',''],
-            ['オ', 'コ', 'ソ', 'ト', 'ノ', 'ホ', 'モ', 'ヨ', 'ロ', '、','']
-            # Add more rows as needed
-        ]
-
-###### Flick keyboard layouts #######
-        self.flick_mappings = [
-            ('あ', 'い', 'う', 'え', 'お'),
-            ('か', 'き', 'く', 'け', 'こ'),
-            ('さ', 'し', 'す', 'せ', 'そ'),
-            ('Backspace',),    
-            ('た', 'ち', 'つ', 'て', 'と'),
-            ('な', 'に', 'ぬ', 'ね', 'の'),
-            ('は', 'ひ', 'ふ', 'へ', 'ほ'),
-            ('Space',),
-            ('ま', 'み', 'む', 'め', 'も'),
-            ('や', 'ゆ', 'よ', '',''),
-            ('ら', 'り', 'る', 'れ', 'ろ'),
-            ('Enter',),
-            ('Daku-on',),
-            ('わ', 'を', 'ん', 'ー', ''),
-            ('、', '。', '?', '!', ''),
-            ('Flick',)
-        ]
+        ##### Flick keyboard layouts #######
+        self.flick_mappings = FLICK_KEYS
     
     def build_qwerty_keyboard(self):
         self.language_mode = 'english'  # Set the language mode to English
@@ -694,35 +651,7 @@ class QwertyKeyboard(FloatLayout):
         return char
         
     def change_dakuon(self, char):
-        dakuon_map = {
-            'か': 'が', 'き': 'ぎ', 'く': 'ぐ', 'け': 'げ', 'こ': 'ご',
-            'が': 'か', 'ぎ': 'き', 'ぐ': 'く', 'げ': 'け', 'ご': 'こ',
-            'さ': 'ざ', 'し': 'じ', 'す': 'ず', 'せ': 'ぜ', 'そ': 'ぞ',
-            'ざ': 'さ', 'じ': 'し', 'ず': 'す', 'ぜ': 'せ', 'ぞ': 'そ',
-            'た': 'だ', 'ち': 'ぢ', 'つ': 'づ', 'て': 'で', 'と': 'ど',
-            'だ': 'た', 'ぢ': 'ち', 'づ': 'っ', 'で': 'て', 'ど': 'と',
-            'は': 'ば', 'ひ': 'び', 'ふ': 'ぶ', 'へ': 'べ', 'ほ': 'ぼ',
-            'ば': 'ぱ', 'び': 'ぴ', 'ぶ': 'ぷ', 'べ': 'ぺ', 'ぼ': 'ぽ',
-            'ぱ': 'は', 'ぴ': 'ひ', 'ぷ': 'ふ', 'ぺ': 'へ', 'ぽ': 'ほ',
-            'あ': 'ぁ', 'い': 'ぃ', 'う': 'ぅ', 'え': 'ぇ', 'お': 'ぉ',
-            'ぁ': 'あ', 'ぃ': 'い', 'ぅ': 'う', 'ぇ': 'え', 'ぉ': 'お',
-            'や': 'ゃ', 'ゆ': 'ゅ', 'よ': 'ょ','っ': 'つ',
-            'ゃ': 'や', 'ゅ': 'ゆ', 'ょ': 'よ',
-            'ア': 'ァ', 'イ': 'ィ', 'ウ': 'ゥ', 'エ': 'ェ', 'オ': 'ォ',
-            'ァ': 'ア', 'ィ': 'イ', 'ゥ': 'ウ', 'ェ': 'エ', 'ォ': 'オ',
-            'カ': 'ガ', 'キ': 'ギ', 'ク': 'グ', 'ケ': 'ゲ', 'コ': 'ゴ',
-            'ガ': 'カ', 'ギ': 'キ', 'グ': 'ク', 'ゲ': 'ケ', 'ゴ': 'コ',
-            'サ': 'ザ', 'シ': 'ジ', 'ス': 'ズ', 'セ': 'ゼ', 'ソ': 'ゾ',
-            'ザ': 'サ', 'ジ': 'シ', 'ズ': 'ス', 'ゼ':   'セ', 'ゾ': 'ソ',
-            'タ': 'ダ', 'チ': 'ヂ', 'ツ': 'ヅ', 'テ': 'デ', 'ト': 'ド',
-            'ダ': 'タ', 'ヂ': 'チ', 'ヅ': 'ッ', 'デ': 'テ', 'ド': 'ト',
-            'ハ': 'バ', 'ヒ': 'ビ', 'フ': 'ブ', 'ヘ': 'ベ', 'ホ': 'ボ',
-            'バ': 'パ', 'ビ': 'ピ', 'ブ': 'プ', 'ベ': 'ペ', 'ボ': 'ポ',
-            'パ': 'ハ', 'ピ': 'ヒ', 'プ': 'フ', 'ペ': 'ヘ', 'ポ': 'ホ',
-            'ヤ': 'ャ', 'ユ': 'ュ', 'ヨ': 'ョ',
-            'ャ': 'ヤ', 'ュ': 'ユ', 'ョ': 'ヨ','ッ': 'ツ',
-            # Add more mappings as needed
-        }
+        dakuon_map = DAKUON_MAP
         return dakuon_map.get(char, char)
 
     def limit_text_length(self, instance, value):

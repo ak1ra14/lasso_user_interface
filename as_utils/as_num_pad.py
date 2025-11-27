@@ -89,14 +89,14 @@ class NumberPadScreen(SafeScreen):
         )
         self.add_widget(partition)
         
-    def on_save(self, instance):
+    def on_save(self, instance: Button) -> None:
         show_saved_popup(update_text_language('saved'))
 
-    def set_cursor_at_end(self, instance, value):
+    def set_cursor_at_end(self, instance: TextInput, value: bool) -> None:
         if value:  # If focused
             instance.cursor = (len(instance.text), 0)
 
-    def on_key_press(self, instance):
+    def on_key_press(self, instance: Button) -> None:
         key = instance.text
         if key == 'DEL':
             self.input.text = self.input.text[:-1]

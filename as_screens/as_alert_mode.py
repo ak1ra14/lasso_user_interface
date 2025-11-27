@@ -15,9 +15,7 @@ from as_utils.as_freeze_screen import freeze_ui
 
 
 class AlertModeScreen(Screen):
-    """
-    Alert Mode Screen
-    """
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.modes = load_config('as_config/settings.json','v3_json').get('previous_method', 'fall.json')

@@ -70,6 +70,9 @@ class IconTextButton(Button):
         self.build_ui()
 
     def build_ui(self):
+        '''
+        Building the UI components based on button mode.
+        '''
         if self.button_mode == 'image_only': # If no label text is provided, we only show the icon
             self.image = Image(
             source=self.icon_path,

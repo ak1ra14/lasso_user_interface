@@ -15,6 +15,6 @@
     ],
     "default_json": "as_config/default.json",
     "current_page": "dark_screen",
-    "first_page": "password",
+    "first_page": "",
     "last_page": ""
 }

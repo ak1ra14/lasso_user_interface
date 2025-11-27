@@ -80,4 +80,5 @@ def get_ip_address():
         s.close()
         return ip
     except Exception as e:
+        Logger.error(f"Failed to get IP address: {e}")
         return f"Not connected" 

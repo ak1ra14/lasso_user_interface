@@ -5,6 +5,9 @@ import sys, subprocess
 from as_utils.as_config_loader import load_config
 
 class SoundManager:
+    """
+    Manages the soundplay back upon any actions made in the application.
+    """
     def __init__(self):
         self.tap_sound = SoundLoader.load('as_sound/tap.mp3')
         self.alert_sound = SoundLoader.load('as_sound/alertsound.mp3')
