@@ -13,7 +13,6 @@ from as_utils.as_config_loader import load_config, update_current_page, update_t
 from as_utils.as_keyboard import show_saved_popup
 from as_utils.as_icons import IconTextButton, ToggleButton
 
-
 class AlertTypeScreen(SafeScreen):
     def __init__(self, **kwargs):
         super(AlertTypeScreen, self).__init__(**kwargs)
@@ -49,7 +48,7 @@ class AlertTypeScreen(SafeScreen):
         )
         self.y_axis = [290, 220, 165, 110, 55]
         self.bed_types = ["alert_with_video", "sit_up","bed_exit","sit-to-stand","lie_out"]
-        self.build_buttons("bed")
+        self.build_alert_type_buttons("bed")
 
         partition = SeparatorLine(
             points=[370, 370, 370, 60],
@@ -63,7 +62,7 @@ class AlertTypeScreen(SafeScreen):
             pos = (420, 335)
         )
         self.fall_types = ["alert_with_video","sit-to-stand","fall"]
-        self.build_buttons("fall")
+        self.build_alert_type_buttons("fall")
 
         float_layout = FloatLayout(size_hint=(1, 1))
         self.save_button = SaveButtonAT(
@@ -84,7 +83,7 @@ class AlertTypeScreen(SafeScreen):
         self.add_widget(ack_button)
         self.add_widget(fall_image)
 
-    def build_buttons(self, mode):
+    def build_alert_type_buttons(self, mode):
         if mode == "bed":
             self.types = self.bed_types
             self.alert_checking = self.alert_checking_bed
