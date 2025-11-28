@@ -100,8 +100,7 @@ class MenuScreen1(MenuScreen):
             content_name = self.content_names[i].lower()
             content_path = content_name
             if content_name == "mode":
-                mode = self.check_mode()
-                content_path = self.check_mode_for_image(mode)
+                content_path = self.check_mode_for_image()
             self.content_buttons[content_name] = IconTextButton(
                 icon_path=f'as_images/{content_path}.png',
                 text=update_text_language(content_name),
@@ -141,12 +140,21 @@ class MenuScreen1(MenuScreen):
         else:
             return f"{update_text_language('unknown_mode')}"
 
-    def check_mode_for_image(self, text):
-        if text.startswith("Fall") or text.startswith("転倒"):
-            return "fall_multiple" if ("Multiple" in text or "複数" in text) else "fall_single"
-        elif text.startswith("Bed") or text.startswith("ベッド"):
-            return "bed_multiple" if ("Multiple" in text or "複数" in text) else "bed_single"
-    
+    def check_mode_for_image(self):
+        mode = self.config.get("previous_method", "fall.json")
+        json_file = 'bed_json' if 'bed' in mode else 'fall_json'
+        mode_config = load_config("as_config/settings.json",json_file)
+        single_multiple = "multiple" if mode_config.get("minnumppl_for_noalert", 99) == 99 else "single"
+        if mode == "fall.json":
+            if single_multiple == "multiple":
+                return "fall_multiple"
+            else:
+                return "fall_single"
+        elif mode == "bed.json":
+            if single_multiple == "multiple":
+                return "bed_multiple"
+            else:
+                return "bed_single"
     
     def has_any_alert(self):
         '''
@@ -199,7 +207,7 @@ class MenuScreen1(MenuScreen):
         self.content_buttons['volume'].status.text = f"{str(self.volume)}%"
         self.content_buttons['volume'].image.source = "as_images/volume.png" if self.volume != 0 else "as_images/volume_mute.png"
         self.content_buttons['mode'].status.text = self.mode
-        mode_path = self.check_mode_for_image(self.mode)
+        mode_path = self.check_mode_for_image()
         # Update the icon image directly if possible
         self.content_buttons['mode'].image.source = f'as_images/{mode_path}.png'
         self.content_buttons['mode'].status.text = self.mode
