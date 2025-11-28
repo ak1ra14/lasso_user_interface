@@ -13,15 +13,21 @@ from as_utils.as_layout import HeaderBar, SafeScreen
 from as_utils.as_config_loader import load_config, save_config, update_current_page, update_text_language, to_json_format, save_config_partial
 from as_utils.as_freeze_screen import freeze_ui   
 
+class AlertSensitivity:
+    BED_HIGH = 1
+    BED_LOW = 99
+    FALL_HIGH = 2
+    FALL_LOW = 99 
 
 class AlertModeScreen(Screen):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        self.sensitivity = AlertSensitivity()
         self.modes = load_config('as_config/settings.json','v3_json').get('previous_method', 'fall.json')
         self.json_file = 'bed_json' if 'bed' in self.modes else 'fall_json'
-        self.single_multiple = load_config('as_config/settings.json',self.json_file).get('minnumppl_for_noalert', 99)
-        self.no_beds = load_config("as_config/settings.json",'bed_json').get('nbeds', [1, 1])[0] == 2
+        self.single_multiple = load_config('as_config/settings.json',self.json_file).get('minnumppl_for_noalert', self.sensitivity.BED_HIGH if 'bed' in self.modes else self.sensitivity.FALL_HIGH)
+        self.no_beds = load_config("as_config/settings.json",'bed_json').get('nbeds', [1, 1])[0] 
         self.header = HeaderBar(title="mode", icon_path="as_images/home.png", button_text="home", button_screen="menu")
         main_layout = BoxLayout(orientation='horizontal', padding=[50, 0, 50, 0], spacing=50,size_hint_y=0.5, pos_hint={'center_x': 0.5,'center_y':0.4})  # Only left and right padding
         main_layout.add_widget(Widget())  # Spacer on the left
@@ -29,14 +35,15 @@ class AlertModeScreen(Screen):
         self.icon_label = ["bed_mode", "bed_mode", "fall_mode", "fall_mode"]
         self.icon_status = ["bed_single", "bed_multiple", "fall_single", "fall_multiple"]
         self.buttons = []
+
         for i in range(len(self.icon_images)):
             if self.icon_images[i].split('_')[1] == "multiple":
-                active_state = 99
+                active_state = self.sensitivity.BED_LOW if 'bed' in self.modes else self.sensitivity.FALL_LOW
             else:
                 if self.icon_images[i].split('_')[0] == "fall":
-                    active_state = 2
+                    active_state = self.sensitivity.FALL_HIGH
                 else:
-                    active_state = 1
+                    active_state = self.sensitivity.BED_HIGH
             icon = AlertModeButton(
                 icon_path=f"as_images/{self.icon_images[i]}.png",
                 text=update_text_language(self.icon_label[i]),
@@ -82,9 +89,9 @@ class AlertModeScreen(Screen):
         update_current_page('alert_mode')
         self.modes = load_config('as_config/settings.json','fall_json').get('previous_method', 'fall.json')
         self.json_file = 'bed_json' if 'bed' in self.modes else 'fall_json'
-        self.single_multiple = load_config('as_config/settings.json',self.json_file).get('minnumppl_for_noalert', 99)
+        self.single_multiple = load_config('as_config/settings.json',self.json_file).get('minnumppl_for_noalert', self.sensitivity.BED_HIGH if 'bed' in self.modes else self.sensitivity.FALL_HIGH)
         self.no_beds = load_config("as_config/settings.json",'bed_json').get('nbeds', [1, 1])[0]
-            # Update the toggle button state and graphics
+        # Update the toggle button state and graphics
         self.toggle_button.switch.no_beds = self.no_beds
         self.toggle_button.switch.active = True if self.no_beds == 2 else False
         self.toggle_button.switch.update_graphics()
@@ -132,23 +139,38 @@ class AlertModeButton(IconTextButton):
     def on_press(self):
         freeze_ui(0.3)  # Freeze UI for 0.3 secondss
         App.get_running_app().sound_manager.play_tap()
+    
         # Change colour of icon when active and update config file
-        if not self.active:
-            self.active = True
-            self.screen.modes = f"{self.mode}.json"
-            self.screen.single_multiple = self.active_state
-            config = load_config('as_config/settings.json','v3_json')
-            save_config_partial("as_config/settings.json","v3_json",key='previous_method',value=self.screen.modes)
-            json_name = 'bed_json' if 'bed' in self.screen.modes else 'fall_json'
-            config = load_config("as_config/settings.json",json_name)
-            config['minnumppl_for_noalert'] = self.active_state
-            config['multihumanpause_seconds'] = 0 if self.active_state == 99 else 5
-            config['noalert_by_overlap'] = 0 if self.active_state == 99 else 1
-            save_config("as_config/settings.json",json_name, data=config)
-            for button in self.screen.buttons:
-                if button != self:
-                    button.active = False
-                    button._update_active_color(button, False)
+        if self.active:
+            return
+
+        self.active = True
+        self._set_active_mode()
+        self._update_siblings()
+
+    def _set_active_mode(self):
+        """
+        Set the active mode and update the config file.
+        """
+        self.screen.modes = f"{self.mode}.json"
+        self.screen.single_multiple = self.active_state
+        save_config_partial("as_config/settings.json","v3_json",key='previous_method',value=self.screen.modes)
+        json_name = 'bed_json' if 'bed' in self.screen.modes else 'fall_json'
+        config = load_config("as_config/settings.json",json_name)
+        config['minnumppl_for_noalert'] = self.active_state
+        config['multihumanpause_seconds'] = 0 if self.active_state == 99 else 5
+        config['noalert_by_overlap'] = 0 if self.active_state == 99 else 1
+        save_config("as_config/settings.json",json_name, data=config)
+
+
+    def _update_siblings(self):
+        """
+        Update the active state of the siblings.
+        """
+        for button in self.screen.buttons:
+            if button != self:
+                button.active = False
+                button._update_active_color(button, False)
 
 class CustomSwitchAM(CustomSwitch):
     """
