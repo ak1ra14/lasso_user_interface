@@ -49,7 +49,7 @@ class AlertTypeScreen(SafeScreen):
         )
         self.y_axis = [290, 220, 165, 110, 55]
         self.bed_types = ["alert_with_video", "sit_up","bed_exit","sit-to-stand","lie_out"]
-        self.build_bed_buttons()
+        self.build_buttons("bed")
 
         partition = SeparatorLine(
             points=[370, 370, 370, 60],
@@ -63,8 +63,7 @@ class AlertTypeScreen(SafeScreen):
             pos = (420, 335)
         )
         self.fall_types = ["alert_with_video","sit-to-stand","fall"]
-        self.build_fall_buttons()
-        
+        self.build_buttons("fall")
 
         float_layout = FloatLayout(size_hint=(1, 1))
         self.save_button = SaveButtonAT(
@@ -85,71 +84,50 @@ class AlertTypeScreen(SafeScreen):
         self.add_widget(ack_button)
         self.add_widget(fall_image)
 
-    def build_bed_buttons(self):
-        for i, bed_type in enumerate(self.bed_types):
+    def build_buttons(self, mode):
+        if mode == "bed":
+            self.types = self.bed_types
+            self.alert_checking = self.alert_checking_bed
+            self.attach_video = self.attach_video_bed
+        elif mode == "fall":
+            self.types = self.fall_types
+            self.alert_checking = self.alert_checking_fall
+            self.attach_video = self.attach_video_fall
+        else:
+            Logger.error("Invalid mode: {}".format(mode))
+            return
+        
+        for i, type in enumerate(self.types):
             if i == 0:
-                value = self.attach_video_bed 
+                value = self.attach_video 
             else:
-                value = self.get_first_value(self.alert_checking_bed, bed_type)
+                value = self.get_first_value(self.alert_checking, type)
             if value is None:
                 value = 0        
                 button = ToggleButton(
-                    text_right=bed_type,
+                    text_right=type,
                     size_hint_y=None,
                     height=50,
-                    pos=(50, self.y_axis[i]),
-                    switch=AlertTypeButton(value, freeze=True),  # Disable the switch
-                    text_size_l_r=(0, 180)
-                )
-            else:
-                button = ToggleButton(
-                    text_right=bed_type,
-                    size_hint_y=None,
-                    height=50,
-                    pos=(50, self.y_axis[i]),
-                    switch=AlertTypeButton(value),
-                    text_size_l_r=(0, 180)
-                )
-            self.add_widget(button)
-            if bed_type == "alert_with_video":
-                self.buttons['alert_with_video_bed'] = button
-            elif bed_type == "sit-to-stand":
-                self.buttons['sit-to-stand_bed'] = button
-            else:
-                self.buttons[bed_type] = button
-
-    def build_fall_buttons(self):
-        for i, fall_type in enumerate(self.fall_types):
-            if i == 0:
-                value = self.attach_video_fall
-            else:
-                value = self.get_first_value(self.alert_checking_fall, fall_type)
-            if value is None:
-                value = 0        
-                button = ToggleButton(
-                    text_right=fall_type,
-                    size_hint_y=None,
-                    height=50,
+                    pos=(50 if mode == "bed" else 400, self.y_axis[i]),
                     switch=AlertTypeButton(value, freeze=True),  # Set freeze=True to disable
-                    pos=(400, self.y_axis[i]),
                     text_size_l_r=(0, 200)
                 )
             else:
                 button = ToggleButton(
-                    text_right=fall_type,
+                    text_right=type,
                     size_hint_y=None,
                     height=50,
+                    pos=(50 if mode == "bed" else 400, self.y_axis[i]),
                     switch=AlertTypeButton(value),
-                    pos=(400, self.y_axis[i]),
                     text_size_l_r=(0, 200)
                 )
             self.add_widget(button)
-            if fall_type == 'alert_with_video':
-                self.buttons['alert_with_video_fall'] = button
-            elif fall_type == 'sit-to-stand':
-                self.buttons['sit-to-stand_fall'] = button
+            if type == "alert_with_video":
+                self.buttons[f'alert_with_video_{mode}'] = button
+            elif type == "sit-to-stand":
+                self.buttons[f'sit-to-stand_{mode}'] = button
             else:
-                self.buttons[fall_type] = button
+                self.buttons[type] = button
 
 
     def on_pre_enter(self):
@@ -165,12 +143,12 @@ class AlertTypeScreen(SafeScreen):
         attach_video_bed = self.bed_json.get("attach_video", 1)
         status['alert_with_video_bed'] = attach_video_bed
 
-        status = self.update_status_bed(status)
+        status = self.update_status(status,'bed')
 
         attach_video_fall = self.fall_json.get("attach_video", 1)
         status['alert_with_video_fall'] = attach_video_fall
 
-        status = self.update_status_fall(status)
+        status = self.update_status(status,'fall')
 
         self.update_state(status)
 
@@ -182,33 +160,25 @@ class AlertTypeScreen(SafeScreen):
             if item[4] == alert_type:
                 return item[3]
         return None
-    
-    def update_status_bed(self,status):
-        alert_checking_bed = self.bed_json.get("alert_checking", None)
-        for bed_type in self.bed_types[1:]:
-            value = self.get_first_value(alert_checking_bed, bed_type)
-            if bed_type == 'sit-to-stand':
-                bed_type = 'sit-to-stand_bed'
-            if value is not None:
-                status[bed_type] = (False, value)
-            else:
-                status[bed_type] = (True, 0)
-        return status
-    
-    def update_status_fall(self,status):
-        alert_checking_fall = self.fall_json.get("alert_checking", None)
-        for fall_type in self.fall_types[1:]:
-            value = self.get_first_value(alert_checking_fall, fall_type)
-            if fall_type == 'sit-to-stand':
-                fall_type = 'sit-to-stand_fall'
-            if value is not None:
-                #Logger.debug(f"FALSE: fall_type: {fall_type}, value: {value}")
-                status[fall_type] = (False, value)
-            else:
-                #Logger.debug(f"TRUE: fall_type: {fall_type}, value: {value}")
-                status[fall_type] = (True, 0)
 
+    def update_status(self,status,mode):
+        if mode == "bed":
+            alert_checking = self.bed_json.get("alert_checking", None)
+            types = self.bed_types
+        elif mode == "fall":
+            alert_checking = self.fall_json.get("alert_checking", None)
+            types = self.fall_types
+        
+        for type in types[1:]:
+            value = self.get_first_value(alert_checking, type)
+            if type == 'sit-to-stand':
+                type = f'sit-to-stand_{mode}'
+            if value is not None:
+                status[type] = (False, value)
+            else:
+                status[type] = (True, 0)
         return status
+
     
     def update_state(self, status):
         for key in self.buttons.keys():
